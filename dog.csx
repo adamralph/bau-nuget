@@ -50,8 +50,7 @@ bau
     .Run(nugetCommand)
     .With("restore", solution))
 
-//.NuGetRestore("restore").Do(restore => restore
-//	.For(solution))
+.NuGetRestore("restore").Do(restore => {})
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {
