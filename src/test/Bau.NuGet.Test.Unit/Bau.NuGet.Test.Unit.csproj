@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="NuGetPackFacts.cs" />
     <Compile Include="NuGetPushFacts.cs" />
+    <Compile Include="NuGetRestoreFacts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

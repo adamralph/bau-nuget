@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetPush.cs" company="Bau contributors">
+﻿// <copyright file="NuGetRestore.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -11,7 +11,7 @@ namespace BauNuGet
     using System.Threading.Tasks;
     using BauCore;
 
-    public class NuGetPush : NuGetBauTaskBase
+    public class NuGetRestore : NuGetBauTaskBase
     {
     }
 }

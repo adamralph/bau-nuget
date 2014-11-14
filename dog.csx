@@ -12,7 +12,7 @@ var output = "artifacts/output";
 var tests = "artifacts/tests";
 var logs = "artifacts/logs";
 var unit = "src/test/Bau.NuGet.Test.Unit/bin/Release/Bau.NuGet.Test.Unit.dll";
-var pack = "src/Bau.NuGet/Bau.NuGet";
+var pack = "src/Bau.NuGet/Bau.Nuget";
 
 // solution agnostic tasks
 var bau = Require<Bau>();
@@ -49,6 +49,9 @@ bau
 .Exec("restore").Do(exec => exec
     .Run(nugetCommand)
     .With("restore", solution))
+
+//.NuGetRestore("restore").Do(restore => restore
+//	.For(solution))
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {

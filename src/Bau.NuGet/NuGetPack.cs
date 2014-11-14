@@ -11,7 +11,7 @@ namespace BauNuGet
     using System.Threading.Tasks;
     using BauCore;
 
-    public class NuGetPack : BauTask
+    public class NuGetPack : NuGetBauTaskBase
     {
     }
 }
