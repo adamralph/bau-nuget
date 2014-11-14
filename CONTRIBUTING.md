@@ -1,0 +1,1 @@
+Please see the partent project at [https://github.com/bau-build/bau/blob/dev/CONTRIBUTING.md](https://github.com/bau-build/bau/blob/dev/CONTRIBUTING.md).
