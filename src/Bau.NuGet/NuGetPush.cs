@@ -13,5 +13,9 @@ namespace BauNuGet
 
     public class NuGetPush : NuGetBauTaskBase
     {
+        protected override void OnActionsExecuted()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
