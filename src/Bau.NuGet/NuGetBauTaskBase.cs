@@ -30,43 +30,35 @@ namespace BauNuGet
             return assembly.Location;
         }
 
-        public string GetNugetCommandLineAssemblyPath()
+        public FileInfo GetNugetCommandLineAssemblyPath()
         {
-            const string packagesDirectoryName = "packages";
+            const string packagesSearchDirectoryName = "*packages";
             var currentAssemblyLocation = GetBauNuGetPluginAssemblyPath();
             var currentSearchDirectory = new DirectoryInfo(Path.GetDirectoryName(currentAssemblyLocation));
-            while (currentSearchDirectory != null)
+            do
             {
-                if (currentSearchDirectory.Name == packagesDirectoryName)
-                {
-                    var selfNugetPath = SearchPackageDirectoryForNuGet(currentSearchDirectory);
-                    if (selfNugetPath != null)
-                        return selfNugetPath;
-                }
-
                 var localNugetPath = currentSearchDirectory
-                    .EnumerateDirectories()
-                    .Where(d => d.Name == packagesDirectoryName)
+                    .EnumerateDirectories(packagesSearchDirectoryName)
                     .Select(SearchPackageDirectoryForNuGet)
                     .FirstOrDefault(x => x != null);
                 if (localNugetPath != null)
                     return localNugetPath;
 
                 currentSearchDirectory = currentSearchDirectory.Parent;
-            }
-
+            } while (currentSearchDirectory != null);
             return null;
         }
 
-        private string SearchPackageDirectoryForNuGet(DirectoryInfo packageDirectory)
+        private FileInfo SearchPackageDirectoryForNuGet(DirectoryInfo packageDirectory)
         {
-            const string nugetCliFolderName = "NuGet.CommandLine.*";
+            const string nugetCliFolderNameSearch = "NuGet.CommandLine.*";
             const string localNuGetPath = "tools/NuGet.exe";
-            foreach (var result in packageDirectory.EnumerateDirectories(nugetCliFolderName, SearchOption.TopDirectoryOnly))
+            foreach (var result in packageDirectory.EnumerateDirectories(nugetCliFolderNameSearch, SearchOption.TopDirectoryOnly))
             {
                 var expectedPath = Path.Combine(result.FullName, localNuGetPath);
-                if (File.Exists(expectedPath))
-                    return expectedPath;
+                var fileInfo = new FileInfo(expectedPath);
+                if (fileInfo.Exists)
+                    return fileInfo;
             }
             return null;
         }

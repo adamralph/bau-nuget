@@ -57,8 +57,8 @@ namespace BauNuGet.Test.Unit
             var actualPath = task.GetNugetCommandLineAssemblyPath();
 
             // assert
-            actualPath.Should().EndWith("NuGet.exe");
-            File.Exists(actualPath).Should().BeTrue();
+            actualPath.FullName.Should().EndWith("NuGet.exe");
+            actualPath.Exists.Should().BeTrue();
         }
 
         private class Derrived : NuGetBauTaskBase
