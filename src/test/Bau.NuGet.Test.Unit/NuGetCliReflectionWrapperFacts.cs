@@ -9,8 +9,25 @@ namespace BauNuGet.Test.Unit
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using Xunit;
+    using Xunit.Extensions;
 
     public static class NuGetCliReflectionWrapperFacts
     {
+        [Fact]
+        public static void CanReflectIntoTargetAssembly()
+        {
+            // arrange
+            NuGetCliLoaderFacts.InstallNuGetCli();
+            var loader = new NuGetCliLoader();
+
+            // act
+            var wrapper = new NuGetCliReflectionWrapper(loader.Assembly);
+
+            // assert
+            Assert.NotNull(wrapper.NuGetCliAssembly);
+            Assert.NotNull(wrapper.RestoreCommandType);
+        }
     }
 }
