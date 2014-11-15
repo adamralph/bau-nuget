@@ -15,7 +15,6 @@ namespace BauNuGet
     {
         protected override void OnActionsExecuted()
         {
-            var commandLinePath = GetNugetCommandLineAssemblyPath();
             throw new NotImplementedException();
         }
     }

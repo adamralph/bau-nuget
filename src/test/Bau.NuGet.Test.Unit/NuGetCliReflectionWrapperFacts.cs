@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetBauTaskBaseFacts.cs" company="Bau contributors">
+﻿// <copyright file="NuGetCliReflectionWrapperFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -9,11 +9,8 @@ namespace BauNuGet.Test.Unit
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using FluentAssertions;
-    using Xunit;
-    using Xunit.Extensions;
 
-    public static class NuGetBauTaskBaseFacts
+    public static class NuGetCliReflectionWrapperFacts
     {
     }
 }

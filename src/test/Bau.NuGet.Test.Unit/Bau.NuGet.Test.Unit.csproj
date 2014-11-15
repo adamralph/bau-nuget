@@ -57,6 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NuGetBauTaskBaseFacts.cs" />
+    <Compile Include="NuGetCliLoaderFacts.cs" />
+    <Compile Include="NuGetCliReflectionWrapperFacts.cs" />
     <Compile Include="NuGetPackFacts.cs" />
     <Compile Include="NuGetPushFacts.cs" />
     <Compile Include="NuGetRestoreFacts.cs" />

@@ -50,6 +50,8 @@
     </Compile>
     <Compile Include="Guard.cs" />
     <Compile Include="NuGetBauTaskBase.cs" />
+    <Compile Include="NuGetCliLoader.cs" />
+    <Compile Include="NuGetCliReflectionWrapper.cs" />
     <Compile Include="NuGetPack.cs" />
     <Compile Include="NuGetPush.cs" />
     <Compile Include="NuGetRestore.cs" />
