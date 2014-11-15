@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NuGetBauTaskBaseFacts.cs" />
     <Compile Include="NuGetPackFacts.cs" />
     <Compile Include="NuGetPushFacts.cs" />
     <Compile Include="NuGetRestoreFacts.cs" />
