@@ -13,11 +13,17 @@ namespace BauNuGet
 
     public abstract class NuGetBauTaskBase : BauTask
     {
-        private static readonly NuGetCliLoader cliLoader;
-
         static NuGetBauTaskBase()
         {
-            cliLoader = new NuGetCliLoader();
+            CliLoader = new NuGetCliLoader();
+            if (CliLoader.Assembly != null)
+            {
+                CliReflectionWrapper = new NuGetCliReflectionWrapper(CliLoader.Assembly);
+            }
         }
+
+        public static NuGetCliLoader CliLoader { get; private set; }
+
+        public static NuGetCliReflectionWrapper CliReflectionWrapper { get; private set; }
     }
 }

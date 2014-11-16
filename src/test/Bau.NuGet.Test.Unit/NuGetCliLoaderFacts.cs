@@ -13,6 +13,7 @@ namespace BauNuGet.Test.Unit
     using FluentAssertions;
     using Xunit;
     using Xunit.Extensions;
+    using System.Threading;
 
     public static class NuGetCliLoaderFacts
     {
@@ -74,6 +75,7 @@ namespace BauNuGet.Test.Unit
             var installResult = System.Diagnostics.Process.Start(processStartInfo);
             installResult.WaitForExit();
             installResult.ExitCode.Should().Be(0);
+            Thread.Sleep(250);
         }
     }
 }

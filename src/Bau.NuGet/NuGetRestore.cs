@@ -13,9 +13,21 @@ namespace BauNuGet
 
     public class NuGetRestore : NuGetBauTaskBase
     {
+        public NuGetRestore()
+        {
+            this.Request = new NuGetCliRestoreCommandRequest();
+        }
+
+        public NuGetCliRestoreCommandRequest Request { get; set; }
+
         protected override void OnActionsExecuted()
         {
-            throw new NotImplementedException();
+            if (this.Request == null)
+            {
+                throw new InvalidOperationException("Request is required.");
+            }
+
+            NuGetBauTaskBase.CliReflectionWrapper.Restore(this.Request);
         }
     }
 }

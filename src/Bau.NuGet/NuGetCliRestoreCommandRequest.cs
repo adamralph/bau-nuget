@@ -17,7 +17,9 @@ namespace BauNuGet
         public override void Apply(object command)
         {
             base.Apply(command);
-            throw new NotImplementedException();
+            ReflectionHelpers.SetInstanceProperty(command, "RequireConsent", this.RequireConsent);
+            ReflectionHelpers.SetInstanceProperty(command, "PackagesDirectory", this.PackagesDirectory);
+            ReflectionHelpers.SetInstanceProperty(command, "SolutionDirectory", this.SolutionDirectory);
         }
     }
 }

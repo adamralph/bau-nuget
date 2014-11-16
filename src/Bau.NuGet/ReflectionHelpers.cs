@@ -6,6 +6,7 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Composition.Hosting;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -59,6 +60,34 @@ namespace BauNuGet
             }
 
             return Activator.CreateInstance(enumType);
+        }
+
+        public static void ComposeExportedValue(this CompositionContainer compositionContainer, object value, Type forceType = null)
+        {
+            var valueType = forceType ?? value.GetType();
+            var method = typeof(System.ComponentModel.Composition.AttributedModelServices)
+                .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                .First(m => m.Name == "ComposeExportedValue" && m.GetParameters().Length == 2);
+            var genericMethod = method.MakeGenericMethod(new[] { valueType });
+            genericMethod.Invoke(null, new[] { compositionContainer, value });
+        }
+
+        public static object GetExportedValue(this ExportProvider compositionContainer, Type type)
+        {
+            var method = typeof(System.ComponentModel.Composition.Hosting.ExportProvider)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .First(m => m.Name == "GetExportedValue" && m.GetParameters().Length == 0);
+            var genericMethod = method.MakeGenericMethod(new[] { type });
+            return genericMethod.Invoke(compositionContainer, new object[0]);
+        }
+
+        public static IEnumerable<object> GetExportedValues(this ExportProvider compositionContainer, Type type)
+        {
+            var method = typeof(System.ComponentModel.Composition.Hosting.ExportProvider)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .First(m => m.Name == "GetExportedValues" && m.GetParameters().Length == 0);
+            var genericMethod = method.MakeGenericMethod(new[] { type });
+            return ((System.Collections.IEnumerable)genericMethod.Invoke(compositionContainer, new object[0])).Cast<object>();
         }
     }
 }
