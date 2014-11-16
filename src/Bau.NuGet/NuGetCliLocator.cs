@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliLoader.cs" company="Bau contributors">
+﻿// <copyright file="NuGetCliLocator.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -12,41 +12,14 @@ namespace BauNuGet
     using System.Text;
     using System.Threading.Tasks;
 
-    public class NuGetCliLoader
+    public class NuGetCliLocator
     {
-        public NuGetCliLoader()
+        public NuGetCliLocator()
         {
             this.LasyNugetCliFileInfo = new Lazy<FileInfo>(this.GetNugetCommandLineAssemblyPath, true);
-            this.LasyNugetCliAssembly = new Lazy<Assembly>(this.LoadNugetCliAssembly, true);
-        }
-
-        public Assembly Assembly
-        {
-            get
-            {
-                return this.LasyNugetCliAssembly.Value;
-            }
         }
 
         private Lazy<FileInfo> LasyNugetCliFileInfo { get; set; }
-
-        private Lazy<Assembly> LasyNugetCliAssembly { get; set; }
-
-        public string GetBauNuGetPluginAssemblyPath()
-        {
-            var assembly = typeof(NuGetBauTaskBase).Assembly;
-            Uri codeBaseUri;
-            if (Uri.TryCreate(assembly.CodeBase, UriKind.Absolute, out codeBaseUri))
-            {
-                var localPath = codeBaseUri.LocalPath;
-                if (!string.IsNullOrEmpty(localPath))
-                {
-                    return localPath;
-                }
-            }
-
-            return assembly.Location;
-        }
 
         public FileInfo GetNugetCommandLineAssemblyPath()
         {
@@ -70,15 +43,20 @@ namespace BauNuGet
             return null;
         }
 
-        private Assembly LoadNugetCliAssembly()
+        public string GetBauNuGetPluginAssemblyPath()
         {
-            var cliAssemblyFileInfo = this.LasyNugetCliFileInfo.Value;
-            if (cliAssemblyFileInfo == null)
+            var assembly = typeof(NuGetBauTaskBase).Assembly;
+            Uri codeBaseUri;
+            if (Uri.TryCreate(assembly.CodeBase, UriKind.Absolute, out codeBaseUri))
             {
-                return null;
+                var localPath = codeBaseUri.LocalPath;
+                if (!string.IsNullOrEmpty(localPath))
+                {
+                    return localPath;
+                }
             }
 
-            return Assembly.LoadFrom(cliAssemblyFileInfo.FullName);
+            return assembly.Location;
         }
 
         private FileInfo SearchPackageDirectoryForNuGet(DirectoryInfo packageDirectory)

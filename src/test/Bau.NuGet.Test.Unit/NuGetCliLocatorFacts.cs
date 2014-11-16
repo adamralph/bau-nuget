@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliLoaderFacts.cs" company="Bau contributors">
+﻿// <copyright file="NuGetCliLocatorFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -9,26 +9,26 @@ namespace BauNuGet.Test.Unit
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Xunit;
     using Xunit.Extensions;
-    using System.Threading;
 
-    public static class NuGetCliLoaderFacts
+    public static class NuGetCliLocatorFacts
     {
         [Fact]
         public static void CanFindYourInnerSelf()
         {
             // arrange
-            var expectedPath = typeof(NuGetCliLoader).Assembly.Location; // NOTE: some test runners may have issues with this line
-            var loader = new NuGetCliLoader();
+            var expectedPath = typeof(NuGetCliLocator).Assembly.Location; // NOTE: some test runners may have issues with this line
+            var loader = new NuGetCliLocator();
 
             // act
-            var actualPath = loader.GetBauNuGetPluginAssemblyPath();
+            var path = loader.GetBauNuGetPluginAssemblyPath();
 
             // assert
-            Assert.Equal(expectedPath, actualPath, StringComparer.Ordinal);
+            File.Exists(path).Should().BeTrue();
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             InstallNuGetCli();
-            var loader = new NuGetCliLoader();
+            var loader = new NuGetCliLocator();
 
             // act
             var actualPath = loader.GetNugetCommandLineAssemblyPath();
@@ -46,25 +46,9 @@ namespace BauNuGet.Test.Unit
             actualPath.Exists.Should().BeTrue();
         }
 
-        [Fact]
-        public static void CanLoadTwice()
-        {
-            // arrange
-            InstallNuGetCli();
-            var loader1 = new NuGetCliLoader();
-            var loader2 = new NuGetCliLoader();
-
-            // act
-            var asm1 = loader1.Assembly;
-            var asm2 = loader2.Assembly;
-
-            // assert
-            Assert.Same(asm1, asm2);
-        }
-
         internal static void InstallNuGetCli()
         {
-            var currentDirectory = Path.GetDirectoryName(typeof(NuGetCliLoader).Assembly.Location);
+            var currentDirectory = Path.GetDirectoryName(typeof(NuGetCliLocator).Assembly.Location);
             var processStartInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "scriptcs", // hope it is on the PATH

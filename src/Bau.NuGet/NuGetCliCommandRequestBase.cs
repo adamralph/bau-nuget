@@ -5,6 +5,7 @@
 namespace BauNuGet
 {
     using System;
+    using System.Collections.Generic;
 
     public abstract class NuGetCliCommandRequestBase
     {
@@ -19,14 +20,22 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        public virtual void Apply(object command)
+        public virtual void AppendCommandLineOptions(List<string> arguments)
         {
-            Guard.AgainstNullArgument("command", command);
-            ReflectionHelpers.SetInstanceProperty(command, "ConfigFile", this.ConfigFile);
-            ReflectionHelpers.SetInstanceProperty(command, "NonInteractive", this.NonInteractive);
-            var verbosityProperty = command.GetType().GetProperty("Verbosity");
-            var verbosityEnumValue = ReflectionHelpers.ConvertToEnumOrDefault(verbosityProperty.PropertyType, this.Verbosity);
-            ReflectionHelpers.SetInstanceProperty(command, verbosityProperty, verbosityEnumValue);
+            if (!string.IsNullOrWhiteSpace(this.Verbosity))
+            {
+                arguments.Add("-Verbosity " + this.Verbosity);
+            }
+
+            if (this.NonInteractive)
+            {
+                arguments.Add("-NonInteractive");
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.ConfigFile))
+            {
+                arguments.Add("-ConfigFile \"" + this.ConfigFile + "\"");
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public abstract class NuGetCliDownloadCommandRequestBase : NuGetCliCommandRequestBase
     {
@@ -22,21 +23,32 @@ namespace BauNuGet
 
         public string PackageSaveMode { get; set; }
 
-        public override void Apply(object command)
+        public override void AppendCommandLineOptions(List<string> argumentBuilder)
         {
-            base.Apply(command);
-            ReflectionHelpers.SetInstanceProperty(command, "NoCache", this.NoCache);
-            ReflectionHelpers.SetInstanceProperty(command, "DisableParallelProcessing", this.DisableParallelProcessing);
-            ReflectionHelpers.SetInstanceProperty(command, "PackageSaveMode", this.PackageSaveMode);
-            var commandSource = ReflectionHelpers.GetInstanceProperty(command, "Source") as ICollection<string>;
-            if (commandSource != null)
+            if (this.NoCache)
             {
-                commandSource.Clear();
-                foreach (var sourceItem in this.Source)
+                argumentBuilder.Add("-NoCache");
+            }
+
+            if (this.DisableParallelProcessing)
+            {
+                argumentBuilder.Add("-DisableParallelProcessing");
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.PackageSaveMode))
+            {
+                argumentBuilder.Add("-PackageSaveMode " + this.PackageSaveMode);
+            }
+
+            if (null != this.Source)
+            {
+                foreach (var source in this.Source.Where(s => !string.IsNullOrWhiteSpace(s)))
                 {
-                    commandSource.Add(sourceItem);
+                    argumentBuilder.Add("-Source \"" + source + "\"");
                 }
             }
+
+            base.AppendCommandLineOptions(argumentBuilder);
         }
     }
 }

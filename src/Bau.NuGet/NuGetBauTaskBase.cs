@@ -15,15 +15,13 @@ namespace BauNuGet
     {
         static NuGetBauTaskBase()
         {
-            CliLoader = new NuGetCliLoader();
-            if (CliLoader.Assembly != null)
-            {
-                CliReflectionWrapper = new NuGetCliReflectionWrapper(CliLoader.Assembly);
-            }
+            CliLocator = new NuGetCliLocator();
         }
 
-        public static NuGetCliLoader CliLoader { get; private set; }
+        public static NuGetCliLocator CliLocator { get; private set; }
 
-        public static NuGetCliReflectionWrapper CliReflectionWrapper { get; private set; }
+        public bool UseCommandLine { get; set; }
+
+        public string WorkingDirectory { get; set; }
     }
 }

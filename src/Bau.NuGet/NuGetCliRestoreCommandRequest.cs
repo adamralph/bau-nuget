@@ -8,18 +8,37 @@ namespace BauNuGet
 
     public class NuGetCliRestoreCommandRequest : NuGetCliDownloadCommandRequestBase
     {
+        public string TargetSolutionOrPackagesConfig { get; set; }
+
         public bool RequireConsent { get; set; }
 
         public string PackagesDirectory { get; set; }
 
         public string SolutionDirectory { get; set; }
 
-        public override void Apply(object command)
+        public override void AppendCommandLineOptions(System.Collections.Generic.List<string> argumentBuilder)
         {
-            base.Apply(command);
-            ReflectionHelpers.SetInstanceProperty(command, "RequireConsent", this.RequireConsent);
-            ReflectionHelpers.SetInstanceProperty(command, "PackagesDirectory", this.PackagesDirectory);
-            ReflectionHelpers.SetInstanceProperty(command, "SolutionDirectory", this.SolutionDirectory);
+            if (!string.IsNullOrWhiteSpace(this.TargetSolutionOrPackagesConfig))
+            {
+                argumentBuilder.Add("\"" + this.TargetSolutionOrPackagesConfig + "\"");
+            }
+
+            if (this.RequireConsent)
+            {
+                argumentBuilder.Add("-RequireConsent");
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.PackagesDirectory))
+            {
+                argumentBuilder.Add("-PackagesDirectory \"" + this.PackagesDirectory + "\"");
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
+            {
+                argumentBuilder.Add("-SolutionDirectory \"" + this.SolutionDirectory + "\"");
+            }
+
+            base.AppendCommandLineOptions(argumentBuilder);
         }
     }
 }
