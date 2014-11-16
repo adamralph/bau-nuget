@@ -59,7 +59,6 @@ namespace BauNuGet.Test.Unit
             var installResult = System.Diagnostics.Process.Start(processStartInfo);
             installResult.WaitForExit();
             installResult.ExitCode.Should().Be(0);
-            Thread.Sleep(250);
         }
     }
 }

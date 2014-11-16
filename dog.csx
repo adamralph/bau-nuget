@@ -77,7 +77,7 @@ bau
 
 .Task("output").Do(() => CreateDirectory(output))
 
-.Exec("pack").DependsOn("build", "clobber", "output").Do(exec => exec
+/*.Exec("pack").DependsOn("build", "clobber", "output").Do(exec => exec
     .Run(nugetCommand)
     .With(
         "pack", pack + ".csproj",
@@ -85,7 +85,15 @@ bau
         "-Properties", "Configuration=Release",
         "-IncludeReferencedProjects",
         "-Verbosity", nugetVerbosity,
-        "-Version", version + versionSuffix))
+        "-Version", version + versionSuffix))*/
+
+.NuGetPack("pack").DependsOn("build", "clobber", "output").Do(pack => pack
+	.For(pack + ".csproj")
+	.WithOutputDirectory(output)
+	.WithProperty("Configuration","Release")
+	.WithIncludeReferencedProjects()
+	.WithVerbosity(nugetVerbosity)
+	.WithVersion(version + versionSuffix))
 
 .Run();
 

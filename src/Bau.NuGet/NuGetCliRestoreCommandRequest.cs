@@ -8,6 +8,11 @@ namespace BauNuGet
 
     public class NuGetCliRestoreCommandRequest : NuGetCliDownloadCommandRequestBase
     {
+        public NuGetCliRestoreCommandRequest()
+        {
+            this.RequireConsent = false;
+        }
+
         public string TargetSolutionOrPackagesConfig { get; set; }
 
         public bool RequireConsent { get; set; }
@@ -15,6 +20,30 @@ namespace BauNuGet
         public string PackagesDirectory { get; set; }
 
         public string SolutionDirectory { get; set; }
+
+        public virtual NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
+        {
+            this.TargetSolutionOrPackagesConfig = targetSolutionOrPackagesConfig;
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithRequiresConsent(bool enabled = true)
+        {
+            this.RequireConsent = enabled;
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithPackagesDirectory(string packagesDirectory)
+        {
+            this.PackagesDirectory = packagesDirectory;
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithSolutionDirectory(string solutionDirectory)
+        {
+            this.SolutionDirectory = solutionDirectory;
+            return this;
+        }
 
         public override void AppendCommandLineOptions(System.Collections.Generic.List<string> argumentBuilder)
         {

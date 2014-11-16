@@ -22,48 +22,29 @@ namespace BauNuGet
 
         public NuGetCliRestoreCommandRequest Request { get; set; }
 
-        public virtual NuGetRestore For(string solutionOrPackagesFile)
+        public NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
         {
-            this.Request.TargetSolutionOrPackagesConfig = solutionOrPackagesFile;
-            return this;
-        }
-
-        public virtual NuGetRestore WithSolutionDirectory(string solutionDirectory)
-        {
-            this.Request.SolutionDirectory = solutionDirectory;
-            return this;
-        }
-
-        public virtual NuGetRestore WithPackagesDirectory(string packagesDirectory)
-        {
-            this.Request.PackagesDirectory = packagesDirectory;
-            return this;
-        }
-
-        public virtual NuGetRestore InWorkingDirectory(string workingDirectory)
-        {
-            this.WorkingDirectory = workingDirectory;
-            return this;
+            return this.Request.For(targetSolutionOrPackagesConfig);
         }
 
         protected override void OnActionsExecuted()
         {
             if (this.Request == null)
             {
-                throw new InvalidOperationException("Request is required.");
+                throw new InvalidOperationException();
             }
 
             if (this.UseCommandLine)
             {
-                this.ExecuteRestoreUsingCommandLine();
+                this.ExecuteUsingCommandLine();
             }
             else
             {
-                throw new NotSupportedException("Restore can only be executed using the command line tool.");
+                throw new NotSupportedException();
             }
         }
 
-        private void ExecuteRestoreUsingCommandLine()
+        private void ExecuteUsingCommandLine()
         {
             var commandLineArguments = new List<string> { "restore" };
             this.Request.AppendCommandLineOptions(commandLineArguments);

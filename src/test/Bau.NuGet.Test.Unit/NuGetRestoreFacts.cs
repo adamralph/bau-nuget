@@ -21,15 +21,14 @@ namespace BauNuGet.Test.Unit
         public static void CanRestorePackages()
         {
             // arrange
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
-            var restore = new NuGetRestore()
+            var task = new NuGetRestore()
+                .WithWorkingDirectory("./");
+            var request = task.Request
                 .For("./restore-test/packages.config")
                 .WithSolutionDirectory("./restore-test")
-                .WithPackagesDirectory("./restore-test/packages")
-                .InWorkingDirectory("./");
+                .WithPackagesDirectory("./restore-test/packages");
 
-            var request = restore.Request;
+            NuGetCliLocatorFacts.InstallNuGetCli();
 
             if (!Directory.Exists(request.SolutionDirectory))
             {
@@ -38,13 +37,12 @@ namespace BauNuGet.Test.Unit
 
             if (Directory.Exists(request.PackagesDirectory))
             {
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 Directory.Delete(request.PackagesDirectory, true);
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
 
-            using (var packagesFile = File.Open(request.TargetSolutionOrPackagesConfig, FileMode.Create))
-            using (var packagesFileStream = new StreamWriter(packagesFile))
+            using (var packagesFileStream = File.CreateText(request.TargetSolutionOrPackagesConfig))
             {
                 packagesFileStream.Write("<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
             }
@@ -53,7 +51,7 @@ namespace BauNuGet.Test.Unit
             File.Exists(Path.Combine(request.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeFalse();
 
             // act
-            restore.Execute();
+            task.Execute();
 
             // assert
             Directory.Exists(request.PackagesDirectory).Should().BeTrue();

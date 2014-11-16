@@ -68,6 +68,7 @@
     <Compile Include="NuGetPack.cs" />
     <Compile Include="NuGetPush.cs" />
     <Compile Include="NuGetRestore.cs" />
+    <Compile Include="NuGetCliExtensions.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

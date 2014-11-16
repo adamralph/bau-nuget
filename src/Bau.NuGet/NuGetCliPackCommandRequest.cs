@@ -16,7 +16,7 @@ namespace BauNuGet
             this.Properties = new Dictionary<string, string>();
         }
 
-        public string TargetProjectOrNuSpect { get; set; }
+        public string TargetProjectOrNuSpec { get; set; }
 
         public string OutputDirectory { get; set; }
 
@@ -42,14 +42,118 @@ namespace BauNuGet
 
         public Dictionary<string, string> Properties { get; set; }
 
-        public string MinClientVersion { get; set; }
+        public string MiniClientVersion { get; set; }
+
+        public void AddExcludes(params string[] excludes)
+        {
+            if (this.Exclude == null)
+            {
+                this.Exclude = new List<string>();
+            }
+
+            this.Exclude.AddRange(excludes);
+        }
+
+        public void SetProperty(string key, string value)
+        {
+            if (this.Properties == null)
+            {
+                this.Properties = new Dictionary<string, string>();
+            }
+
+            this.Properties[key] = value;
+        }
+
+        public NuGetCliPackCommandRequest For(string targetProjectOrNuSpec)
+        {
+            this.TargetProjectOrNuSpec = targetProjectOrNuSpec;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithOutputDirectory(string outputDirectory)
+        {
+            this.OutputDirectory = outputDirectory;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithBasePath(string basePath)
+        {
+            this.BasePath = basePath;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithVersion(string version)
+        {
+            this.Version = version;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithExclude(params string[] excludes)
+        {
+            this.AddExcludes(excludes);
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithProperty(string key, string value)
+        {
+            this.SetProperty(key, value);
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithMiniClientVersion(string version)
+        {
+            this.MiniClientVersion = version;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithSymbols(bool enabled = true)
+        {
+            this.Symbols = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithTool(bool enabled = true)
+        {
+            this.Tool = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithBuild(bool enabled = true)
+        {
+            this.Build = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithNoDefaultExcludes(bool enabled = true)
+        {
+            this.NoDefaultExcludes = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithNoPackageAnalysis(bool enabled = true)
+        {
+            this.NoPackageAnalysis = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithExcludeEmptyDirectories(bool enabled = true)
+        {
+            this.ExcludeEmptyDirectories = enabled;
+            return this;
+        }
+
+        public NuGetCliPackCommandRequest WithIncludeReferencedProjects(bool enabled = true)
+        {
+            this.IncludeReferencedProjects = enabled;
+            return this;
+        }
 
         public override void AppendCommandLineOptions(System.Collections.Generic.List<string> arguments)
         {
             // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity
-            if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpect))
+            if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpec))
             {
-                arguments.Add("\"" + this.TargetProjectOrNuSpect + "\"");
+                arguments.Add("\"" + this.TargetProjectOrNuSpec + "\"");
             }
 
             if (!string.IsNullOrWhiteSpace(this.OutputDirectory))
@@ -69,7 +173,7 @@ namespace BauNuGet
 
             if (this.Exclude != null)
             {
-                foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)))
+                foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
                 {
                     arguments.Add("-Exclude \"" + exclude + "\"");
                 }
@@ -122,9 +226,9 @@ namespace BauNuGet
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(this.MinClientVersion))
+            if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
             {
-                arguments.Add("-MinClientVersion \"" + this.MinClientVersion + "\"");
+                arguments.Add("-MinClientVersion \"" + this.MiniClientVersion + "\"");
             }
 
             base.AppendCommandLineOptions(arguments);

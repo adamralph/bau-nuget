@@ -21,7 +21,23 @@ namespace BauNuGet
 
         public bool DisableParallelProcessing { get; set; }
 
-        public string PackageSaveMode { get; set; }
+        public void AddSource(string source)
+        {
+            if (this.Source == null)
+            {
+                this.Source = new List<string>();
+            }
+
+            this.Source.Add(source);
+        }
+
+        public void ClearSources()
+        {
+            if (this.Source != null)
+            {
+                this.Source.Clear();
+            }
+        }
 
         public override void AppendCommandLineOptions(List<string> argumentBuilder)
         {
@@ -35,14 +51,9 @@ namespace BauNuGet
                 argumentBuilder.Add("-DisableParallelProcessing");
             }
 
-            if (!string.IsNullOrWhiteSpace(this.PackageSaveMode))
-            {
-                argumentBuilder.Add("-PackageSaveMode " + this.PackageSaveMode);
-            }
-
             if (null != this.Source)
             {
-                foreach (var source in this.Source.Where(s => !string.IsNullOrWhiteSpace(s)))
+                foreach (var source in this.Source.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
                 {
                     argumentBuilder.Add("-Source \"" + source + "\"");
                 }
