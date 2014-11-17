@@ -31,26 +31,12 @@ namespace BauNuGet
         {            
             if (this.UseCommandLine)
             {
-                this.ExecuteUsingCommandLine();
+                this.ExecuteBasicUsingCommandLine("push", this.Request);
             }
             else
             {
                 throw new NotSupportedException();
             }
-        }
-
-        private void ExecuteUsingCommandLine()
-        {
-            var commandLineArguments = new List<string> { "push" };
-            this.Request.AppendCommandLineOptions(commandLineArguments);
-
-            var execTask = new BauExec.Exec();
-            execTask.Command = NuGetBauTaskBase.CliLocator.GetNugetCommandLineAssemblyPath().FullName;
-            execTask.Args = commandLineArguments;
-            execTask.WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
-                ? Path.GetFullPath(this.WorkingDirectory)
-                : Directory.GetCurrentDirectory();
-            execTask.Execute();
         }
     }
 }

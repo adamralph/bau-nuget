@@ -29,33 +29,14 @@ namespace BauNuGet
 
         protected override void OnActionsExecuted()
         {
-            if (this.Request == null)
-            {
-                throw new InvalidOperationException();
-            }
-
             if (this.UseCommandLine)
             {
-                this.ExecuteUsingCommandLine();
+                this.ExecuteBasicUsingCommandLine("restore", this.Request);
             }
             else
             {
                 throw new NotSupportedException();
             }
-        }
-
-        private void ExecuteUsingCommandLine()
-        {
-            var commandLineArguments = new List<string> { "restore" };
-            this.Request.AppendCommandLineOptions(commandLineArguments);
-
-            var execTask = new BauExec.Exec();
-            execTask.Command = NuGetBauTaskBase.CliLocator.GetNugetCommandLineAssemblyPath().FullName;
-            execTask.Args = commandLineArguments;
-            execTask.WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
-                ? this.WorkingDirectory
-                : Directory.GetCurrentDirectory();
-            execTask.Execute();
         }
     }
 }
