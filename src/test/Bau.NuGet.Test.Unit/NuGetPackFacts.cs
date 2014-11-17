@@ -103,7 +103,8 @@ namespace BauNuGet.Test.Unit
             var request = task.Request
                 .For("./pickles.nuspec")
                 .WithVersion("0.2.3-core0")
-                .WithOutputDirectory("./packed");
+                .WithOutputDirectory("./packed")
+                .WithNoPackageAnalysis();
 
             NuGetCliLocatorFacts.InstallNuGetCli();
 
@@ -168,6 +169,5 @@ namespace BauNuGet.Test.Unit
             // assert
             File.Exists(Path.Combine(request.OutputDirectory, "pickles." + request.Version + ".nupkg")).Should().BeTrue();
         }
-
     }
 }

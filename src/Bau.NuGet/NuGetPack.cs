@@ -17,11 +17,11 @@ namespace BauNuGet
     {
         public NuGetPack()
         {
-            this.UseCommandLine = false;
+            this.UseCommandLine = true;
             this.Request = new NuGetCliPackCommandRequest();
         }
 
-        public NuGetCliPackCommandRequest Request { get; set; }
+        public NuGetCliPackCommandRequest Request { get; private set; }
 
         public NuGetCliPackCommandRequest For(string targetProjectOrNuSpec)
         {
@@ -61,18 +61,121 @@ namespace BauNuGet
 
         private void ExecuteUsingCore()
         {
-            if(string.IsNullOrWhiteSpace(this.Request.TargetProjectOrNuSpec))
+            if (string.IsNullOrWhiteSpace(this.Request.TargetProjectOrNuSpec))
             {
                 throw new InvalidOperationException();
             }
 
-            IPropertyProvider propertyProvider = null; // TODO
+            if (this.Request.Build)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (this.Request.Exclude != null && this.Request.Exclude.Any())
+            {
+                throw new NotImplementedException();
+            }
+
+            if (this.Request.Symbols)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (this.Request.Tool)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (this.Request.NoDefaultExcludes)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (this.Request.IncludeReferencedProjects)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Request.MiniClientVersion))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (!this.Request.NoPackageAnalysis)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (".NUSPEC".Equals(Path.GetExtension(this.Request.TargetProjectOrNuSpec), StringComparison.OrdinalIgnoreCase))
+            {
+                this.ExecuteUsingCoreForNuSpec();
+            }
+            else
+            {
+                this.ExecuteUsingCoreForProject();
+            }
+        }
+
+        private void ExecuteUsingCoreForNuSpec()
+        {
+            var basePath = string.IsNullOrWhiteSpace(this.Request.BasePath)
+                ? Path.GetDirectoryName(this.Request.TargetProjectOrNuSpec)
+                : this.Request.BasePath;
+            var propertyProvider = new NuGetCliPackCommandPropertyProvider(this.Request);
             var packageBuilder = new PackageBuilder(
                 this.Request.TargetProjectOrNuSpec,
-                this.Request.BasePath,
+                basePath,
                 propertyProvider,
                 !this.Request.ExcludeEmptyDirectories);
 
+            var versionString = this.Request.ExtractVersionString();
+            SemanticVersion semVer;
+            if (!string.IsNullOrWhiteSpace(versionString) && SemanticVersion.TryParse(versionString, out semVer))
+            {
+                packageBuilder.Version = semVer;
+            }
+
+            var packageFileName = packageBuilder.Id + "." + packageBuilder.Version.ToString() + ".nupkg";
+            string outputDirectory;
+            if (!string.IsNullOrWhiteSpace(this.Request.OutputDirectory))
+            {
+                outputDirectory = this.Request.OutputDirectory;
+            }
+            else if (!string.IsNullOrWhiteSpace(this.WorkingDirectory))
+            {
+                outputDirectory = this.WorkingDirectory;
+            }
+            else
+            {
+                outputDirectory = Directory.GetCurrentDirectory();
+            }
+
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            var packageOutFilePath = Path.Combine(outputDirectory, packageFileName);
+            try
+            {
+                using (var fileStream = File.Create(packageOutFilePath))
+                {
+                    packageBuilder.Save(fileStream);
+                }
+            }
+            catch
+            {
+                if (File.Exists(packageOutFilePath))
+                {
+                    File.Delete(packageOutFilePath);
+                }
+
+                throw;
+            }
+        }
+
+        private void ExecuteUsingCoreForProject()
+        {
             throw new NotImplementedException();
         }
     }

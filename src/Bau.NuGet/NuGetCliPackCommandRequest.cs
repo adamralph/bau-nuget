@@ -13,7 +13,7 @@ namespace BauNuGet
         public NuGetCliPackCommandRequest()
         {
             this.Exclude = new List<string>();
-            this.Properties = new Dictionary<string, string>();
+            this.Properties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         public string TargetProjectOrNuSpec { get; set; }
@@ -24,7 +24,7 @@ namespace BauNuGet
 
         public string Version { get; set; }
 
-        public List<string> Exclude { get; set; }
+        public List<string> Exclude { get; private set; }
 
         public bool Symbols { get; set; }
 
@@ -40,7 +40,7 @@ namespace BauNuGet
 
         public bool IncludeReferencedProjects { get; set; }
 
-        public Dictionary<string, string> Properties { get; set; }
+        public Dictionary<string, string> Properties { get; private set; }
 
         public string MiniClientVersion { get; set; }
 
@@ -148,6 +148,22 @@ namespace BauNuGet
             return this;
         }
 
+        public string ExtractVersionString()
+        {
+            if (!string.IsNullOrWhiteSpace(this.Version))
+            {
+                return this.Version;
+            }
+
+            string result = null;
+            if (this.Properties != null)
+            {
+                this.Properties.TryGetValue("VERSION", out result);
+            }
+
+            return result;
+        }
+
         public override void AppendCommandLineOptions(System.Collections.Generic.List<string> arguments)
         {
             // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity
@@ -214,6 +230,14 @@ namespace BauNuGet
                 arguments.Add("-IncludeReferencedProjects");
             }
 
+            if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
+            {
+                arguments.Add("-MinClientVersion \"" + this.MiniClientVersion + "\"");
+            }
+
+            base.AppendCommandLineOptions(arguments);
+
+            // properties should be added last to prevent issues with spaces and other characters
             if (this.Properties != null)
             {
                 var propertyParts = this.Properties
@@ -225,13 +249,6 @@ namespace BauNuGet
                     arguments.Add("-Properties " + string.Join(";", propertyParts));
                 }
             }
-
-            if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
-            {
-                arguments.Add("-MinClientVersion \"" + this.MiniClientVersion + "\"");
-            }
-
-            base.AppendCommandLineOptions(arguments);
         }
     }
 }

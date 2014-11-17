@@ -20,7 +20,7 @@ namespace BauNuGet
             this.Request = new NuGetCliRestoreCommandRequest();
         }
 
-        public NuGetCliRestoreCommandRequest Request { get; set; }
+        public NuGetCliRestoreCommandRequest Request { get; private set; }
 
         public NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
         {
