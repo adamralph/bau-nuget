@@ -6,9 +6,12 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
 
     public abstract class NuGetCliCommandRequestBase
     {
+        private static readonly Regex WhiteSpaceRegex = new Regex(@"\s");
+
         protected NuGetCliCommandRequestBase()
         {
             this.NonInteractive = true;
@@ -34,8 +37,30 @@ namespace BauNuGet
 
             if (!string.IsNullOrWhiteSpace(this.ConfigFile))
             {
-                arguments.Add("-ConfigFile \"" + this.ConfigFile + "\"");
+                arguments.Add("-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile));
             }
+        }
+
+        protected virtual string QuoteWrapCliValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return "\"\"";
+            }
+
+            if (WhiteSpaceRegex.IsMatch(value))
+            {
+                var quotedResult = "\"" + value + "\"";
+                if (quotedResult.EndsWith("\\\""))
+                {
+                    // there are better ways to fix this: http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
+                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\""; // hack: just flip the slash and hope for the best
+                }
+
+                return quotedResult;
+            }
+
+            return value;
         }
     }
 }

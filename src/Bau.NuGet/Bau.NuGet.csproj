@@ -64,6 +64,7 @@
     <Compile Include="NuGetCliDownloadCommandRequestBase.cs" />
     <Compile Include="NuGetCliPackCommandPropertyProvider.cs" />
     <Compile Include="NuGetCliPackCommandRequest.cs" />
+    <Compile Include="NuGetCliPushCommandRequest.cs" />
     <Compile Include="NuGetCliRestoreCommandRequest.cs" />
     <Compile Include="NuGetCliLocator.cs" />
     <Compile Include="NuGetPack.cs" />

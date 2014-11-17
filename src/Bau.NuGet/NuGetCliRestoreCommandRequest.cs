@@ -49,7 +49,7 @@ namespace BauNuGet
         {
             if (!string.IsNullOrWhiteSpace(this.TargetSolutionOrPackagesConfig))
             {
-                argumentBuilder.Add("\"" + this.TargetSolutionOrPackagesConfig + "\"");
+                argumentBuilder.Add(this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig));
             }
 
             if (this.RequireConsent)
@@ -59,12 +59,12 @@ namespace BauNuGet
 
             if (!string.IsNullOrWhiteSpace(this.PackagesDirectory))
             {
-                argumentBuilder.Add("-PackagesDirectory \"" + this.PackagesDirectory + "\"");
+                argumentBuilder.Add("-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory));
             }
 
             if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
             {
-                argumentBuilder.Add("-SolutionDirectory \"" + this.SolutionDirectory + "\"");
+                argumentBuilder.Add("-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory));
             }
 
             base.AppendCommandLineOptions(argumentBuilder);

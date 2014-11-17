@@ -18,7 +18,7 @@ namespace BauNuGet.Test.Unit
     public static class NuGetRestoreFacts
     {        
         [Fact]
-        public static void CanRestorePackages()
+        public static void CanRestorePackagesUsingCli()
         {
             // arrange
             var task = new NuGetRestore()

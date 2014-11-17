@@ -169,30 +169,22 @@ namespace BauNuGet
             // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity
             if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpec))
             {
-                arguments.Add("\"" + this.TargetProjectOrNuSpec + "\"");
+                arguments.Add(this.QuoteWrapCliValue(this.TargetProjectOrNuSpec));
             }
 
             if (!string.IsNullOrWhiteSpace(this.OutputDirectory))
             {
-                arguments.Add("-OutputDirectory \"" + this.OutputDirectory + "\"");
+                arguments.Add("-OutputDirectory " + this.QuoteWrapCliValue(this.OutputDirectory));
             }
 
             if (!string.IsNullOrWhiteSpace(this.BasePath))
             {
-                arguments.Add("-BasePath \"" + this.BasePath + "\"");
+                arguments.Add("-BasePath " + this.QuoteWrapCliValue(this.BasePath));
             }
 
             if (!string.IsNullOrWhiteSpace(this.Version))
             {
-                arguments.Add("-Version \"" + this.Version + "\"");
-            }
-
-            if (this.Exclude != null)
-            {
-                foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
-                {
-                    arguments.Add("-Exclude \"" + exclude + "\"");
-                }
+                arguments.Add("-Version " + this.QuoteWrapCliValue(this.Version));
             }
 
             if (this.Symbols)
@@ -232,7 +224,15 @@ namespace BauNuGet
 
             if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
             {
-                arguments.Add("-MinClientVersion \"" + this.MiniClientVersion + "\"");
+                arguments.Add("-MinClientVersion " + this.QuoteWrapCliValue(this.MiniClientVersion));
+            }
+
+            if (this.Exclude != null)
+            {
+                foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
+                {
+                    arguments.Add("-Exclude " + this.QuoteWrapCliValue(exclude));
+                }
             }
 
             base.AppendCommandLineOptions(arguments);
@@ -244,9 +244,10 @@ namespace BauNuGet
                     .Where(set => !string.IsNullOrWhiteSpace(set.Key))
                     .Select(set => string.Concat(set.Key + "=" + set.Value))
                     .ToList();
+                var propertyPartsJoined = string.Join(";", propertyParts);
                 if (propertyParts.Count > 0)
                 {
-                    arguments.Add("-Properties " + string.Join(";", propertyParts));
+                    arguments.Add("-Properties " + this.QuoteWrapCliValue(propertyPartsJoined));
                 }
             }
         }

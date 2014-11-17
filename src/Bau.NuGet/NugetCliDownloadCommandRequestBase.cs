@@ -55,7 +55,7 @@ namespace BauNuGet
             {
                 foreach (var source in this.Source.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
                 {
-                    argumentBuilder.Add("-Source \"" + source + "\"");
+                    argumentBuilder.Add("-Source " + this.QuoteWrapCliValue(source));
                 }
             }
 
