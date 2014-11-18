@@ -33,12 +33,6 @@ namespace BauNuGet
             return request.WithVerbosity("normal");
         }
 
-        public static T NonInteractive<T>(this T request, bool enabled = true) where T : NuGetCliCommandRequestBase
-        {
-            request.NonInteractive = enabled;
-            return request;
-        }
-
         public static T WithConfigFile<T>(this T request, string configFilePath) where T : NuGetCliCommandRequestBase
         {
             request.ConfigFile = configFilePath;
@@ -47,7 +41,7 @@ namespace BauNuGet
 
         public static T WithSource<T>(this T request, string source) where T : NuGetCliDownloadCommandRequestBase
         {
-            request.AddSource(source);
+            request.Source.Add(source);
             return request;
         }
 

@@ -13,31 +13,21 @@ namespace BauNuGet
         protected NuGetCliDownloadCommandRequestBase()
         {
             this.Source = new List<string>();
+            this.NoCache = false;
+            this.DisableParallelProcessing = false;
         }
 
+        /// <summary>
+        /// Gets a list of the sources that are to be sent to the NuGet command line tool or NuGet.Core .
+        /// </summary>
+        /// <remarks>
+        /// While this property stores multiple sources it has a singular name to match the names used within NuGet.
+        /// </remarks>
         public List<string> Source { get; private set; }
 
         public bool NoCache { get; set; }
 
         public bool DisableParallelProcessing { get; set; }
-
-        public void AddSource(string source)
-        {
-            if (this.Source == null)
-            {
-                this.Source = new List<string>();
-            }
-
-            this.Source.Add(source);
-        }
-
-        public void ClearSources()
-        {
-            if (this.Source != null)
-            {
-                this.Source.Clear();
-            }
-        }
 
         public override void AppendCommandLineOptions(List<string> argumentBuilder)
         {
