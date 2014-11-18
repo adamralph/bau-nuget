@@ -24,10 +24,13 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetPack()
                 .WithWorkingDirectory("./")
                 .UsingCommandLine();
-            var request = task.Request
+            var request = task
                 .For("./pickles.nuspec")
                 .WithVersion("0.1.2-alpha99999")
-                .WithOutputDirectory("./packed");
+                .WithOutputDirectory("./packed")
+                .WithProperty("Unused", "Don't Care")
+                .WithProperty("Authors", "Peter Piper")
+                .WithExclude("poo.p");
 
             NuGetCliLocatorFacts.InstallNuGetCli();
 
@@ -53,7 +56,7 @@ namespace BauNuGet.Test.Unit
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("authors");
-                xmlWriter.WriteString("Peter Piper");
+                xmlWriter.WriteString("$authors$");
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("version");
@@ -104,6 +107,7 @@ namespace BauNuGet.Test.Unit
                 .For("./pickles.nuspec")
                 .WithVersion("0.2.3-core0")
                 .WithOutputDirectory("./packed")
+                .WithProperty("Authors", "Peter Piper")
                 .WithNoPackageAnalysis();
 
             NuGetCliLocatorFacts.InstallNuGetCli();
@@ -130,7 +134,7 @@ namespace BauNuGet.Test.Unit
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("authors");
-                xmlWriter.WriteString("Peter Piper");
+                xmlWriter.WriteString("$authors$");
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("version");

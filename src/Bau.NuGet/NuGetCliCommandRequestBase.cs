@@ -14,12 +14,14 @@ namespace BauNuGet
 
         protected NuGetCliCommandRequestBase()
         {
+            this.Verbosity = null;
             this.NonInteractive = true;
+            this.ConfigFile = null;
         }
 
         public string Verbosity { get; set; }
 
-        public bool NonInteractive { get; set; }
+        public bool NonInteractive { get; private set; }
 
         public string ConfigFile { get; set; }
 
@@ -41,20 +43,35 @@ namespace BauNuGet
             }
         }
 
+        public virtual List<string> CreateCommandLineArguments(params string[] prefixArguments)
+        {
+            var resultArguments = new List<string>();
+            
+            if (prefixArguments != null)
+            {
+                resultArguments.AddRange(prefixArguments);
+            }
+
+            this.AppendCommandLineOptions(resultArguments);
+            return resultArguments;
+        }
+
         protected virtual string QuoteWrapCliValue(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
-                return "\"\"";
+                return "\"\""; // supply something
             }
 
             if (WhiteSpaceRegex.IsMatch(value))
             {
+                // NOTE: single-quotes does not seem to work even though that is a suggested method over double-quotes
                 var quotedResult = "\"" + value + "\"";
+
+                // NOTE: there are better ways to fix this: http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
                 if (quotedResult.EndsWith("\\\""))
                 {
-                    // there are better ways to fix this: http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
-                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\""; // hack: just flip the slash and hope for the best
+                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\""; // HACK: just flip the slash and hope for the best
                 }
 
                 return quotedResult;

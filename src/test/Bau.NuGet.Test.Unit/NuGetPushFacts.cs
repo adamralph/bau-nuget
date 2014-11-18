@@ -29,9 +29,12 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetPush()
                 .WithWorkingDirectory("./")
                 .UsingCommandLine();
-            var request = task.Request
+            var request = task
                 .For(nugetExePackagePath.FullName)
-                .WithSource(nugetFakeFolder.FullName);
+                .WithSource(nugetFakeFolder.FullName)
+                .WithApiKey("poop")
+                .WithTimeout(123)
+                .WithDisableBuffering(false);
 
             if (nugetFakeFolder.Exists)
             {

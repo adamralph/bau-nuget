@@ -24,10 +24,11 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetRestore()
                 .WithWorkingDirectory("./")
                 .UsingCommandLine();
-            var request = task.Request
+            var request = task
                 .For("./restore-test/packages.config")
                 .WithSolutionDirectory("./restore-test")
-                .WithPackagesDirectory("./restore-test/packages");
+                .WithPackagesDirectory("./restore-test/packages")
+                .WithRequiresConsent(false);
 
             NuGetCliLocatorFacts.InstallNuGetCli();
 
