@@ -12,31 +12,11 @@ namespace BauNuGet
     using System.Threading.Tasks;
     using BauCore;
 
-    public class NuGetRestore : NuGetBauTaskBase
+    public class NuGetRestore : NuGetCliBauTaskBase<NuGetCliRestoreCommandRequest>
     {
-        public NuGetRestore()
-        {
-            this.UseCommandLine = true;
-            this.Request = new NuGetCliRestoreCommandRequest();
-        }
-
-        public NuGetCliRestoreCommandRequest Request { get; private set; }
-
         public NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
         {
             return this.Request.For(targetSolutionOrPackagesConfig);
-        }
-
-        protected override void OnActionsExecuted()
-        {
-            if (this.UseCommandLine)
-            {
-                this.ExecuteBasicUsingCommandLine("restore", this.Request);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
         }
     }
 }

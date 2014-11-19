@@ -14,10 +14,17 @@ namespace BauNuGet
 
     public class NuGetCliLocator
     {
+        static NuGetCliLocator()
+        {
+            Default = new NuGetCliLocator();
+        }
+
         public NuGetCliLocator()
         {
             this.LasyNugetCliFileInfo = new Lazy<FileInfo>(this.GetNugetCommandLineAssemblyPath, true);
         }
+
+        public static NuGetCliLocator Default { get; private set; }
 
         private Lazy<FileInfo> LasyNugetCliFileInfo { get; set; }
 
@@ -45,7 +52,7 @@ namespace BauNuGet
 
         public string GetBauNuGetPluginAssemblyPath()
         {
-            var assembly = typeof(NuGetBauTaskBase).Assembly;
+            var assembly = typeof(NuGetCliLocator).Assembly;
             Uri codeBaseUri;
             if (Uri.TryCreate(assembly.CodeBase, UriKind.Absolute, out codeBaseUri))
             {

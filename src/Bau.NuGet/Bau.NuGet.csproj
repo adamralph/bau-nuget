@@ -58,8 +58,10 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="NuGetBasicCommandLineRunner.cs" />
+    <Compile Include="NuGetCliBauTaskBase{TRequest}.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="NuGetBauTaskBase.cs" />
+    <Compile Include="NuGetCliBauTaskBase.cs" />
     <Compile Include="NuGetCliCommandRequestBase.cs" />
     <Compile Include="NuGetCliDownloadCommandRequestBase.cs" />
     <Compile Include="NuGetCliPackCommandPropertyProvider.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="NuGetCliRestoreCommandRequest.cs" />
     <Compile Include="NuGetCliLocator.cs" />
     <Compile Include="NuGetPack.cs" />
+    <Compile Include="NuGetPackCoreRunner.cs" />
     <Compile Include="NuGetPush.cs" />
     <Compile Include="NuGetRestore.cs" />
     <Compile Include="NuGetCliExtensions.cs" />

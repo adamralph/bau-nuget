@@ -52,8 +52,10 @@ namespace BauNuGet
             return this;
         }
 
-        public override void AppendCommandLineOptions(List<string> arguments)
+        public override List<string> CreateCommandLineArguments()
         {
+            var arguments = new List<string> { "push" };
+
             if (!string.IsNullOrWhiteSpace(this.TargetPackage))
             {
                 arguments.Add(this.QuoteWrapCliValue(this.TargetPackage));
@@ -79,7 +81,9 @@ namespace BauNuGet
                 arguments.Add("-Source " + this.QuoteWrapCliValue(this.Source));
             }
 
-            base.AppendCommandLineOptions(arguments);
+            arguments.AddRange(base.CreateCommandLineArguments());
+
+            return arguments;
         }
     }
 }

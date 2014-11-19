@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetBauTaskBaseFacts.cs" company="Bau contributors">
+﻿// <copyright file="NuGetCliBauTaskBaseFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -13,7 +13,7 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetBauTaskBaseFacts
+    public static class NuGetCliBauTaskBaseFacts
     {
     }
 }

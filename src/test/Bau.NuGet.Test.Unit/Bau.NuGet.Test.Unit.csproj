@@ -56,7 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NuGetBauTaskBaseFacts.cs" />
+    <Compile Include="NuGetCliBauTaskBaseFacts.cs" />
     <Compile Include="NuGetCliCommandRequestBaseFacts.cs" />
     <Compile Include="NuGetCliDownloadCommandRequestBaseFacts.cs" />
     <Compile Include="NuGetCliLocatorFacts.cs" />

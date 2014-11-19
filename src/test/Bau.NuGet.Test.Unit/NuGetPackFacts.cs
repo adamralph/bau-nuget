@@ -36,6 +36,7 @@ namespace BauNuGet.Test.Unit
 
             if (Directory.Exists(request.OutputDirectory))
             {
+                Thread.Sleep(500);
                 Directory.Delete(request.OutputDirectory, true);
             }
 
@@ -114,6 +115,7 @@ namespace BauNuGet.Test.Unit
 
             if (Directory.Exists(request.OutputDirectory))
             {
+                Thread.Sleep(500);
                 Directory.Delete(request.OutputDirectory, true);
             }
 

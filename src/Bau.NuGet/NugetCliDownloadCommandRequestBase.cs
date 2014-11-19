@@ -29,27 +29,31 @@ namespace BauNuGet
 
         public bool DisableParallelProcessing { get; set; }
 
-        public override void AppendCommandLineOptions(List<string> argumentBuilder)
+        public override List<string> CreateCommandLineArguments()
         {
+            var arguments = new List<string>();
+
             if (this.NoCache)
             {
-                argumentBuilder.Add("-NoCache");
+                arguments.Add("-NoCache");
             }
 
             if (this.DisableParallelProcessing)
             {
-                argumentBuilder.Add("-DisableParallelProcessing");
+                arguments.Add("-DisableParallelProcessing");
             }
 
             if (null != this.Source)
             {
-                foreach (var source in this.Source.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
-                {
-                    argumentBuilder.Add("-Source " + this.QuoteWrapCliValue(source));
-                }
+                arguments.AddRange(this.Source
+                    .Where(source => !string.IsNullOrWhiteSpace(source))
+                    .Distinct()
+                    .Select(source => "-Source " + this.QuoteWrapCliValue(source)));
             }
 
-            base.AppendCommandLineOptions(argumentBuilder);
+            arguments.AddRange(base.CreateCommandLineArguments());
+
+            return arguments;
         }
     }
 }

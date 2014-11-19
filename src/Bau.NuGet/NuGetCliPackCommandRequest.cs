@@ -164,9 +164,10 @@ namespace BauNuGet
             return result;
         }
 
-        public override void AppendCommandLineOptions(System.Collections.Generic.List<string> arguments)
+        public override List<string> CreateCommandLineArguments()
         {
-            // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity
+            var arguments = new List<string> { "pack" };
+
             if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpec))
             {
                 arguments.Add(this.QuoteWrapCliValue(this.TargetProjectOrNuSpec));
@@ -235,7 +236,7 @@ namespace BauNuGet
                 }
             }
 
-            base.AppendCommandLineOptions(arguments);
+            arguments.AddRange(base.CreateCommandLineArguments());
 
             // properties should be added last to prevent issues with spaces and other characters
             if (this.Properties != null)
@@ -250,6 +251,8 @@ namespace BauNuGet
                     arguments.Add("-Properties " + this.QuoteWrapCliValue(propertyPartsJoined));
                 }
             }
+
+            return arguments;
         }
     }
 }

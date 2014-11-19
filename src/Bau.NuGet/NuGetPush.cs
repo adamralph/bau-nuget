@@ -12,31 +12,11 @@ namespace BauNuGet
     using System.Threading.Tasks;
     using BauCore;
 
-    public class NuGetPush : NuGetBauTaskBase
+    public class NuGetPush : NuGetCliBauTaskBase<NuGetCliPushCommandRequest>
     {
-        public NuGetPush()
-        {
-            this.UseCommandLine = true;
-            this.Request = new NuGetCliPushCommandRequest();
-        }
-
-        public NuGetCliPushCommandRequest Request { get; private set; }
-
         public NuGetCliPushCommandRequest For(string targetPackage)
         {
             return this.Request.For(targetPackage);
-        }
-
-        protected override void OnActionsExecuted()
-        {            
-            if (this.UseCommandLine)
-            {
-                this.ExecuteBasicUsingCommandLine("push", this.Request);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
         }
     }
 }

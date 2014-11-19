@@ -25,10 +25,13 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        public virtual void AppendCommandLineOptions(List<string> arguments)
+        public virtual List<string> CreateCommandLineArguments()
         {
+            var arguments = new List<string>();
+
             if (!string.IsNullOrWhiteSpace(this.Verbosity))
             {
+                // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
                 arguments.Add("-Verbosity " + this.Verbosity);
             }
 
@@ -41,19 +44,8 @@ namespace BauNuGet
             {
                 arguments.Add("-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile));
             }
-        }
 
-        public virtual List<string> CreateCommandLineArguments(params string[] prefixArguments)
-        {
-            var resultArguments = new List<string>();
-            
-            if (prefixArguments != null)
-            {
-                resultArguments.AddRange(prefixArguments);
-            }
-
-            this.AppendCommandLineOptions(resultArguments);
-            return resultArguments;
+            return arguments;
         }
 
         protected virtual string QuoteWrapCliValue(string value)

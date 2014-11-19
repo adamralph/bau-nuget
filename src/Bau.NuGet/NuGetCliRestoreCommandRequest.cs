@@ -5,6 +5,7 @@
 namespace BauNuGet
 {
     using System;
+    using System.Collections.Generic;
 
     public class NuGetCliRestoreCommandRequest : NuGetCliDownloadCommandRequestBase
     {
@@ -45,29 +46,33 @@ namespace BauNuGet
             return this;
         }
 
-        public override void AppendCommandLineOptions(System.Collections.Generic.List<string> argumentBuilder)
+        public override System.Collections.Generic.List<string> CreateCommandLineArguments()
         {
+            var arguments = new List<string> { "restore" };
+
             if (!string.IsNullOrWhiteSpace(this.TargetSolutionOrPackagesConfig))
             {
-                argumentBuilder.Add(this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig));
+                arguments.Add(this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig));
             }
 
             if (this.RequireConsent)
             {
-                argumentBuilder.Add("-RequireConsent");
+                arguments.Add("-RequireConsent");
             }
 
             if (!string.IsNullOrWhiteSpace(this.PackagesDirectory))
             {
-                argumentBuilder.Add("-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory));
+                arguments.Add("-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory));
             }
 
             if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
             {
-                argumentBuilder.Add("-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory));
+                arguments.Add("-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory));
             }
 
-            base.AppendCommandLineOptions(argumentBuilder);
+            arguments.AddRange(base.CreateCommandLineArguments());
+
+            return arguments;
         }
     }
 }
