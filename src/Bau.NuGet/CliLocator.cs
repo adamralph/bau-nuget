@@ -16,14 +16,7 @@ namespace BauNuGet
             Default = new CliLocator();
         }
 
-        public CliLocator()
-        {
-            this.LasyNugetCliFileInfo = new Lazy<FileInfo>(this.GetNugetCommandLineAssemblyPath, true);
-        }
-
         public static CliLocator Default { get; private set; }
-
-        private Lazy<FileInfo> LasyNugetCliFileInfo { get; set; }
 
         public FileInfo GetNugetCommandLineAssemblyPath()
         {
