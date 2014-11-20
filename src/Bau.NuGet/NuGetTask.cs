@@ -11,90 +11,83 @@ namespace BauNuGet
 
     public class NuGetTask : BauTask
     {
-        public NuGetTask()
+        private readonly IList<Command> commands = new List<Command>();
+
+        public IEnumerable<Command> Commands
         {
-            this.Commands = new List<Command>();
+            get { return this.commands.ToArray(); }
         }
 
-        public List<Command> Commands { get; private set; }
-
-        public TCommand Register<TCommand>(TCommand command) where TCommand : Command
+        public TCommand Add<TCommand>(TCommand command) where TCommand : Command
         {
-            Guard.AgainstNullArgument("command", command);
+            if (command != null)
+            {
+                this.commands.Add(command);
+            }
 
-            this.Commands.Add(command);
             return command;
         }
 
-        public Restore Restore(string targetSolutionOrPackagesConfig, Action<Restore> configure = null)
+        public Restore Restore(string solutionOrPackagesConfig, Action<Restore> configure = null)
         {
-            var restore = new Restore()
-                .For(targetSolutionOrPackagesConfig);
-
+            var restore = new Restore().For(solutionOrPackagesConfig);
             if (configure != null)
             {
                 configure(restore);
             }
 
-            return this.Register(restore);
+            return this.Add(restore);
         }
 
-        public IEnumerable<Restore> Restore(IEnumerable<string> fileTargets, Action<Restore> configure = null)
+        public IEnumerable<Restore> Restore(
+            IEnumerable<string> solutionsOrPackagesConfigs, Action<Restore> configure = null)
         {
-            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            Guard.AgainstNullArgument("solutionsOrPackagesConfigs", solutionsOrPackagesConfigs);
 
-            var commands = fileTargets.Select(fileTarget => this.Restore(fileTarget, configure));
-            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
+            return solutionsOrPackagesConfigs
+                .Select(solutionOrPackagesConfig => this.Restore(solutionOrPackagesConfig, configure))
+                .ToArray();
         }
 
-        public Pack Pack(string targetProjectOrNuSpec, Action<Pack> configure = null)
+        public Pack Pack(string projectOrNuSpec, Action<Pack> configure = null)
         {
-            var pack = new Pack()
-                .For(targetProjectOrNuSpec);
-
+            var pack = new Pack().For(projectOrNuSpec);
             if (configure != null)
             {
                 configure(pack);
             }
 
-            return this.Register(pack);
+            return this.Add(pack);
         }
 
-        public IEnumerable<Pack> Pack(IEnumerable<string> fileTargets, Action<Pack> configure = null)
+        public IEnumerable<Pack> Pack(IEnumerable<string> projectsOrNuSpecs, Action<Pack> configure = null)
         {
-            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            Guard.AgainstNullArgument("projectsOrNuSpecs", projectsOrNuSpecs);
 
-            var commands = fileTargets.Select(fileTarget => this.Pack(fileTarget, configure));
-            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
+            return projectsOrNuSpecs.Select(projectOrNuSpec => this.Pack(projectOrNuSpec, configure)).ToArray();
         }
 
-        public Push Push(string targetPackage, Action<Push> configure = null)
+        public Push Push(string package, Action<Push> configure = null)
         {
-            var push = new Push()
-                .For(targetPackage);
-
+            var push = new Push().For(package);
             if (configure != null)
             {
                 configure(push);
             }
 
-            return this.Register(push);
+            return this.Add(push);
         }
 
-        public IEnumerable<Push> Push(IEnumerable<string> fileTargets, Action<Push> configure = null)
+        public IEnumerable<Push> Push(IEnumerable<string> packages, Action<Push> configure = null)
         {
-            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            Guard.AgainstNullArgument("packages", packages);
 
-            var commands = fileTargets.Select(fileTarget => this.Push(fileTarget, configure));
-            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
+            return packages.Select(package => this.Push(package, configure)).ToArray();
         }
 
         protected override void OnActionsExecuted()
         {
-            var processStartInfos = this.Commands
-                .Where(command => command != null)
-                .Select(command => command.CreateProcessStartInfo());
-            foreach (var processStartInfo in processStartInfos)
+            foreach (var processStartInfo in this.commands.Select(command => command.CreateProcessStartInfo()))
             {
                 processStartInfo.Run();
             }
