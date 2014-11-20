@@ -22,8 +22,7 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var task = new NuGetRestore()
-                .WithWorkingDirectory("./")
-                .UsingCommandLine();
+                .WithWorkingDirectory("./");
             var request = task
                 .For("./restore-test/packages.config")
                 .WithSolutionDirectory("./restore-test")

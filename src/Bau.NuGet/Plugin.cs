@@ -28,11 +28,5 @@ namespace BauNuGet
             task.WorkingDirectory = workingDirectory;
             return task;
         }
-
-        public static TTask UsingCommandLine<TTask>(this TTask task, bool enabled = true) where TTask : NuGetCliBauTaskBase
-        {
-            task.UseCommandLine = enabled;
-            return task;
-        }
     }
 }

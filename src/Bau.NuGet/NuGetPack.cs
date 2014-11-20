@@ -11,27 +11,12 @@ namespace BauNuGet
     using System.Text;
     using System.Threading.Tasks;
     using BauCore;
-    using NuGet;
 
     public class NuGetPack : NuGetCliBauTaskBase<NuGetCliPackCommandRequest>
     {
         public NuGetCliPackCommandRequest For(string targetProjectOrNuSpec)
         {
             return this.Request.For(targetProjectOrNuSpec);
-        }
-
-        protected override void OnActionsExecuted()
-        {
-            if (this.UseCommandLine)
-            {
-                this.ExecuteUsingCommandLine();
-            }
-            else
-            {
-                var coreRunner = new NuGetPackCoreRunner(this.Request)
-                    .WithWorkingDirectory(this.WorkingDirectory);
-                coreRunner.Execute();
-            }
         }
     }
 }

@@ -27,8 +27,7 @@ namespace BauNuGet.Test.Unit
             var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
             var task = new NuGetPush()
-                .WithWorkingDirectory("./")
-                .UsingCommandLine();
+                .WithWorkingDirectory("./");
             var request = task
                 .For(nugetExePackagePath.FullName)
                 .WithSource(nugetFakeFolder.FullName)
