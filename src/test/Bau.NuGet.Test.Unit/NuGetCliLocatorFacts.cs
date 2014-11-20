@@ -49,12 +49,13 @@ namespace BauNuGet.Test.Unit
 
         internal static void InstallNuGetCli()
         {
+            Thread.Sleep(100);
             var processStartInfo = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "scriptcs", // hope it is on the PATH
+                FileName = "scriptcs", // NOTE: requires scriptcs to be on the PATH
                 Arguments = "-install NuGet.CommandLine",
                 UseShellExecute = false,
-                WorkingDirectory = Path.GetDirectoryName(typeof(NuGetCliLocator).Assembly.Location)
+                WorkingDirectory = "./"
             };
             processStartInfo.Run();
         }
