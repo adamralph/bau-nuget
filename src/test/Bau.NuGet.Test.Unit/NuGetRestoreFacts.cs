@@ -21,9 +21,9 @@ namespace BauNuGet.Test.Unit
         public static void CanRestorePackagesUsingCli()
         {
             // arrange
-            var task = new NuGetRestore();
+            var task = new NuGetTask();
             var request = task
-                .For("./restore-test/packages.config")
+                .Restore("./restore-test/packages.config")
                 .WithWorkingDirectory("./")
                 .WithSolutionDirectory("./restore-test")
                 .WithPackagesDirectory("./restore-test/packages")

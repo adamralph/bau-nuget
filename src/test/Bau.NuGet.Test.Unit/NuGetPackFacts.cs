@@ -21,9 +21,9 @@ namespace BauNuGet.Test.Unit
         public static void CanPackPackageUsingCli()
         {
             // arrange
-            var task = new NuGetPack();
+            var task = new NuGetTask();
             var request = task
-                .For("./pickles.nuspec")
+                .Pack("./pickles.nuspec")
                 .WithWorkingDirectory("./")
                 .WithVersion("0.1.2-alpha99999")
                 .WithOutputDirectory("./packed")

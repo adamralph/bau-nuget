@@ -48,19 +48,15 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="NuGetCliBauTaskBase{TRequest}.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="NuGetCliBauTaskBase.cs" />
     <Compile Include="NuGetCliCommandRequestBase.cs" />
     <Compile Include="NuGetCliDownloadCommandRequestBase.cs" />
     <Compile Include="NuGetCliPackCommandRequest.cs" />
     <Compile Include="NuGetCliPushCommandRequest.cs" />
     <Compile Include="NuGetCliRestoreCommandRequest.cs" />
     <Compile Include="NuGetCliLocator.cs" />
-    <Compile Include="NuGetPack.cs" />
-    <Compile Include="NuGetPush.cs" />
-    <Compile Include="NuGetRestore.cs" />
     <Compile Include="NuGetCliExtensions.cs" />
+    <Compile Include="NuGetTask.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
