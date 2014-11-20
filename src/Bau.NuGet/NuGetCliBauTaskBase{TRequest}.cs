@@ -10,6 +10,7 @@ namespace BauNuGet
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using BauCore;
 
     public abstract class NuGetCliBauTaskBase<TRequest> : NuGetCliBauTaskBase where TRequest : NuGetCliCommandRequestBase, new()
     {
@@ -36,7 +37,9 @@ namespace BauNuGet
         {
             var runner = new NuGetBasicCommandLineRunner()
                 .WithWorkingDirectory(this.WorkingDirectory);
-            runner.Execute(this.Request);
+            runner
+                .CreateProcessStartInfo(this.Request)
+                .Run();
             return runner;
         }
     }
