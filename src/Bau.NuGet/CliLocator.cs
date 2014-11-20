@@ -28,7 +28,7 @@ namespace BauNuGet
         public FileInfo GetNugetCommandLineAssemblyPath()
         {
             var searchStartDirectories = new List<DirectoryInfo>();
-            
+
             var assemblyLocation = new FileInfo(this.GetBauNuGetPluginAssemblyPath());
             if (assemblyLocation.Directory != null)
             {

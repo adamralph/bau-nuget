@@ -44,7 +44,7 @@ namespace BauNuGet.Test.Unit
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
                 xmlWriter.WriteStartElement("metadata");
-                
+
                 xmlWriter.WriteStartElement("id");
                 xmlWriter.WriteString("pickles");
                 xmlWriter.WriteEndElement();
