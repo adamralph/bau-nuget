@@ -22,17 +22,5 @@ namespace BauNuGet
         {
             return new TaskBuilder<NuGetRestore>(builder, name);
         }
-
-        public static TTask WithWorkingDirectory<TTask>(this TTask task, string workingDirectory) where TTask : NuGetCliBauTaskBase
-        {
-            task.WorkingDirectory = workingDirectory;
-            return task;
-        }
-
-        public static TTask UsingCommandLine<TTask>(this TTask task, bool enabled = true) where TTask : NuGetCliBauTaskBase
-        {
-            task.UseCommandLine = enabled;
-            return task;
-        }
     }
 }

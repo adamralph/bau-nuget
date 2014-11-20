@@ -23,24 +23,7 @@ namespace BauNuGet
 
         protected override void OnActionsExecuted()
         {
-            if (this.UseCommandLine)
-            {
-                this.ExecuteUsingCommandLine();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        protected virtual NuGetBasicCommandLineRunner ExecuteUsingCommandLine()
-        {
-            var runner = new NuGetBasicCommandLineRunner()
-                .WithWorkingDirectory(this.WorkingDirectory);
-            runner
-                .CreateProcessStartInfo(this.Request)
-                .Run();
-            return runner;
+            this.Request.CreateProcessStartInfo().Run();
         }
     }
 }

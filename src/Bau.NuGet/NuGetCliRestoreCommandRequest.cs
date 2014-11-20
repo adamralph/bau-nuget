@@ -46,7 +46,7 @@ namespace BauNuGet
             return this;
         }
 
-        public override System.Collections.Generic.List<string> CreateCommandLineArguments()
+        public override List<string> CreateCommandLineArguments()
         {
             var arguments = new List<string> { "restore" };
 

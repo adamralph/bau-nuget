@@ -26,11 +26,10 @@ namespace BauNuGet.Test.Unit
             var nugetExePath = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
             var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
-            var task = new NuGetPush()
-                .WithWorkingDirectory("./")
-                .UsingCommandLine();
+            var task = new NuGetPush();
             var request = task
                 .For(nugetExePackagePath.FullName)
+                .WithWorkingDirectory("./")
                 .WithSource(nugetFakeFolder.FullName)
                 .WithApiKey("poop")
                 .WithTimeout(123)
@@ -43,7 +42,7 @@ namespace BauNuGet.Test.Unit
             }
 
             nugetFakeFolder.Create();
-            Thread.Sleep(1250);
+            Thread.Sleep(100);
 
             // act
             task.Execute();

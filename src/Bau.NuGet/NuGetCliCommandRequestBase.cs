@@ -6,6 +6,8 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
     using System.Text.RegularExpressions;
 
     public abstract class NuGetCliCommandRequestBase
@@ -14,10 +16,16 @@ namespace BauNuGet
 
         protected NuGetCliCommandRequestBase()
         {
+            this.WorkingDirectory = null;
+            this.NuGetExePathOverride = null;
             this.Verbosity = null;
             this.NonInteractive = true;
             this.ConfigFile = null;
         }
+
+        public string WorkingDirectory { get; set; }
+
+        public string NuGetExePathOverride { get; set; }
 
         public string Verbosity { get; set; }
 
@@ -46,6 +54,20 @@ namespace BauNuGet
             }
 
             return arguments;
+        }
+
+        public virtual ProcessStartInfo CreateProcessStartInfo()
+        {
+            return new ProcessStartInfo
+            {
+                FileName = this.NuGetExePathOverride
+                    ?? NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
+                Arguments = string.Join(" ", this.CreateCommandLineArguments()),
+                WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
+                    ? Path.GetFullPath(this.WorkingDirectory)
+                    : Directory.GetCurrentDirectory(),
+                UseShellExecute = false
+            };
         }
 
         protected virtual string QuoteWrapCliValue(string value)

@@ -11,6 +11,7 @@ namespace BauNuGet.Test.Unit
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using BauCore;
     using FluentAssertions;
     using Xunit;
     using Xunit.Extensions;
@@ -48,17 +49,15 @@ namespace BauNuGet.Test.Unit
 
         internal static void InstallNuGetCli()
         {
-            var currentDirectory = Path.GetDirectoryName(typeof(NuGetCliLocator).Assembly.Location);
+            Thread.Sleep(100);
             var processStartInfo = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "scriptcs", // hope it is on the PATH
+                FileName = "scriptcs", // NOTE: requires scriptcs to be on the PATH
                 Arguments = "-install NuGet.CommandLine",
                 UseShellExecute = false,
-                WorkingDirectory = currentDirectory
+                WorkingDirectory = "./"
             };
-            var installResult = System.Diagnostics.Process.Start(processStartInfo);
-            installResult.WaitForExit();
-            installResult.ExitCode.Should().Be(0);
+            processStartInfo.Run();
         }
     }
 }
