@@ -79,51 +79,47 @@ namespace BauNuGet
             return this;
         }
 
-        protected override IList<string> CreateCommandLineArguments()
+        protected override IEnumerable<string> CreateCommandLineArguments()
         {
-            var arguments = new List<string> { "restore" };
+            yield return "restore";
 
             if (!string.IsNullOrWhiteSpace(this.TargetSolutionOrPackagesConfig))
             {
-                arguments.Add(this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig));
+                yield return this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig);
             }
 
             if (this.RequireConsent)
             {
-                arguments.Add("-RequireConsent");
+                yield return "-RequireConsent";
             }
 
             if (!string.IsNullOrWhiteSpace(this.PackagesDirectory))
             {
-                arguments.Add("-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory));
+                yield return "-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory);
             }
 
             if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
             {
-                arguments.Add("-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory));
+                yield return "-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory);
             }
 
             if (this.NoCache)
             {
-                arguments.Add("-NoCache");
+                yield return "-NoCache";
             }
 
             if (this.DisableParallelProcessing)
             {
-                arguments.Add("-DisableParallelProcessing");
+                yield return "-DisableParallelProcessing";
             }
 
             if (null != this.Source)
             {
-                arguments.AddRange(this.Source
-                    .Where(source => !string.IsNullOrWhiteSpace(source))
-                    .Distinct()
-                    .Select(source => "-Source " + this.QuoteWrapCliValue(source)));
+                foreach (var source in this.Source.Where(source => !string.IsNullOrWhiteSpace(source)).Distinct())
+                {
+                    yield return "-Source " + this.QuoteWrapCliValue(source);
+                }
             }
-
-            arguments.AddRange(base.CreateCommandLineArguments());
-
-            return arguments;
         }
     }
 }

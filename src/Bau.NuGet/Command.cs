@@ -6,6 +6,7 @@ namespace BauNuGet
 {
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public abstract class Command
@@ -31,41 +32,20 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        public virtual ProcessStartInfo CreateProcessStartInfo()
+        public ProcessStartInfo CreateProcessStartInfo()
         {
             return new ProcessStartInfo
             {
                 FileName = this.NuGetExePathOverride ?? CliLocator.Default.GetNugetCommandLineAssemblyPath(),
-                Arguments = string.Join(" ", this.CreateCommandLineArguments()),
+                Arguments = string.Join(" ", this.CreateAllCommandLineArguments()),
                 WorkingDirectory = this.WorkingDirectory,
                 UseShellExecute = false
             };
         }
 
-        protected virtual IList<string> CreateCommandLineArguments()
-        {
-            var arguments = new List<string>();
+        protected abstract IEnumerable<string> CreateCommandLineArguments();
 
-            if (!string.IsNullOrWhiteSpace(this.Verbosity))
-            {
-                // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
-                arguments.Add("-Verbosity " + this.Verbosity);
-            }
-
-            if (this.NonInteractive)
-            {
-                arguments.Add("-NonInteractive");
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.ConfigFile))
-            {
-                arguments.Add("-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile));
-            }
-
-            return arguments;
-        }
-
-        protected virtual string QuoteWrapCliValue(string value)
+        protected string QuoteWrapCliValue(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -89,6 +69,30 @@ namespace BauNuGet
             }
 
             return value;
+        }
+
+        private IEnumerable<string> CreateAllCommandLineArguments()
+        {
+            foreach (var argument in this.CreateCommandLineArguments())
+            {
+                yield return argument;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Verbosity))
+            {
+                // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
+                yield return "-Verbosity " + this.Verbosity;
+            }
+
+            if (this.NonInteractive)
+            {
+                yield return "-NonInteractive";
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.ConfigFile))
+            {
+                yield return "-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile);
+            }
         }
     }
 }

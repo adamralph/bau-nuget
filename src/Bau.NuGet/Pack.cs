@@ -164,79 +164,77 @@ namespace BauNuGet
             return result;
         }
 
-        protected override IList<string> CreateCommandLineArguments()
+        protected override IEnumerable<string> CreateCommandLineArguments()
         {
-            var arguments = new List<string> { "pack" };
+            yield return "pack";
 
             if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpec))
             {
-                arguments.Add(this.QuoteWrapCliValue(this.TargetProjectOrNuSpec));
+                yield return this.QuoteWrapCliValue(this.TargetProjectOrNuSpec);
             }
 
             if (!string.IsNullOrWhiteSpace(this.OutputDirectory))
             {
-                arguments.Add("-OutputDirectory " + this.QuoteWrapCliValue(this.OutputDirectory));
+                yield return "-OutputDirectory " + this.QuoteWrapCliValue(this.OutputDirectory);
             }
 
             if (!string.IsNullOrWhiteSpace(this.BasePath))
             {
-                arguments.Add("-BasePath " + this.QuoteWrapCliValue(this.BasePath));
+                yield return "-BasePath " + this.QuoteWrapCliValue(this.BasePath);
             }
 
             if (!string.IsNullOrWhiteSpace(this.Version))
             {
-                arguments.Add("-Version " + this.QuoteWrapCliValue(this.Version));
+                yield return "-Version " + this.QuoteWrapCliValue(this.Version);
             }
 
             if (this.Symbols)
             {
-                arguments.Add("-Symbols");
+                yield return "-Symbols";
             }
 
             if (this.Tool)
             {
-                arguments.Add("-Tool");
+                yield return "-Tool";
             }
 
             if (this.Build)
             {
-                arguments.Add("-Build");
+                yield return "-Build";
             }
 
             if (this.NoDefaultExcludes)
             {
-                arguments.Add("-NoDefaultExcludes");
+                yield return "-NoDefaultExcludes";
             }
 
             if (this.NoPackageAnalysis)
             {
-                arguments.Add("-NoPackageAnalysis");
+                yield return "-NoPackageAnalysis";
             }
 
             if (this.ExcludeEmptyDirectories)
             {
-                arguments.Add("-ExcludeEmptyDirectories");
+                yield return "-ExcludeEmptyDirectories";
             }
 
             if (this.IncludeReferencedProjects)
             {
-                arguments.Add("-IncludeReferencedProjects");
+                yield return "-IncludeReferencedProjects";
             }
 
             if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
             {
-                arguments.Add("-MinClientVersion " + this.QuoteWrapCliValue(this.MiniClientVersion));
+                yield return "-MinClientVersion " + this.QuoteWrapCliValue(this.MiniClientVersion);
             }
 
             if (this.Exclude != null)
             {
                 foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
                 {
-                    arguments.Add("-Exclude " + this.QuoteWrapCliValue(exclude));
+                    yield return "-Exclude " + this.QuoteWrapCliValue(exclude);
                 }
             }
-
-            arguments.AddRange(base.CreateCommandLineArguments());
 
             // properties should be added last to prevent issues with spaces and other characters
             if (this.Properties != null)
@@ -248,11 +246,9 @@ namespace BauNuGet
                 var propertyPartsJoined = string.Join(";", propertyParts);
                 if (propertyParts.Count > 0)
                 {
-                    arguments.Add("-Properties " + this.QuoteWrapCliValue(propertyPartsJoined));
+                    yield return "-Properties " + this.QuoteWrapCliValue(propertyPartsJoined);
                 }
             }
-
-            return arguments;
         }
     }
 }

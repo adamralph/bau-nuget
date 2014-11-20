@@ -5,6 +5,7 @@
 namespace BauNuGet.Test.Unit
 {
     using System;
+    using System.Collections.Generic;
     using FluentAssertions;
     using Xunit;
 
@@ -99,6 +100,10 @@ namespace BauNuGet.Test.Unit
 
         private class DummyCommand : Command
         {
+            protected override IEnumerable<string> CreateCommandLineArguments()
+            {
+                yield break;
+            }
         }
     }
 }

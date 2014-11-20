@@ -48,38 +48,34 @@ namespace BauNuGet
             return this;
         }
 
-        protected override IList<string> CreateCommandLineArguments()
+        protected override IEnumerable<string> CreateCommandLineArguments()
         {
-            var arguments = new List<string> { "push" };
+            yield return "push";
 
             if (!string.IsNullOrWhiteSpace(this.TargetPackage))
             {
-                arguments.Add(this.QuoteWrapCliValue(this.TargetPackage));
+                yield return this.QuoteWrapCliValue(this.TargetPackage);
             }
 
             if (!string.IsNullOrWhiteSpace(this.ApiKey))
             {
-                arguments.Add(this.ApiKey);
+                yield return this.ApiKey;
             }
 
             if (this.Timeout.HasValue)
             {
-                arguments.Add("-Timeout " + this.Timeout.Value);
+                yield return "-Timeout " + this.Timeout.Value;
             }
 
             if (this.DisableBuffering)
             {
-                arguments.Add("-DisableBuffering");
+                yield return "-DisableBuffering";
             }
 
             if (!string.IsNullOrWhiteSpace(this.Source))
             {
-                arguments.Add("-Source " + this.QuoteWrapCliValue(this.Source));
+                yield return "-Source " + this.QuoteWrapCliValue(this.Source);
             }
-
-            arguments.AddRange(base.CreateCommandLineArguments());
-
-            return arguments;
         }
     }
 }
