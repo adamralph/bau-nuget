@@ -11,12 +11,12 @@ namespace BauNuGet
 
     public class CliLocator
     {
-        static CliLocator()
-        {
-            Default = new CliLocator();
-        }
+        private static readonly CliLocator @default = new CliLocator();
 
-        public static CliLocator Default { get; private set; }
+        public static CliLocator Default
+        {
+            get { return @default; }
+        }
 
         public FileInfo GetNugetCommandLineAssemblyPath()
         {
