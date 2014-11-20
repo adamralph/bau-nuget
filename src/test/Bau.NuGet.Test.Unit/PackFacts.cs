@@ -22,7 +22,7 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var task = new NuGetTask();
-            var request = task
+            var pack = task
                 .Pack("./pickles.nuspec")
                 .WithWorkingDirectory("./")
                 .WithVersion("0.1.2-alpha99999")
@@ -31,18 +31,18 @@ namespace BauNuGet.Test.Unit
                 .WithProperty("Authors", "Peter Piper")
                 .WithExclude("poo.p");
 
-            if (Directory.Exists(request.OutputDirectory))
+            if (Directory.Exists(pack.OutputDirectory))
             {
                 Thread.Sleep(500);
-                Directory.Delete(request.OutputDirectory, true);
+                Directory.Delete(pack.OutputDirectory, true);
             }
 
-            using (var pickes = File.CreateText(Path.Combine(Path.GetDirectoryName(request.TargetProjectOrNuSpec), "pickles.txt")))
+            using (var pickes = File.CreateText(Path.Combine(Path.GetDirectoryName(pack.TargetProjectOrNuSpec), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }
 
-            using (var nuspecStream = File.CreateText(request.TargetProjectOrNuSpec))
+            using (var nuspecStream = File.CreateText(pack.TargetProjectOrNuSpec))
             using (var xmlWriter = System.Xml.XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
@@ -84,18 +84,18 @@ namespace BauNuGet.Test.Unit
                 xmlWriter.WriteEndElement();
             }
 
-            Directory.CreateDirectory(request.OutputDirectory);
+            Directory.CreateDirectory(pack.OutputDirectory);
             Thread.Sleep(100);
 
             // act
             task.Execute();
 
             // assert
-            File.Exists(Path.Combine(request.OutputDirectory, "pickles." + request.Version + ".nupkg")).Should().BeTrue();
+            File.Exists(Path.Combine(pack.OutputDirectory, "pickles." + pack.Version + ".nupkg")).Should().BeTrue();
         }
 
         [Fact]
-        public static void CanCreateMultiplePackRequests()
+        public static void CanCreateMultiplePackCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -109,11 +109,11 @@ namespace BauNuGet.Test.Unit
                     .WithTool());
 
             // assert
-            task.Requests.Should().HaveCount(2);
-            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
-            task.Requests.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
-            task.Requests.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
+            task.Commands.Should().HaveCount(2);
+            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
+            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
+            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
         }
     }
 }

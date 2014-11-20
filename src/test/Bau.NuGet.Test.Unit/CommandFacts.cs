@@ -21,13 +21,13 @@ namespace BauNuGet.Test.Unit
         public static void PropertyVerbosityCli()
         {
             // arrange
-            var defaultRequest = new DummyRequest();
-            var abusedRequest = new DummyRequest();
+            var defaultCommand = new DummyCommand();
+            var abusedCommand = new DummyCommand();
             var levels = new[] { "normal", "quiet", "detailed" };
 
             // act
-            var defaultCommandLineArgs = defaultRequest.CreateCommandLineArguments();
-            var commandLines = Array.ConvertAll(levels, level => abusedRequest.WithVerbosity(level).CreateCommandLineArguments());
+            var defaultCommandLineArgs = defaultCommand.CreateCommandLineArguments();
+            var commandLines = Array.ConvertAll(levels, level => abusedCommand.WithVerbosity(level).CreateCommandLineArguments());
             
             // assert
             defaultCommandLineArgs.Any(x => x.StartsWith("-Verbosity")).Should().BeFalse();
@@ -41,19 +41,19 @@ namespace BauNuGet.Test.Unit
         public static void PropertyVerbosityFluent()
         {
             // arrange
-            var request = new DummyRequest();
-            var normal = new DummyRequest();
-            var quiet = new DummyRequest();
-            var detailed = new DummyRequest();
+            var command = new DummyCommand();
+            var normal = new DummyCommand();
+            var quiet = new DummyCommand();
+            var detailed = new DummyCommand();
 
             // act
-            request.WithVerbosity("Grumbling");
+            command.WithVerbosity("Grumbling");
             normal.WithVerbosityNormal();
             quiet.WithVerbosityQuiet();
             detailed.WithVerbosityDetailed();
 
             // assert
-            request.Verbosity.Should().Be("Grumbling");
+            command.Verbosity.Should().Be("Grumbling");
             Assert.Equal("Normal", normal.Verbosity, StringComparer.OrdinalIgnoreCase);
             Assert.Equal("Quiet", quiet.Verbosity, StringComparer.OrdinalIgnoreCase);
             Assert.Equal("Detailed", detailed.Verbosity, StringComparer.OrdinalIgnoreCase);
@@ -63,7 +63,7 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNonInteractiveCli()
         {
             // arrange
-            var normal = new DummyRequest();
+            var normal = new DummyCommand();
 
             // act
             var normalArgs = normal.CreateCommandLineArguments();
@@ -76,8 +76,8 @@ namespace BauNuGet.Test.Unit
         public static void PropertyConfigFileCli()
         {
             // arrange
-            var normal = new DummyRequest();
-            var modified = new DummyRequest();
+            var normal = new DummyCommand();
+            var modified = new DummyCommand();
             modified.ConfigFile = "poo.p";
 
             // act
@@ -93,8 +93,8 @@ namespace BauNuGet.Test.Unit
         public static void PropertyConfigFileFluent()
         {
             // arrange
-            var normal = new DummyRequest();
-            var modified = new DummyRequest();
+            var normal = new DummyCommand();
+            var modified = new DummyCommand();
 
             // act
             modified.WithConfigFile("poo.p");
@@ -104,7 +104,7 @@ namespace BauNuGet.Test.Unit
             modified.ConfigFile.Should().Be("poo.p");
         }
 
-        private class DummyRequest : Command
+        private class DummyCommand : Command
         {
         }
     }

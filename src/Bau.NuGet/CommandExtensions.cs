@@ -12,43 +12,43 @@ namespace BauNuGet
 
     public static class CommandExtensions
     {
-        public static T WithWorkingDirectory<T>(this T request, string workingDirectory) where T : Command
+        public static T WithWorkingDirectory<T>(this T command, string workingDirectory) where T : Command
         {
-            request.WorkingDirectory = workingDirectory;
-            return request;
+            command.WorkingDirectory = workingDirectory;
+            return command;
         }
 
-        public static T WithNuGetExePathOverride<T>(this T request, string nugetExePath) where T : Command
+        public static T WithNuGetExePathOverride<T>(this T command, string nugetExePath) where T : Command
         {
-            request.NuGetExePathOverride = nugetExePath;
-            return request;
+            command.NuGetExePathOverride = nugetExePath;
+            return command;
         }
 
-        public static T WithVerbosity<T>(this T request, string verbosity) where T : Command
+        public static T WithVerbosity<T>(this T command, string verbosity) where T : Command
         {
-            request.Verbosity = verbosity;
-            return request;
+            command.Verbosity = verbosity;
+            return command;
         }
 
-        public static T WithVerbosityDetailed<T>(this T request) where T : Command
+        public static T WithVerbosityDetailed<T>(this T command) where T : Command
         {
-            return request.WithVerbosity("detailed");
+            return command.WithVerbosity("detailed");
         }
 
-        public static T WithVerbosityQuiet<T>(this T request) where T : Command
+        public static T WithVerbosityQuiet<T>(this T command) where T : Command
         {
-            return request.WithVerbosity("quiet");
+            return command.WithVerbosity("quiet");
         }
 
-        public static T WithVerbosityNormal<T>(this T request) where T : Command
+        public static T WithVerbosityNormal<T>(this T command) where T : Command
         {
-            return request.WithVerbosity("normal");
+            return command.WithVerbosity("normal");
         }
 
-        public static T WithConfigFile<T>(this T request, string configFilePath) where T : Command
+        public static T WithConfigFile<T>(this T command, string configFilePath) where T : Command
         {
-            request.ConfigFile = configFilePath;
-            return request;
+            command.ConfigFile = configFilePath;
+            return command;
         }
     }
 }

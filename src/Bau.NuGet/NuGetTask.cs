@@ -16,29 +16,29 @@ namespace BauNuGet
     {
         public NuGetTask()
         {
-            this.Requests = new List<Command>();
+            this.Commands = new List<Command>();
         }
 
-        public List<Command> Requests { get; private set; }
+        public List<Command> Commands { get; private set; }
 
-        public TRequest Register<TRequest>(TRequest request) where TRequest : Command
+        public TCommand Register<TCommand>(TCommand command) where TCommand : Command
         {
-            Guard.AgainstNullArgument("request", request);
-            this.Requests.Add(request);
-            return request;
+            Guard.AgainstNullArgument("command", command);
+            this.Commands.Add(command);
+            return command;
         }
 
         public Restore Restore(string targetSolutionOrPackagesConfig, Action<Restore> configure = null)
         {
-            var request = new Restore()
+            var restore = new Restore()
                 .For(targetSolutionOrPackagesConfig);
 
             if (configure != null)
             {
-                configure(request);
+                configure(restore);
             }
 
-            return this.Register(request);
+            return this.Register(restore);
         }
 
         public IEnumerable<Restore> Restore(IEnumerable<string> fileTargets, Action<Restore> configure = null)
@@ -50,15 +50,15 @@ namespace BauNuGet
 
         public Pack Pack(string targetProjectOrNuSpec, Action<Pack> configure = null)
         {
-            var request = new Pack()
+            var pack = new Pack()
                 .For(targetProjectOrNuSpec);
 
             if (configure != null)
             {
-                configure(request);
+                configure(pack);
             }
 
-            return this.Register(request);
+            return this.Register(pack);
         }
 
         public IEnumerable<Pack> Pack(IEnumerable<string> fileTargets, Action<Pack> configure = null)
@@ -70,15 +70,15 @@ namespace BauNuGet
 
         public Push Push(string targetPackage, Action<Push> configure = null)
         {
-            var request = new Push()
+            var push = new Push()
                 .For(targetPackage);
 
             if (configure != null)
             {
-                configure(request);
+                configure(push);
             }
 
-            return this.Register(request);
+            return this.Register(push);
         }
 
         public IEnumerable<Push> Push(IEnumerable<string> fileTargets, Action<Push> configure = null)
@@ -90,9 +90,9 @@ namespace BauNuGet
 
         protected override void OnActionsExecuted()
         {
-            var processStartInfos = this.Requests
-                .Where(request => request != null)
-                .Select(request => request.CreateProcessStartInfo());
+            var processStartInfos = this.Commands
+                .Where(command => command != null)
+                .Select(command => command.CreateProcessStartInfo());
             foreach (var processStartInfo in processStartInfos)
             {
                 processStartInfo.Run();

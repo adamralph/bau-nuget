@@ -22,43 +22,43 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var task = new NuGetTask();
-            var request = task
+            var restore = task
                 .Restore("./restore-test/packages.config")
                 .WithWorkingDirectory("./")
                 .WithSolutionDirectory("./restore-test")
                 .WithPackagesDirectory("./restore-test/packages")
                 .WithRequiresConsent(false);
 
-            if (!Directory.Exists(request.SolutionDirectory))
+            if (!Directory.Exists(restore.SolutionDirectory))
             {
-                Directory.CreateDirectory(request.SolutionDirectory);
+                Directory.CreateDirectory(restore.SolutionDirectory);
             }
 
-            if (Directory.Exists(request.PackagesDirectory))
+            if (Directory.Exists(restore.PackagesDirectory))
             {
                 Thread.Sleep(100);
-                Directory.Delete(request.PackagesDirectory, true);
+                Directory.Delete(restore.PackagesDirectory, true);
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(request.TargetSolutionOrPackagesConfig))
+            using (var packagesFileStream = File.CreateText(restore.TargetSolutionOrPackagesConfig))
             {
                 packagesFileStream.Write("<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
             }
 
-            Directory.Exists(request.PackagesDirectory).Should().BeFalse();
-            File.Exists(Path.Combine(request.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeFalse();
+            Directory.Exists(restore.PackagesDirectory).Should().BeFalse();
+            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeFalse();
 
             // act
             task.Execute();
 
             // assert
-            Directory.Exists(request.PackagesDirectory).Should().BeTrue();
-            File.Exists(Path.Combine(request.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeTrue();
+            Directory.Exists(restore.PackagesDirectory).Should().BeTrue();
+            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeTrue();
         }
 
         [Fact]
-        public static void CanCreateMultipleRestoreRequests()
+        public static void CanCreateMultipleRestoreCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -72,11 +72,11 @@ namespace BauNuGet.Test.Unit
                     .WithPackagesDirectory(fakeDirName));
 
             // assert
-            task.Requests.Should().HaveCount(2);
-            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
-            task.Requests.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
+            task.Commands.Should().HaveCount(2);
+            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
+            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
         }
 
         [Fact]
