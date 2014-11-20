@@ -58,10 +58,28 @@ namespace BauNuGet
 
         public virtual ProcessStartInfo CreateProcessStartInfo()
         {
+            string nugetExePath;
+
+            if (!string.IsNullOrWhiteSpace(this.NuGetExePathOverride))
+            {
+                nugetExePath = this.NuGetExePathOverride; // TODO: should this be converted to a full path?
+            }
+            else
+            {
+                var fileInfo = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
+                if (fileInfo != null)
+                {
+                    nugetExePath = fileInfo.FullName;
+                }
+                else
+                {
+                    throw new FileNotFoundException("NuGet.exe");
+                }
+            }
+
             return new ProcessStartInfo
             {
-                FileName = this.NuGetExePathOverride
-                    ?? NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
+                FileName = nugetExePath,
                 Arguments = string.Join(" ", this.CreateCommandLineArguments()),
                 WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
                     ? Path.GetFullPath(this.WorkingDirectory)

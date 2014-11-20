@@ -6,13 +6,29 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
-    public class NuGetCliRestoreCommandRequest : NuGetCliDownloadCommandRequestBase
+    public class NuGetCliRestoreCommandRequest : NuGetCliCommandRequestBase
     {
         public NuGetCliRestoreCommandRequest()
         {
             this.RequireConsent = false;
+            this.Source = new List<string>();
+            this.NoCache = false;
+            this.DisableParallelProcessing = false;
         }
+
+        /// <summary>
+        /// Gets a list of the sources that are to be sent to the NuGet command line tool or NuGet.Core .
+        /// </summary>
+        /// <remarks>
+        /// While this property stores multiple sources it has a singular name to match the names used within NuGet.
+        /// </remarks>
+        public List<string> Source { get; private set; }
+
+        public bool NoCache { get; set; }
+
+        public bool DisableParallelProcessing { get; set; }
 
         public string TargetSolutionOrPackagesConfig { get; set; }
 
@@ -25,6 +41,24 @@ namespace BauNuGet
         public virtual NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
         {
             this.TargetSolutionOrPackagesConfig = targetSolutionOrPackagesConfig;
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithSource(string source)
+        {
+            this.Source.Add(source);
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithNoCache(bool enabled = true)
+        {
+            this.NoCache = enabled;
+            return this;
+        }
+
+        public virtual NuGetCliRestoreCommandRequest WithDisableParallelProcessing(bool enabled = true)
+        {
+            this.DisableParallelProcessing = enabled;
             return this;
         }
 
@@ -68,6 +102,24 @@ namespace BauNuGet
             if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
             {
                 arguments.Add("-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory));
+            }
+
+            if (this.NoCache)
+            {
+                arguments.Add("-NoCache");
+            }
+
+            if (this.DisableParallelProcessing)
+            {
+                arguments.Add("-DisableParallelProcessing");
+            }
+
+            if (null != this.Source)
+            {
+                arguments.AddRange(this.Source
+                    .Where(source => !string.IsNullOrWhiteSpace(source))
+                    .Distinct()
+                    .Select(source => "-Source " + this.QuoteWrapCliValue(source)));
             }
 
             arguments.AddRange(base.CreateCommandLineArguments());

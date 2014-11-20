@@ -50,23 +50,5 @@ namespace BauNuGet
             request.ConfigFile = configFilePath;
             return request;
         }
-
-        public static T WithSource<T>(this T request, string source) where T : NuGetCliDownloadCommandRequestBase
-        {
-            request.Source.Add(source);
-            return request;
-        }
-
-        public static T WithNoCache<T>(this T request, bool enabled = true) where T : NuGetCliDownloadCommandRequestBase
-        {
-            request.NoCache = enabled;
-            return request;
-        }
-
-        public static T WithDisableParallelProcessing<T>(this T request, bool enabled = true) where T : NuGetCliDownloadCommandRequestBase
-        {
-            request.DisableParallelProcessing = enabled;
-            return request;
-        }
     }
 }
