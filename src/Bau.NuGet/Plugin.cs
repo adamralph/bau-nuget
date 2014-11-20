@@ -8,19 +8,9 @@ namespace BauNuGet
 
     public static class Plugin
     {
-        public static ITaskBuilder<NuGetPack> NuGetPack(this ITaskBuilder builder, string name = null)
+        public static ITaskBuilder<NuGetTask> NuGet(this ITaskBuilder builder, string name = null)
         {
-            return new TaskBuilder<NuGetPack>(builder, name);
-        }
-
-        public static ITaskBuilder<NuGetPush> NuGetPush(this ITaskBuilder builder, string name = null)
-        {
-            return new TaskBuilder<NuGetPush>(builder, name);
-        }
-
-        public static ITaskBuilder<NuGetRestore> NuGetRestore(this ITaskBuilder builder, string name = null)
-        {
-            return new TaskBuilder<NuGetRestore>(builder, name);
+            return new TaskBuilder<NuGetTask>(builder, name);
         }
     }
 }

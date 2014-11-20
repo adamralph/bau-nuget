@@ -26,9 +26,9 @@ namespace BauNuGet.Test.Unit
             var nugetExePath = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
             var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
-            var task = new NuGetPush();
+            var task = new NuGetTask();
             var request = task
-                .For(nugetExePackagePath.FullName)
+                .Push(nugetExePackagePath.FullName)
                 .WithWorkingDirectory("./")
                 .WithSource(nugetFakeFolder.FullName)
                 .WithApiKey("poop")
@@ -49,6 +49,29 @@ namespace BauNuGet.Test.Unit
 
             // assert
             nugetFakeFolder.EnumerateFiles("NuGet.CommandLine.*.nupkg").Should().HaveCount(1);
+        }
+
+        [Fact]
+        public static void CanCreateMultiplePushRequests()
+        {
+            // arrange
+            var task = new NuGetTask();
+            var fakeDirName = "./fake-dir";
+            var apiKey = "poo";
+
+            // act
+            task.Push(
+                new[] { "file1", "file2" },
+                r => r
+                    .WithWorkingDirectory(fakeDirName)
+                    .WithApiKey(apiKey));
+
+            // assert
+            task.Requests.Should().HaveCount(2);
+            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPushCommandRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
+            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
         }
     }
 }

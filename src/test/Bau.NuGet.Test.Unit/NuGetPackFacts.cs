@@ -21,9 +21,9 @@ namespace BauNuGet.Test.Unit
         public static void CanPackPackageUsingCli()
         {
             // arrange
-            var task = new NuGetPack();
+            var task = new NuGetTask();
             var request = task
-                .For("./pickles.nuspec")
+                .Pack("./pickles.nuspec")
                 .WithWorkingDirectory("./")
                 .WithVersion("0.1.2-alpha99999")
                 .WithOutputDirectory("./packed")
@@ -94,6 +94,28 @@ namespace BauNuGet.Test.Unit
 
             // assert
             File.Exists(Path.Combine(request.OutputDirectory, "pickles." + request.Version + ".nupkg")).Should().BeTrue();
+        }
+
+        [Fact]
+        public static void CanCreateMultiplePackRequests()
+        {
+            // arrange
+            var task = new NuGetTask();
+            var fakeDirName = "./fake-dir/";
+
+            // act
+            task.Pack(
+                new[] { "file1", "file2" },
+                r => r
+                    .WithWorkingDirectory(fakeDirName)
+                    .WithTool());
+
+            // assert
+            task.Requests.Should().HaveCount(2);
+            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPackCommandRequest>().All(r => r.Tool).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPackCommandRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
+            task.Requests.OfType<NuGetCliPackCommandRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
         }
     }
 }
