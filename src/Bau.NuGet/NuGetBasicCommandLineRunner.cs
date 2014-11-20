@@ -6,6 +6,7 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -21,15 +22,17 @@ namespace BauNuGet
             return this;
         }
 
-        public virtual void Execute(NuGetCliCommandRequestBase request)
+        public virtual ProcessStartInfo CreateProcessStartInfo(NuGetCliCommandRequestBase request)
         {
-            var execTask = new BauExec.Exec();
-            execTask.Command = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName;
-            execTask.Args = request.CreateCommandLineArguments();
-            execTask.WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
-                ? Path.GetFullPath(this.WorkingDirectory)
-                : Directory.GetCurrentDirectory();
-            execTask.Execute();
+            return new ProcessStartInfo
+            {
+                FileName = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
+                Arguments = string.Join(" ", request.CreateCommandLineArguments()),
+                WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
+                    ? Path.GetFullPath(this.WorkingDirectory)
+                    : Directory.GetCurrentDirectory(),
+                UseShellExecute = false
+            };
         }
     }
 }

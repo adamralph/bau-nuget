@@ -35,9 +35,6 @@
     <Reference Include="Bau">
       <HintPath>..\packages\Bau.0.1.0-beta06\lib\net45\Bau.dll</HintPath>
     </Reference>
-    <Reference Include="Bau.Exec">
-      <HintPath>..\packages\Bau.Exec.0.1.0-beta06\lib\net45\Bau.Exec.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
