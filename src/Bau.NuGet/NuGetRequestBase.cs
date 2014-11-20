@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliCommandRequestBase.cs" company="Bau contributors">
+﻿// <copyright file="NuGetRequestBase.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -10,11 +10,11 @@ namespace BauNuGet
     using System.IO;
     using System.Text.RegularExpressions;
 
-    public abstract class NuGetCliCommandRequestBase
+    public abstract class NuGetRequestBase
     {
         private static readonly Regex WhiteSpaceRegex = new Regex(@"\s");
 
-        protected NuGetCliCommandRequestBase()
+        protected NuGetRequestBase()
         {
             this.WorkingDirectory = null;
             this.NuGetExePathOverride = null;

@@ -69,9 +69,9 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Requests.Should().HaveCount(2);
             task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetCliPushCommandRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
-            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
-            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
+            task.Requests.OfType<NuGetPushRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
+            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
+            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
         }
     }
 }

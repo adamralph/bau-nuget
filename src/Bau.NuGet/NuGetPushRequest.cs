@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliPushCommandRequest.cs" company="Bau contributors">
+﻿// <copyright file="NuGetPushRequest.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -10,7 +10,7 @@ namespace BauNuGet
     using System.Text;
     using System.Threading.Tasks;
 
-    public class NuGetCliPushCommandRequest : NuGetCliCommandRequestBase
+    public class NuGetPushRequest : NuGetRequestBase
     {
         public string TargetPackage { get; set; }
 
@@ -22,31 +22,31 @@ namespace BauNuGet
 
         public bool DisableBuffering { get; set; }
 
-        public NuGetCliPushCommandRequest For(string targetPackage)
+        public NuGetPushRequest For(string targetPackage)
         {
             this.TargetPackage = targetPackage;
             return this;
         }
 
-        public NuGetCliPushCommandRequest WithSource(string source)
+        public NuGetPushRequest WithSource(string source)
         {
             this.Source = source;
             return this;
         }
 
-        public NuGetCliPushCommandRequest WithApiKey(string apiKey)
+        public NuGetPushRequest WithApiKey(string apiKey)
         {
             this.ApiKey = apiKey;
             return this;
         }
 
-        public NuGetCliPushCommandRequest WithTimeout(int? timeout)
+        public NuGetPushRequest WithTimeout(int? timeout)
         {
             this.Timeout = timeout;
             return this;
         }
 
-        public NuGetCliPushCommandRequest WithDisableBuffering(bool enabled = true)
+        public NuGetPushRequest WithDisableBuffering(bool enabled = true)
         {
             this.DisableBuffering = enabled;
             return this;

@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliPackCommandRequest.cs" company="Bau contributors">
+﻿// <copyright file="NuGetPackRequest.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,9 +8,9 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class NuGetCliPackCommandRequest : NuGetCliCommandRequestBase
+    public class NuGetPackRequest : NuGetRequestBase
     {
-        public NuGetCliPackCommandRequest()
+        public NuGetPackRequest()
         {
             this.Exclude = new List<string>();
             this.Properties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -64,85 +64,85 @@ namespace BauNuGet
             this.Properties[key] = value;
         }
 
-        public NuGetCliPackCommandRequest For(string targetProjectOrNuSpec)
+        public NuGetPackRequest For(string targetProjectOrNuSpec)
         {
             this.TargetProjectOrNuSpec = targetProjectOrNuSpec;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithOutputDirectory(string outputDirectory)
+        public NuGetPackRequest WithOutputDirectory(string outputDirectory)
         {
             this.OutputDirectory = outputDirectory;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithBasePath(string basePath)
+        public NuGetPackRequest WithBasePath(string basePath)
         {
             this.BasePath = basePath;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithVersion(string version)
+        public NuGetPackRequest WithVersion(string version)
         {
             this.Version = version;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithExclude(params string[] excludes)
+        public NuGetPackRequest WithExclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithProperty(string key, string value)
+        public NuGetPackRequest WithProperty(string key, string value)
         {
             this.SetProperty(key, value);
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithMiniClientVersion(string version)
+        public NuGetPackRequest WithMiniClientVersion(string version)
         {
             this.MiniClientVersion = version;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithSymbols(bool enabled = true)
+        public NuGetPackRequest WithSymbols(bool enabled = true)
         {
             this.Symbols = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithTool(bool enabled = true)
+        public NuGetPackRequest WithTool(bool enabled = true)
         {
             this.Tool = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithBuild(bool enabled = true)
+        public NuGetPackRequest WithBuild(bool enabled = true)
         {
             this.Build = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithNoDefaultExcludes(bool enabled = true)
+        public NuGetPackRequest WithNoDefaultExcludes(bool enabled = true)
         {
             this.NoDefaultExcludes = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithNoPackageAnalysis(bool enabled = true)
+        public NuGetPackRequest WithNoPackageAnalysis(bool enabled = true)
         {
             this.NoPackageAnalysis = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithExcludeEmptyDirectories(bool enabled = true)
+        public NuGetPackRequest WithExcludeEmptyDirectories(bool enabled = true)
         {
             this.ExcludeEmptyDirectories = enabled;
             return this;
         }
 
-        public NuGetCliPackCommandRequest WithIncludeReferencedProjects(bool enabled = true)
+        public NuGetPackRequest WithIncludeReferencedProjects(bool enabled = true)
         {
             this.IncludeReferencedProjects = enabled;
             return this;

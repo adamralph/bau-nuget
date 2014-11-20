@@ -113,9 +113,9 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Requests.Should().HaveCount(2);
             task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetCliPackCommandRequest>().All(r => r.Tool).Should().BeTrue();
-            task.Requests.OfType<NuGetCliPackCommandRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
-            task.Requests.OfType<NuGetCliPackCommandRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
+            task.Requests.OfType<NuGetPackRequest>().All(r => r.Tool).Should().BeTrue();
+            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
+            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
         }
     }
 }

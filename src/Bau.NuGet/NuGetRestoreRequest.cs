@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliRestoreCommandRequest.cs" company="Bau contributors">
+﻿// <copyright file="NuGetRestoreRequest.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,9 +8,9 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class NuGetCliRestoreCommandRequest : NuGetCliCommandRequestBase
+    public class NuGetRestoreRequest : NuGetRequestBase
     {
-        public NuGetCliRestoreCommandRequest()
+        public NuGetRestoreRequest()
         {
             this.RequireConsent = false;
             this.Source = new List<string>();
@@ -38,43 +38,43 @@ namespace BauNuGet
 
         public string SolutionDirectory { get; set; }
 
-        public virtual NuGetCliRestoreCommandRequest For(string targetSolutionOrPackagesConfig)
+        public virtual NuGetRestoreRequest For(string targetSolutionOrPackagesConfig)
         {
             this.TargetSolutionOrPackagesConfig = targetSolutionOrPackagesConfig;
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithSource(string source)
+        public virtual NuGetRestoreRequest WithSource(string source)
         {
             this.Source.Add(source);
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithNoCache(bool enabled = true)
+        public virtual NuGetRestoreRequest WithNoCache(bool enabled = true)
         {
             this.NoCache = enabled;
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithDisableParallelProcessing(bool enabled = true)
+        public virtual NuGetRestoreRequest WithDisableParallelProcessing(bool enabled = true)
         {
             this.DisableParallelProcessing = enabled;
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithRequiresConsent(bool enabled = true)
+        public virtual NuGetRestoreRequest WithRequiresConsent(bool enabled = true)
         {
             this.RequireConsent = enabled;
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithPackagesDirectory(string packagesDirectory)
+        public virtual NuGetRestoreRequest WithPackagesDirectory(string packagesDirectory)
         {
             this.PackagesDirectory = packagesDirectory;
             return this;
         }
 
-        public virtual NuGetCliRestoreCommandRequest WithSolutionDirectory(string solutionDirectory)
+        public virtual NuGetRestoreRequest WithSolutionDirectory(string solutionDirectory)
         {
             this.SolutionDirectory = solutionDirectory;
             return this;
