@@ -11,7 +11,7 @@ namespace BauNuGet
 
     public class NuGetTask : BauTask
     {
-        private readonly IList<Command> commands = new List<Command>();
+        private readonly List<Command> commands = new List<Command>();
 
         public IEnumerable<Command> Commands
         {
