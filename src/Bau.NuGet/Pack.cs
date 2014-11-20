@@ -243,7 +243,7 @@ namespace BauNuGet
             {
                 var propertyParts = this.Properties
                     .Where(set => !string.IsNullOrWhiteSpace(set.Key))
-                    .Select(set => string.Concat(set.Key + "=" + set.Value))
+                    .Select(set => string.Concat(set.Key, "=", set.Value))
                     .ToList();
                 var propertyPartsJoined = string.Join(";", propertyParts);
                 if (propertyParts.Count > 0)
