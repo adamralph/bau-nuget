@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliLocatorFacts.cs" company="Bau contributors">
+﻿// <copyright file="CliLocatorFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -16,14 +16,14 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetCliLocatorFacts
+    public static class CliLocatorFacts
     {
         [Fact]
         public static void CanFindYourInnerSelf()
         {
             // arrange
-            var expectedPath = typeof(NuGetCliLocator).Assembly.Location; // NOTE: some test runners may have issues with this line
-            var loader = new NuGetCliLocator();
+            var expectedPath = typeof(CliLocator).Assembly.Location; // NOTE: some test runners may have issues with this line
+            var loader = new CliLocator();
 
             // act
             var path = loader.GetBauNuGetPluginAssemblyPath();
@@ -36,7 +36,7 @@ namespace BauNuGet.Test.Unit
         public static void CanFindNuGetCommandLineExe()
         {
             // arrange
-            var loader = new NuGetCliLocator();
+            var loader = new CliLocator();
 
             // act
             var actualPath = loader.GetNugetCommandLineAssemblyPath();

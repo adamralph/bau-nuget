@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetPackRequest.cs" company="Bau contributors">
+﻿// <copyright file="Pack.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,9 +8,9 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class NuGetPackRequest : NuGetRequestBase
+    public class Pack : Command
     {
-        public NuGetPackRequest()
+        public Pack()
         {
             this.Exclude = new List<string>();
             this.Properties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -64,85 +64,85 @@ namespace BauNuGet
             this.Properties[key] = value;
         }
 
-        public NuGetPackRequest For(string targetProjectOrNuSpec)
+        public Pack For(string targetProjectOrNuSpec)
         {
             this.TargetProjectOrNuSpec = targetProjectOrNuSpec;
             return this;
         }
 
-        public NuGetPackRequest WithOutputDirectory(string outputDirectory)
+        public Pack WithOutputDirectory(string outputDirectory)
         {
             this.OutputDirectory = outputDirectory;
             return this;
         }
 
-        public NuGetPackRequest WithBasePath(string basePath)
+        public Pack WithBasePath(string basePath)
         {
             this.BasePath = basePath;
             return this;
         }
 
-        public NuGetPackRequest WithVersion(string version)
+        public Pack WithVersion(string version)
         {
             this.Version = version;
             return this;
         }
 
-        public NuGetPackRequest WithExclude(params string[] excludes)
+        public Pack WithExclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public NuGetPackRequest WithProperty(string key, string value)
+        public Pack WithProperty(string key, string value)
         {
             this.SetProperty(key, value);
             return this;
         }
 
-        public NuGetPackRequest WithMiniClientVersion(string version)
+        public Pack WithMiniClientVersion(string version)
         {
             this.MiniClientVersion = version;
             return this;
         }
 
-        public NuGetPackRequest WithSymbols(bool enabled = true)
+        public Pack WithSymbols(bool enabled = true)
         {
             this.Symbols = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithTool(bool enabled = true)
+        public Pack WithTool(bool enabled = true)
         {
             this.Tool = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithBuild(bool enabled = true)
+        public Pack WithBuild(bool enabled = true)
         {
             this.Build = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithNoDefaultExcludes(bool enabled = true)
+        public Pack WithNoDefaultExcludes(bool enabled = true)
         {
             this.NoDefaultExcludes = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithNoPackageAnalysis(bool enabled = true)
+        public Pack WithNoPackageAnalysis(bool enabled = true)
         {
             this.NoPackageAnalysis = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithExcludeEmptyDirectories(bool enabled = true)
+        public Pack WithExcludeEmptyDirectories(bool enabled = true)
         {
             this.ExcludeEmptyDirectories = enabled;
             return this;
         }
 
-        public NuGetPackRequest WithIncludeReferencedProjects(bool enabled = true)
+        public Pack WithIncludeReferencedProjects(bool enabled = true)
         {
             this.IncludeReferencedProjects = enabled;
             return this;

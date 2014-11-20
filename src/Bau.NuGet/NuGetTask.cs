@@ -16,21 +16,21 @@ namespace BauNuGet
     {
         public NuGetTask()
         {
-            this.Requests = new List<NuGetRequestBase>();
+            this.Requests = new List<Command>();
         }
 
-        public List<NuGetRequestBase> Requests { get; private set; }
+        public List<Command> Requests { get; private set; }
 
-        public TRequest Register<TRequest>(TRequest request) where TRequest : NuGetRequestBase
+        public TRequest Register<TRequest>(TRequest request) where TRequest : Command
         {
             Guard.AgainstNullArgument("request", request);
             this.Requests.Add(request);
             return request;
         }
 
-        public NuGetRestoreRequest Restore(string targetSolutionOrPackagesConfig, Action<NuGetRestoreRequest> configure = null)
+        public Restore Restore(string targetSolutionOrPackagesConfig, Action<Restore> configure = null)
         {
-            var request = new NuGetRestoreRequest()
+            var request = new Restore()
                 .For(targetSolutionOrPackagesConfig);
 
             if (configure != null)
@@ -41,16 +41,16 @@ namespace BauNuGet
             return this.Register(request);
         }
 
-        public IEnumerable<NuGetRestoreRequest> Restore(IEnumerable<string> fileTargets, Action<NuGetRestoreRequest> configure = null)
+        public IEnumerable<Restore> Restore(IEnumerable<string> fileTargets, Action<Restore> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
             var commands = fileTargets.Select(fileTarget => this.Restore(fileTarget, configure));
             return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
 
-        public NuGetPackRequest Pack(string targetProjectOrNuSpec, Action<NuGetPackRequest> configure = null)
+        public Pack Pack(string targetProjectOrNuSpec, Action<Pack> configure = null)
         {
-            var request = new NuGetPackRequest()
+            var request = new Pack()
                 .For(targetProjectOrNuSpec);
 
             if (configure != null)
@@ -61,16 +61,16 @@ namespace BauNuGet
             return this.Register(request);
         }
 
-        public IEnumerable<NuGetPackRequest> Pack(IEnumerable<string> fileTargets, Action<NuGetPackRequest> configure = null)
+        public IEnumerable<Pack> Pack(IEnumerable<string> fileTargets, Action<Pack> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
             var commands = fileTargets.Select(fileTarget => this.Pack(fileTarget, configure));
             return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
 
-        public NuGetPushRequest Push(string targetPackage, Action<NuGetPushRequest> configure = null)
+        public Push Push(string targetPackage, Action<Push> configure = null)
         {
-            var request = new NuGetPushRequest()
+            var request = new Push()
                 .For(targetPackage);
 
             if (configure != null)
@@ -81,7 +81,7 @@ namespace BauNuGet
             return this.Register(request);
         }
 
-        public IEnumerable<NuGetPushRequest> Push(IEnumerable<string> fileTargets, Action<NuGetPushRequest> configure = null)
+        public IEnumerable<Push> Push(IEnumerable<string> fileTargets, Action<Push> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
             var commands = fileTargets.Select(fileTarget => this.Push(fileTarget, configure));

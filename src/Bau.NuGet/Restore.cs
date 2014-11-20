@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetRestoreRequest.cs" company="Bau contributors">
+﻿// <copyright file="Restore.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,9 +8,9 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class NuGetRestoreRequest : NuGetRequestBase
+    public class Restore : Command
     {
-        public NuGetRestoreRequest()
+        public Restore()
         {
             this.RequireConsent = false;
             this.Source = new List<string>();
@@ -38,43 +38,43 @@ namespace BauNuGet
 
         public string SolutionDirectory { get; set; }
 
-        public virtual NuGetRestoreRequest For(string targetSolutionOrPackagesConfig)
+        public virtual Restore For(string targetSolutionOrPackagesConfig)
         {
             this.TargetSolutionOrPackagesConfig = targetSolutionOrPackagesConfig;
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithSource(string source)
+        public virtual Restore WithSource(string source)
         {
             this.Source.Add(source);
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithNoCache(bool enabled = true)
+        public virtual Restore WithNoCache(bool enabled = true)
         {
             this.NoCache = enabled;
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithDisableParallelProcessing(bool enabled = true)
+        public virtual Restore WithDisableParallelProcessing(bool enabled = true)
         {
             this.DisableParallelProcessing = enabled;
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithRequiresConsent(bool enabled = true)
+        public virtual Restore WithRequiresConsent(bool enabled = true)
         {
             this.RequireConsent = enabled;
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithPackagesDirectory(string packagesDirectory)
+        public virtual Restore WithPackagesDirectory(string packagesDirectory)
         {
             this.PackagesDirectory = packagesDirectory;
             return this;
         }
 
-        public virtual NuGetRestoreRequest WithSolutionDirectory(string solutionDirectory)
+        public virtual Restore WithSolutionDirectory(string solutionDirectory)
         {
             this.SolutionDirectory = solutionDirectory;
             return this;

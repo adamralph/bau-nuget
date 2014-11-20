@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliLocator.cs" company="Bau contributors">
+﻿// <copyright file="CliLocator.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -12,19 +12,19 @@ namespace BauNuGet
     using System.Text;
     using System.Threading.Tasks;
 
-    public class NuGetCliLocator
+    public class CliLocator
     {
-        static NuGetCliLocator()
+        static CliLocator()
         {
-            Default = new NuGetCliLocator();
+            Default = new CliLocator();
         }
 
-        public NuGetCliLocator()
+        public CliLocator()
         {
             this.LasyNugetCliFileInfo = new Lazy<FileInfo>(this.GetNugetCommandLineAssemblyPath, true);
         }
 
-        public static NuGetCliLocator Default { get; private set; }
+        public static CliLocator Default { get; private set; }
 
         private Lazy<FileInfo> LasyNugetCliFileInfo { get; set; }
 
@@ -69,7 +69,7 @@ namespace BauNuGet
 
         public string GetBauNuGetPluginAssemblyPath()
         {
-            var assembly = typeof(NuGetCliLocator).Assembly;
+            var assembly = typeof(CliLocator).Assembly;
             Uri codeBaseUri;
             if (Uri.TryCreate(assembly.CodeBase, UriKind.Absolute, out codeBaseUri))
             {

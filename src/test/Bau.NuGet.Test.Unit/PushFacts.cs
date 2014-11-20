@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetPushFacts.cs" company="Bau contributors">
+﻿// <copyright file="PushFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -15,13 +15,13 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetPushFacts
+    public static class PushFacts
     {
         [Fact]
         public static void CanPushUsingCli()
         {
             // arrange
-            var nugetExePath = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
+            var nugetExePath = CliLocator.Default.GetNugetCommandLineAssemblyPath();
             var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
             var task = new NuGetTask();
@@ -67,9 +67,9 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Requests.Should().HaveCount(2);
             task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetPushRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
-            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
-            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
+            task.Requests.OfType<Push>().All(r => r.ApiKey == apiKey).Should().BeTrue();
+            task.Requests.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file1");
+            task.Requests.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file2");
         }
     }
 }

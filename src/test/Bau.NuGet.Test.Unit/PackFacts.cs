@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetPackFacts.cs" company="Bau contributors">
+﻿// <copyright file="PackFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -15,7 +15,7 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetPackFacts
+    public static class PackFacts
     {
         [Fact]
         public static void CanPackPackageUsingCli()
@@ -111,9 +111,9 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Requests.Should().HaveCount(2);
             task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetPackRequest>().All(r => r.Tool).Should().BeTrue();
-            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
-            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
+            task.Requests.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
+            task.Requests.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
+            task.Requests.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
         }
     }
 }

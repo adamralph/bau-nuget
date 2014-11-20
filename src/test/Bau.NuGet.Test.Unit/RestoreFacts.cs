@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetRestoreFacts.cs" company="Bau contributors">
+﻿// <copyright file="RestoreFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -15,7 +15,7 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetRestoreFacts
+    public static class RestoreFacts
     {
         [Fact]
         public static void CanRestorePackagesUsingCli()
@@ -74,17 +74,17 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Requests.Should().HaveCount(2);
             task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetRestoreRequest>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetRestoreRequest>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
-            task.Requests.OfType<NuGetRestoreRequest>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
+            task.Requests.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
+            task.Requests.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
+            task.Requests.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
         }
 
         [Fact]
         public static void PropertySourceCli()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var multiple = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var multiple = new Restore();
             multiple.Source.Add(@"http://source1/api");
             multiple.Source.Add(@"C:\some folder\");
 
@@ -102,8 +102,8 @@ namespace BauNuGet.Test.Unit
         public static void PropertySourceFluent()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var multiple = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var multiple = new Restore();
 
             // act
             multiple
@@ -119,10 +119,10 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCacheCli()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var enabled = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var enabled = new Restore();
             enabled.NoCache = true;
-            var disabled = new NuGetRestoreRequest();
+            var disabled = new Restore();
             disabled.NoCache = false;
 
             // act
@@ -140,9 +140,9 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCacheFluent()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var enabled = new NuGetRestoreRequest();
-            var disabled = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var enabled = new Restore();
+            var disabled = new Restore();
 
             // act
             normal.WithNoCache();
@@ -159,10 +159,10 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessingCli()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var enabled = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var enabled = new Restore();
             enabled.DisableParallelProcessing = true;
-            var disabled = new NuGetRestoreRequest();
+            var disabled = new Restore();
             disabled.DisableParallelProcessing = false;
 
             // act
@@ -180,9 +180,9 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessingFluent()
         {
             // arrange
-            var normal = new NuGetRestoreRequest();
-            var enabled = new NuGetRestoreRequest();
-            var disabled = new NuGetRestoreRequest();
+            var normal = new Restore();
+            var enabled = new Restore();
+            var disabled = new Restore();
 
             // act
             normal.WithDisableParallelProcessing();

@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetRequestBaseFacts.cs" company="Bau contributors">
+﻿// <copyright file="CommandFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -15,7 +15,7 @@ namespace BauNuGet.Test.Unit
     using Xunit;
     using Xunit.Extensions;
 
-    public static class NuGetRequestBaseFacts
+    public static class CommandFacts
     {
         [Fact]
         public static void PropertyVerbosityCli()
@@ -104,7 +104,7 @@ namespace BauNuGet.Test.Unit
             modified.ConfigFile.Should().Be("poo.p");
         }
 
-        private class DummyRequest : NuGetRequestBase
+        private class DummyRequest : Command
         {
         }
     }
