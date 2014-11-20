@@ -4,17 +4,9 @@
 
 namespace BauNuGet.Test.Unit
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using BauCore;
     using FluentAssertions;
     using Xunit;
-    using Xunit.Extensions;
 
     public static class CliLocatorFacts
     {
@@ -22,7 +14,6 @@ namespace BauNuGet.Test.Unit
         public static void CanFindYourInnerSelf()
         {
             // arrange
-            var expectedPath = typeof(CliLocator).Assembly.Location; // NOTE: some test runners may have issues with this line
             var loader = new CliLocator();
 
             // act

@@ -4,12 +4,6 @@
 
 namespace BauNuGet
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     public static class CommandExtensions
     {
         public static T WithWorkingDirectory<T>(this T command, string workingDirectory) where T : Command
