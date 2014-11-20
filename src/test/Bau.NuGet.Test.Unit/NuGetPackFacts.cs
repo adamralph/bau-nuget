@@ -21,10 +21,10 @@ namespace BauNuGet.Test.Unit
         public static void CanPackPackageUsingCli()
         {
             // arrange
-            var task = new NuGetPack()
-                .WithWorkingDirectory("./");
+            var task = new NuGetPack();
             var request = task
                 .For("./pickles.nuspec")
+                .WithWorkingDirectory("./")
                 .WithVersion("0.1.2-alpha99999")
                 .WithOutputDirectory("./packed")
                 .WithProperty("Unused", "Don't Care")

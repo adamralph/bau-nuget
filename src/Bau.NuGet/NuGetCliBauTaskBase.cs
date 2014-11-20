@@ -16,9 +16,6 @@ namespace BauNuGet
     {
         protected NuGetCliBauTaskBase()
         {
-            this.WorkingDirectory = null;
         }
-
-        public string WorkingDirectory { get; set; }
     }
 }

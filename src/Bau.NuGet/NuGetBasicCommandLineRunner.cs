@@ -14,22 +14,15 @@ namespace BauNuGet
 
     public class NuGetBasicCommandLineRunner
     {
-        public string WorkingDirectory { get; set; }
-
-        public NuGetBasicCommandLineRunner WithWorkingDirectory(string workingDirectory)
-        {
-            this.WorkingDirectory = workingDirectory;
-            return this;
-        }
-
         public virtual ProcessStartInfo CreateProcessStartInfo(NuGetCliCommandRequestBase request)
         {
             return new ProcessStartInfo
             {
-                FileName = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
+                FileName = request.NuGetExePathOverride
+                    ?? NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
                 Arguments = string.Join(" ", request.CreateCommandLineArguments()),
-                WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
-                    ? Path.GetFullPath(this.WorkingDirectory)
+                WorkingDirectory = !string.IsNullOrWhiteSpace(request.WorkingDirectory)
+                    ? Path.GetFullPath(request.WorkingDirectory)
                     : Directory.GetCurrentDirectory(),
                 UseShellExecute = false
             };

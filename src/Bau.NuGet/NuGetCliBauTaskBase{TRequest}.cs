@@ -24,7 +24,6 @@ namespace BauNuGet
         protected override void OnActionsExecuted()
         {
             new NuGetBasicCommandLineRunner()
-                .WithWorkingDirectory(this.WorkingDirectory)
                 .CreateProcessStartInfo(this.Request)
                 .Run();
         }

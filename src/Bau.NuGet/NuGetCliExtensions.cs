@@ -12,6 +12,18 @@ namespace BauNuGet
 
     public static class NuGetCliExtensions
     {
+        public static T WithWorkingDirectory<T>(this T request, string workingDirectory) where T : NuGetCliCommandRequestBase
+        {
+            request.WorkingDirectory = workingDirectory;
+            return request;
+        }
+
+        public static T WithNuGetExePathOverride<T>(this T request, string nugetExePath) where T : NuGetCliCommandRequestBase
+        {
+            request.NuGetExePathOverride = nugetExePath;
+            return request;
+        }
+
         public static T WithVerbosity<T>(this T request, string verbosity) where T : NuGetCliCommandRequestBase
         {
             request.Verbosity = verbosity;
