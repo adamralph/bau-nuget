@@ -21,6 +21,7 @@ namespace BauNuGet
         public TCommand Register<TCommand>(TCommand command) where TCommand : Command
         {
             Guard.AgainstNullArgument("command", command);
+
             this.Commands.Add(command);
             return command;
         }
@@ -41,6 +42,7 @@ namespace BauNuGet
         public IEnumerable<Restore> Restore(IEnumerable<string> fileTargets, Action<Restore> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
+
             var commands = fileTargets.Select(fileTarget => this.Restore(fileTarget, configure));
             return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
@@ -61,6 +63,7 @@ namespace BauNuGet
         public IEnumerable<Pack> Pack(IEnumerable<string> fileTargets, Action<Pack> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
+
             var commands = fileTargets.Select(fileTarget => this.Pack(fileTarget, configure));
             return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
@@ -81,6 +84,7 @@ namespace BauNuGet
         public IEnumerable<Push> Push(IEnumerable<string> fileTargets, Action<Push> configure = null)
         {
             Guard.AgainstNullArgument("fileTargets", fileTargets);
+
             var commands = fileTargets.Select(fileTarget => this.Push(fileTarget, configure));
             return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
