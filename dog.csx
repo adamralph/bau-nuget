@@ -12,6 +12,7 @@ var output = "artifacts/output";
 var tests = "artifacts/tests";
 var logs = "artifacts/logs";
 var unit = "src/test/Bau.NuGet.Test.Unit/bin/Release/Bau.NuGet.Test.Unit.dll";
+var packFolder = "src/Bau.NuGet/";
 var pack = "src/Bau.NuGet/Bau.Nuget";
 
 // solution agnostic tasks
@@ -46,7 +47,7 @@ bau
 
 .Task("clobber").DependsOn("clean").Do(() => DeleteDirectory(output))
 
-.NuGet("restore").Do(nuget => nuget.Restore(solution))
+.NuGet("restore").Do(nuget => nuget.Restore(Directory.EnumerateFiles("./","*.sln")))
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {
@@ -78,12 +79,14 @@ bau
 .Task("output").Do(() => CreateDirectory(output))
 
 .NuGet("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
-	.Pack(pack + ".csproj")
-	.WithOutputDirectory(output)
-	.WithProperty("Configuration","Release")
-	.WithIncludeReferencedProjects()
-	.WithVerbosity(nugetVerbosity)
-	.WithVersion(version + versionSuffix))
+	.Pack(
+		Directory.EnumerateFiles(packFolder, "*.csproj"),
+		r => r
+			.WithOutputDirectory(output)
+			.WithProperty("Configuration","Release")
+			.WithIncludeReferencedProjects()
+			.WithVerbosity(nugetVerbosity)
+			.WithVersion(version + versionSuffix)))
 
 .Run();
 

@@ -50,5 +50,28 @@ namespace BauNuGet.Test.Unit
             // assert
             nugetFakeFolder.EnumerateFiles("NuGet.CommandLine.*.nupkg").Should().HaveCount(1);
         }
+
+        [Fact]
+        public static void CanCreateMultiplePushRequests()
+        {
+            // arrange
+            var task = new NuGetTask();
+            var fakeDirName = "./fake-dir";
+            var apiKey = "poo";
+
+            // act
+            task.Push(
+                new[] { "file1", "file2" },
+                r => r
+                    .WithWorkingDirectory(fakeDirName)
+                    .WithApiKey(apiKey));
+
+            // assert
+            task.Requests.Should().HaveCount(2);
+            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPushCommandRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
+            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
+            task.Requests.OfType<NuGetCliPushCommandRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
+        }
     }
 }

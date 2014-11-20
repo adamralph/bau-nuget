@@ -21,44 +21,71 @@ namespace BauNuGet
 
         public List<NuGetCliCommandRequestBase> Requests { get; private set; }
 
-        public TRequest RegisterRequest<TRequest>(TRequest request) where TRequest : NuGetCliCommandRequestBase
+        public TRequest Register<TRequest>(TRequest request) where TRequest : NuGetCliCommandRequestBase
         {
             Guard.AgainstNullArgument("request", request);
-
-            if (this.Requests.Contains(request))
-            {
-                throw new InvalidOperationException();
-            }
-
             this.Requests.Add(request);
             return request;
         }
 
-        public void RegisterRequests<TRequest>(IEnumerable<TRequest> requests) where TRequest : NuGetCliCommandRequestBase
+        public NuGetCliRestoreCommandRequest Restore(string targetSolutionOrPackagesConfig, Action<NuGetCliRestoreCommandRequest> configure = null)
         {
-            Guard.AgainstNullArgument("requests", requests);
-            this.Requests.AddRange(requests);
+            var request = new NuGetCliRestoreCommandRequest()
+                .For(targetSolutionOrPackagesConfig);
+
+            if (configure != null)
+            {
+                configure(request);
+            }
+
+            return this.Register(request);
         }
 
-        public NuGetCliRestoreCommandRequest Restore(string targetSolutionOrPackagesConfig)
+        public IEnumerable<NuGetCliRestoreCommandRequest> Restore(IEnumerable<string> fileTargets, Action<NuGetCliRestoreCommandRequest> configure = null)
         {
-            return this.RegisterRequest(
-                new NuGetCliRestoreCommandRequest()
-                .For(targetSolutionOrPackagesConfig));
+            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            var commands = fileTargets.Select(fileTarget => this.Restore(fileTarget, configure));
+            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
 
-        public NuGetCliPackCommandRequest Pack(string targetProjectOrNuSpec)
+        public NuGetCliPackCommandRequest Pack(string targetProjectOrNuSpec, Action<NuGetCliPackCommandRequest> configure = null)
         {
-            return this.RegisterRequest(
-                new NuGetCliPackCommandRequest()
-                .For(targetProjectOrNuSpec));
+            var request = new NuGetCliPackCommandRequest()
+                .For(targetProjectOrNuSpec);
+
+            if (configure != null)
+            {
+                configure(request);
+            }
+
+            return this.Register(request);
         }
 
-        public NuGetCliPushCommandRequest Push(string targetPackage)
+        public IEnumerable<NuGetCliPackCommandRequest> Pack(IEnumerable<string> fileTargets, Action<NuGetCliPackCommandRequest> configure = null)
         {
-            return this.RegisterRequest(
-                new NuGetCliPushCommandRequest()
-                .For(targetPackage));
+            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            var commands = fileTargets.Select(fileTarget => this.Pack(fileTarget, configure));
+            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
+        }
+
+        public NuGetCliPushCommandRequest Push(string targetPackage, Action<NuGetCliPushCommandRequest> configure = null)
+        {
+            var request = new NuGetCliPushCommandRequest()
+                .For(targetPackage);
+
+            if (configure != null)
+            {
+                configure(request);
+            }
+
+            return this.Register(request);
+        }
+
+        public IEnumerable<NuGetCliPushCommandRequest> Push(IEnumerable<string> fileTargets, Action<NuGetCliPushCommandRequest> configure = null)
+        {
+            Guard.AgainstNullArgument("fileTargets", fileTargets);
+            var commands = fileTargets.Select(fileTarget => this.Push(fileTarget, configure));
+            return commands.ToList(); // NOTE: required to force the enumerable to be iterated
         }
 
         protected override void OnActionsExecuted()
