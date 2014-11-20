@@ -21,8 +21,6 @@ namespace BauNuGet.Test.Unit
         public static void CanPushUsingCli()
         {
             // arrange
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
             var nugetExePath = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
             var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test

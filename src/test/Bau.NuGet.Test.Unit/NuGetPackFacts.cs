@@ -31,8 +31,6 @@ namespace BauNuGet.Test.Unit
                 .WithProperty("Authors", "Peter Piper")
                 .WithExclude("poo.p");
 
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
             if (Directory.Exists(request.OutputDirectory))
             {
                 Thread.Sleep(500);

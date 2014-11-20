@@ -36,7 +36,6 @@ namespace BauNuGet.Test.Unit
         public static void CanFindNuGetCommandLineExe()
         {
             // arrange
-            InstallNuGetCli();
             var loader = new NuGetCliLocator();
 
             // act
@@ -45,19 +44,6 @@ namespace BauNuGet.Test.Unit
             // assert
             actualPath.FullName.Should().EndWith("NuGet.exe");
             actualPath.Exists.Should().BeTrue();
-        }
-
-        internal static void InstallNuGetCli()
-        {
-            Thread.Sleep(100);
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "scriptcs", // NOTE: requires scriptcs to be on the PATH
-                Arguments = "-install NuGet.CommandLine",
-                UseShellExecute = false,
-                WorkingDirectory = "./"
-            };
-            processStartInfo.Run();
         }
     }
 }

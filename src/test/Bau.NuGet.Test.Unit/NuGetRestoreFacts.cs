@@ -29,8 +29,6 @@ namespace BauNuGet.Test.Unit
                 .WithPackagesDirectory("./restore-test/packages")
                 .WithRequiresConsent(false);
 
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
             if (!Directory.Exists(request.SolutionDirectory))
             {
                 Directory.CreateDirectory(request.SolutionDirectory);
