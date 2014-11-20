@@ -30,10 +30,14 @@ namespace BauNuGet
             var searchStartDirectories = new List<DirectoryInfo>();
             
             var assemblyLocation = new FileInfo(this.GetBauNuGetPluginAssemblyPath());
-            searchStartDirectories.Add(assemblyLocation.Directory);
+            if (assemblyLocation.Directory != null)
+            {
+                searchStartDirectories.Add(assemblyLocation.Directory);
+            }
 
             var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-            if (currentWorkingDirectory.FullName != assemblyLocation.Directory.FullName)
+            if (assemblyLocation.Directory == null ||
+                currentWorkingDirectory.FullName != assemblyLocation.Directory.FullName)
             {
                 searchStartDirectories.Add(currentWorkingDirectory);
             }
