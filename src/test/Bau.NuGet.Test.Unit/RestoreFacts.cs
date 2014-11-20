@@ -38,18 +38,21 @@ namespace BauNuGet.Test.Unit
 
             using (var packagesFileStream = File.CreateText(restore.TargetSolutionOrPackagesConfig))
             {
-                packagesFileStream.Write("<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
+                packagesFileStream.Write(
+                    "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
             }
 
             Directory.Exists(restore.PackagesDirectory).Should().BeFalse();
-            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeFalse();
+            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll"))
+                .Should().BeFalse();
 
             // act
             task.Execute();
 
             // assert
             Directory.Exists(restore.PackagesDirectory).Should().BeTrue();
-            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll")).Should().BeTrue();
+            File.Exists(Path.Combine(restore.PackagesDirectory, "Bau.0.1.0-beta01/lib/net45/Bau.dll"))
+                .Should().BeTrue();
         }
 
         [Fact]

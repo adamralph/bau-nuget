@@ -32,7 +32,8 @@ namespace BauNuGet.Test.Unit
                 Directory.Delete(pack.OutputDirectory, true);
             }
 
-            using (var pickes = File.CreateText(Path.Combine(Path.GetDirectoryName(pack.TargetProjectOrNuSpec), "pickles.txt")))
+            using (var pickes = File.CreateText(
+                Path.Combine(Path.GetDirectoryName(pack.TargetProjectOrNuSpec), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }

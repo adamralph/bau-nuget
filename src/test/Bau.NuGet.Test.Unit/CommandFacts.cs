@@ -21,7 +21,8 @@ namespace BauNuGet.Test.Unit
 
             // act
             var defaultCommandLineArgs = defaultCommand.CreateCommandLineArguments();
-            var commandLines = Array.ConvertAll(levels, level => abusedCommand.WithVerbosity(level).CreateCommandLineArguments());
+            var commandLines = Array.ConvertAll(
+                levels, level => abusedCommand.WithVerbosity(level).CreateCommandLineArguments());
             
             // assert
             defaultCommandLineArgs.Any(x => x.StartsWith("-Verbosity")).Should().BeFalse();

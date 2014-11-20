@@ -99,10 +99,12 @@ namespace BauNuGet
                 // NOTE: single-quotes does not seem to work even though that is a suggested method over double-quotes
                 var quotedResult = "\"" + value + "\"";
 
-                // NOTE: there are better ways to fix this: http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
+                // NOTE: there are better ways to fix this:
+                // http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
                 if (quotedResult.EndsWith("\\\""))
                 {
-                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\""; // HACK: just flip the slash and hope for the best
+                    // HACK: just flip the slash and hope for the best
+                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
                 }
 
                 return quotedResult;

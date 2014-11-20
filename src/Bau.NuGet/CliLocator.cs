@@ -84,7 +84,8 @@ namespace BauNuGet
         {
             const string NugetCliFolderNameSearch = "NuGet.CommandLine.*";
             const string LocalNuGetPath = "tools/NuGet.exe";
-            foreach (var result in packageDirectory.EnumerateDirectories(NugetCliFolderNameSearch, SearchOption.TopDirectoryOnly))
+            foreach (var result in packageDirectory
+                .EnumerateDirectories(NugetCliFolderNameSearch, SearchOption.TopDirectoryOnly))
             {
                 var expectedPath = Path.Combine(result.FullName, LocalNuGetPath);
                 var fileInfo = new FileInfo(expectedPath);
