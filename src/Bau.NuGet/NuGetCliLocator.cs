@@ -30,9 +30,26 @@ namespace BauNuGet
 
         public FileInfo GetNugetCommandLineAssemblyPath()
         {
+            var searchStartDirectories = new List<DirectoryInfo>();
+            
+            var assemblyLocation = new FileInfo(this.GetBauNuGetPluginAssemblyPath());
+            searchStartDirectories.Add(assemblyLocation.Directory);
+
+            var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            if (currentWorkingDirectory.FullName != assemblyLocation.Directory.FullName)
+            {
+                searchStartDirectories.Add(currentWorkingDirectory);
+            }
+
+            return searchStartDirectories
+                .Select(this.GetNugetCommandLineAssemblyPath)
+                .FirstOrDefault(f => f != null);
+        }
+
+        public FileInfo GetNugetCommandLineAssemblyPath(DirectoryInfo startSearchFromDirectory)
+        {
             const string PackagesSearchDirectoryName = "*packages";
-            var currentAssemblyLocation = this.GetBauNuGetPluginAssemblyPath();
-            var currentSearchDirectory = new DirectoryInfo(Path.GetDirectoryName(currentAssemblyLocation));
+            var currentSearchDirectory = startSearchFromDirectory;
             do
             {
                 var localNugetCliFile = currentSearchDirectory

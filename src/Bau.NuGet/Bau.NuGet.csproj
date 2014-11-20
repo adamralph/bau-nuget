@@ -49,13 +49,12 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Guard.cs" />
-    <Compile Include="NuGetCliCommandRequestBase.cs" />
-    <Compile Include="NuGetCliDownloadCommandRequestBase.cs" />
-    <Compile Include="NuGetCliPackCommandRequest.cs" />
-    <Compile Include="NuGetCliPushCommandRequest.cs" />
-    <Compile Include="NuGetCliRestoreCommandRequest.cs" />
+    <Compile Include="NuGetRequestBase.cs" />
+    <Compile Include="NuGetPackRequest.cs" />
+    <Compile Include="NuGetPushRequest.cs" />
+    <Compile Include="NuGetRestoreRequest.cs" />
     <Compile Include="NuGetCliLocator.cs" />
-    <Compile Include="NuGetCliExtensions.cs" />
+    <Compile Include="NuGetRequestExtensions.cs" />
     <Compile Include="NuGetTask.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

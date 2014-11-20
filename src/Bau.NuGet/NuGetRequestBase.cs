@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliCommandRequestBase.cs" company="Bau contributors">
+﻿// <copyright file="NuGetRequestBase.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -10,11 +10,11 @@ namespace BauNuGet
     using System.IO;
     using System.Text.RegularExpressions;
 
-    public abstract class NuGetCliCommandRequestBase
+    public abstract class NuGetRequestBase
     {
         private static readonly Regex WhiteSpaceRegex = new Regex(@"\s");
 
-        protected NuGetCliCommandRequestBase()
+        protected NuGetRequestBase()
         {
             this.WorkingDirectory = null;
             this.NuGetExePathOverride = null;
@@ -58,10 +58,28 @@ namespace BauNuGet
 
         public virtual ProcessStartInfo CreateProcessStartInfo()
         {
+            string nugetExePath;
+
+            if (!string.IsNullOrWhiteSpace(this.NuGetExePathOverride))
+            {
+                nugetExePath = this.NuGetExePathOverride; // TODO: should this be converted to a full path?
+            }
+            else
+            {
+                var fileInfo = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
+                if (fileInfo != null)
+                {
+                    nugetExePath = fileInfo.FullName;
+                }
+                else
+                {
+                    throw new FileNotFoundException("NuGet.exe");
+                }
+            }
+
             return new ProcessStartInfo
             {
-                FileName = this.NuGetExePathOverride
-                    ?? NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath().FullName,
+                FileName = nugetExePath,
                 Arguments = string.Join(" ", this.CreateCommandLineArguments()),
                 WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
                     ? Path.GetFullPath(this.WorkingDirectory)
