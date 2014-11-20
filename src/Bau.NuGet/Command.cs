@@ -6,7 +6,6 @@ namespace BauNuGet
 {
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Text.RegularExpressions;
 
     public abstract class Command
@@ -28,11 +27,22 @@ namespace BauNuGet
 
         public string Verbosity { get; set; }
 
-        public bool NonInteractive { get; private set; }
+        public bool NonInteractive { get; set; }
 
         public string ConfigFile { get; set; }
 
-        public virtual List<string> CreateCommandLineArguments()
+        public virtual ProcessStartInfo CreateProcessStartInfo()
+        {
+            return new ProcessStartInfo
+            {
+                FileName = this.NuGetExePathOverride ?? CliLocator.Default.GetNugetCommandLineAssemblyPath(),
+                Arguments = string.Join(" ", this.CreateCommandLineArguments()),
+                WorkingDirectory = this.WorkingDirectory,
+                UseShellExecute = false
+            };
+        }
+
+        protected virtual IList<string> CreateCommandLineArguments()
         {
             var arguments = new List<string>();
 
@@ -53,38 +63,6 @@ namespace BauNuGet
             }
 
             return arguments;
-        }
-
-        public virtual ProcessStartInfo CreateProcessStartInfo()
-        {
-            string nugetExePath;
-
-            if (!string.IsNullOrWhiteSpace(this.NuGetExePathOverride))
-            {
-                nugetExePath = this.NuGetExePathOverride; // TODO: should this be converted to a full path?
-            }
-            else
-            {
-                var fileInfo = CliLocator.Default.GetNugetCommandLineAssemblyPath();
-                if (fileInfo != null)
-                {
-                    nugetExePath = fileInfo.FullName;
-                }
-                else
-                {
-                    throw new FileNotFoundException("NuGet.exe");
-                }
-            }
-
-            return new ProcessStartInfo
-            {
-                FileName = nugetExePath,
-                Arguments = string.Join(" ", this.CreateCommandLineArguments()),
-                WorkingDirectory = !string.IsNullOrWhiteSpace(this.WorkingDirectory)
-                    ? Path.GetFullPath(this.WorkingDirectory)
-                    : Directory.GetCurrentDirectory(),
-                UseShellExecute = false
-            };
         }
 
         protected virtual string QuoteWrapCliValue(string value)

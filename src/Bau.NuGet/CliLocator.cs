@@ -18,7 +18,7 @@ namespace BauNuGet
             get { return @default; }
         }
 
-        public FileInfo GetNugetCommandLineAssemblyPath()
+        public string GetNugetCommandLineAssemblyPath()
         {
             var searchStartDirectories = new List<DirectoryInfo>();
 
@@ -35,9 +35,16 @@ namespace BauNuGet
                 searchStartDirectories.Add(currentWorkingDirectory);
             }
 
-            return searchStartDirectories
+            var fileInfo = searchStartDirectories
                 .Select(this.GetNugetCommandLineAssemblyPath)
                 .FirstOrDefault(f => f != null);
+
+            if (fileInfo != null)
+            {
+                return fileInfo.FullName;
+            }
+
+            throw new InvalidOperationException("Failed to located NuGet.exe.");
         }
 
         public FileInfo GetNugetCommandLineAssemblyPath(DirectoryInfo startSearchFromDirectory)

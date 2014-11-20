@@ -87,13 +87,13 @@ namespace BauNuGet.Test.Unit
             multiple.Source.Add(@"C:\some folder\");
 
             // act
-            var normalArgs = normal.CreateCommandLineArguments();
-            var multipleArgs = multiple.CreateCommandLineArguments();
+            var normalInfo = normal.CreateProcessStartInfo();
+            var multipleInfo = multiple.CreateProcessStartInfo();
 
             // assert
-            normalArgs.Any(x => x.StartsWith("-Source")).Should().BeFalse();
-            multipleArgs.Should().Contain(@"-Source http://source1/api");
-            multipleArgs.Any(x => x.StartsWith("-Source") && x.Contains(@"C:\some folder")).Should().BeTrue();
+            normalInfo.Arguments.Should().NotContain("-Source");
+            multipleInfo.Arguments.Should().Contain(@" -Source http://source1/api");
+            multipleInfo.Arguments.Should().Contain(@" -Source ""C:\some folder/""");
         }
 
         [Fact]
@@ -118,20 +118,18 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var normal = new Restore();
-            var enabled = new Restore();
-            enabled.NoCache = true;
-            var disabled = new Restore();
-            disabled.NoCache = false;
+            var enabled = new Restore { NoCache = true };
+            var disabled = new Restore { NoCache = false };
 
             // act
-            var normalArgs = normal.CreateCommandLineArguments();
-            var enabledArgs = enabled.CreateCommandLineArguments();
-            var disabledArgs = disabled.CreateCommandLineArguments();
+            var normalInfo = normal.CreateProcessStartInfo();
+            var enabledInfo = enabled.CreateProcessStartInfo();
+            var disabledInfo = disabled.CreateProcessStartInfo();
 
             // assert
-            normalArgs.Should().NotContain("-NoCache");
-            enabledArgs.Should().Contain("-NoCache");
-            disabledArgs.Should().NotContain("-NoCache");
+            normalInfo.Arguments.Should().NotContain("-NoCache");
+            enabledInfo.Arguments.Should().Contain("-NoCache");
+            disabledInfo.Arguments.Should().NotContain("-NoCache");
         }
 
         [Fact]
@@ -158,20 +156,18 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var normal = new Restore();
-            var enabled = new Restore();
-            enabled.DisableParallelProcessing = true;
-            var disabled = new Restore();
-            disabled.DisableParallelProcessing = false;
+            var enabled = new Restore { DisableParallelProcessing = true };
+            var disabled = new Restore { DisableParallelProcessing = false };
 
             // act
-            var normalArgs = normal.CreateCommandLineArguments();
-            var enabledArgs = enabled.CreateCommandLineArguments();
-            var disabledArgs = disabled.CreateCommandLineArguments();
+            var normalInfo = normal.CreateProcessStartInfo();
+            var enabledInfo = enabled.CreateProcessStartInfo();
+            var disabledInfo = disabled.CreateProcessStartInfo();
 
             // assert
-            normalArgs.Should().NotContain("-DisableParallelProcessing");
-            enabledArgs.Should().Contain("-DisableParallelProcessing");
-            disabledArgs.Should().NotContain("-DisableParallelProcessing");
+            normalInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
+            enabledInfo.Arguments.Should().Contain("-DisableParallelProcessing");
+            disabledInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
         }
 
         [Fact]

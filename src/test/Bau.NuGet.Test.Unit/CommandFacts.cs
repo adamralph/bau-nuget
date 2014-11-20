@@ -5,7 +5,6 @@
 namespace BauNuGet.Test.Unit
 {
     using System;
-    using System.Linq;
     using FluentAssertions;
     using Xunit;
 
@@ -20,15 +19,15 @@ namespace BauNuGet.Test.Unit
             var levels = new[] { "normal", "quiet", "detailed" };
 
             // act
-            var defaultCommandLineArgs = defaultCommand.CreateCommandLineArguments();
-            var commandLines = Array.ConvertAll(
-                levels, level => abusedCommand.WithVerbosity(level).CreateCommandLineArguments());
+            var defaultStartInfo = defaultCommand.CreateProcessStartInfo();
+            var abusedStartInfo = Array.ConvertAll(
+                levels, level => abusedCommand.WithVerbosity(level).CreateProcessStartInfo());
 
             // assert
-            defaultCommandLineArgs.Any(x => x.StartsWith("-Verbosity")).Should().BeFalse();
-            for (int i = 0; i < levels.Length; i++)
+            defaultStartInfo.Arguments.Should().NotContain("-Verbosity");
+            for (var i = 0; i < levels.Length; i++)
             {
-                commandLines[i].Should().Contain("-Verbosity " + levels[i]);
+                abusedStartInfo[i].Arguments.Should().Contain("-Verbosity " + levels[i]);
             }
         }
 
@@ -61,10 +60,10 @@ namespace BauNuGet.Test.Unit
             var normal = new DummyCommand();
 
             // act
-            var normalArgs = normal.CreateCommandLineArguments();
+            var info = normal.CreateProcessStartInfo();
 
             // assert
-            normalArgs.Should().Contain("-NonInteractive");
+            info.Arguments.Should().Contain("-NonInteractive");
         }
 
         [Fact]
@@ -72,16 +71,15 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var normal = new DummyCommand();
-            var modified = new DummyCommand();
-            modified.ConfigFile = "poo.p";
+            var modified = new DummyCommand { ConfigFile = "poo.p" };
 
             // act
-            var normalArgs = normal.CreateCommandLineArguments();
-            var modifiedArgs = modified.CreateCommandLineArguments();
+            var normalInfo = normal.CreateProcessStartInfo();
+            var modifiedInfo = modified.CreateProcessStartInfo();
 
             // assert
-            normalArgs.Any(x => x.StartsWith("-ConfigFile")).Should().BeFalse();
-            modifiedArgs.Should().Contain("-ConfigFile poo.p");
+            normalInfo.Arguments.Should().NotContain("-ConfigFile");
+            modifiedInfo.Arguments.Should().Contain(" -ConfigFile poo.p");
         }
 
         [Fact]

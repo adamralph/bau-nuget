@@ -44,5 +44,17 @@ namespace BauNuGet
             command.ConfigFile = configFilePath;
             return command;
         }
+
+        public static T WithInteraction<T>(this T command) where T : Command
+        {
+            command.NonInteractive = false;
+            return command;
+        }
+
+        public static T WithoutInteraction<T>(this T command) where T : Command
+        {
+            command.NonInteractive = true;
+            return command;
+        }
     }
 }

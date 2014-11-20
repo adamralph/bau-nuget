@@ -30,11 +30,11 @@ namespace BauNuGet.Test.Unit
             var loader = new CliLocator();
 
             // act
-            var actualPath = loader.GetNugetCommandLineAssemblyPath();
+            var path = loader.GetNugetCommandLineAssemblyPath();
 
             // assert
-            actualPath.FullName.Should().EndWith("NuGet.exe");
-            actualPath.Exists.Should().BeTrue();
+            path.Should().EndWith("NuGet.exe");
+            File.Exists(path).Should().BeTrue();
         }
     }
 }

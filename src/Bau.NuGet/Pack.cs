@@ -164,7 +164,7 @@ namespace BauNuGet
             return result;
         }
 
-        public override List<string> CreateCommandLineArguments()
+        protected override IList<string> CreateCommandLineArguments()
         {
             var arguments = new List<string> { "pack" };
 
