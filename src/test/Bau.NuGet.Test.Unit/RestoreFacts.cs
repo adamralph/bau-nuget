@@ -83,8 +83,8 @@ namespace BauNuGet.Test.Unit
             // arrange
             var normal = new Restore();
             var multiple = new Restore();
-            multiple.Source.Add(@"http://source1/api");
-            multiple.Source.Add(@"C:\some folder\");
+            multiple.Sources.Add(@"http://source1/api");
+            multiple.Sources.Add(@"C:\some folder\");
 
             // act
             var normalInfo = normal.CreateProcessStartInfo();
@@ -109,8 +109,8 @@ namespace BauNuGet.Test.Unit
                 .WithSource(@"C:\some folder\");
 
             // assert
-            normal.Source.Should().BeEmpty();
-            multiple.Source.Should().Equal(new[] { @"http://source1/api", @"C:\some folder\" });
+            normal.Sources.Should().BeEmpty();
+            multiple.Sources.Should().Equal(new[] { @"http://source1/api", @"C:\some folder\" });
         }
 
         [Fact]
