@@ -87,13 +87,13 @@ namespace BauNuGet.Test.Unit
             multiple.Sources.Add(@"C:\some folder\");
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var multipleInfo = multiple.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var multipleArguments = multiple.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-Source");
-            multipleInfo.Arguments.Should().Contain(@" -Source http://source1/api");
-            multipleInfo.Arguments.Should().Contain(@" -Source ""C:\some folder/""");
+            normalArguments.Should().NotContain("-Source");
+            multipleArguments.Should().Contain(@"-Source http://source1/api");
+            multipleArguments.Should().Contain(@"-Source ""C:\some folder/""");
         }
 
         [Fact]
@@ -122,14 +122,14 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore { NoCache = false };
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var enabledInfo = enabled.CreateProcessStartInfo();
-            var disabledInfo = disabled.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var enabledArguments = enabled.CreateCommandLineArguments();
+            var disabledArguments = disabled.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-NoCache");
-            enabledInfo.Arguments.Should().Contain("-NoCache");
-            disabledInfo.Arguments.Should().NotContain("-NoCache");
+            normalArguments.Should().NotContain("-NoCache");
+            enabledArguments.Should().Contain("-NoCache");
+            disabledArguments.Should().NotContain("-NoCache");
         }
 
         [Fact]
@@ -160,14 +160,14 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore { DisableParallelProcessing = false };
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var enabledInfo = enabled.CreateProcessStartInfo();
-            var disabledInfo = disabled.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var enabledArguments = enabled.CreateCommandLineArguments();
+            var disabledArguments = disabled.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
-            enabledInfo.Arguments.Should().Contain("-DisableParallelProcessing");
-            disabledInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
+            normalArguments.Should().NotContain("-DisableParallelProcessing");
+            enabledArguments.Should().Contain("-DisableParallelProcessing");
+            disabledArguments.Should().NotContain("-DisableParallelProcessing");
         }
 
         [Fact]

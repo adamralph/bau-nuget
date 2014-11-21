@@ -77,7 +77,7 @@ namespace BauNuGet
             return this;
         }
 
-        protected override IEnumerable<string> CreateCommandLineArguments()
+        protected override IEnumerable<string> CreateCustomCommandLineArguments()
         {
             yield return "restore";
 

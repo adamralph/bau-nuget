@@ -6,30 +6,40 @@ namespace BauNuGet.Test.Unit
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using FluentAssertions;
     using Xunit;
+    using Xunit.Extensions;
 
     public static class CommandFacts
     {
         [Fact]
-        public static void PropertyVerbosityCli()
+        public static void DoesNotCreateVerbosityArgumentWhenNotSpecified()
         {
             // arrange
-            var defaultCommand = new DummyCommand();
-            var abusedCommand = new DummyCommand();
-            var levels = new[] { "normal", "quiet", "detailed" };
+            var command = new DummyCommand();
 
             // act
-            var defaultStartInfo = defaultCommand.CreateProcessStartInfo();
-            var abusedStartInfo = Array.ConvertAll(
-                levels, level => abusedCommand.WithVerbosity(level).CreateProcessStartInfo());
+            var arguments = command.CreateCommandLineArguments().ToArray();
 
             // assert
-            defaultStartInfo.Arguments.Should().NotContain("-Verbosity");
-            for (var i = 0; i < levels.Length; i++)
-            {
-                abusedStartInfo[i].Arguments.Should().Contain("-Verbosity " + levels[i]);
-            }
+            arguments.Should().NotContain("-Verbosity");
+        }
+
+        [Theory]
+        [InlineData("normal")]
+        [InlineData("quiet")]
+        [InlineData("detailed")]
+        public static void CreatesVerbosityArgumentWhenSpecified(string verbosity)
+        {
+            // arrange
+            var command = new DummyCommand { Verbosity = verbosity };
+
+            // act
+            var arguments = command.CreateCommandLineArguments().ToArray();
+
+            // assert
+            arguments.Should().Contain("-Verbosity " + verbosity);
         }
 
         [Fact]
@@ -61,10 +71,10 @@ namespace BauNuGet.Test.Unit
             var normal = new DummyCommand();
 
             // act
-            var info = normal.CreateProcessStartInfo();
+            var arguments = normal.CreateCommandLineArguments();
 
             // assert
-            info.Arguments.Should().Contain("-NonInteractive");
+            arguments.Should().Contain("-NonInteractive");
         }
 
         [Fact]
@@ -75,12 +85,12 @@ namespace BauNuGet.Test.Unit
             var modified = new DummyCommand { ConfigFile = "poo.p" };
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var modifiedInfo = modified.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var modifiedArguments = modified.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-ConfigFile");
-            modifiedInfo.Arguments.Should().Contain(" -ConfigFile poo.p");
+            normalArguments.Should().NotContain("-ConfigFile");
+            modifiedArguments.Should().Contain("-ConfigFile poo.p");
         }
 
         [Fact]
@@ -100,7 +110,7 @@ namespace BauNuGet.Test.Unit
 
         private class DummyCommand : Command
         {
-            protected override IEnumerable<string> CreateCommandLineArguments()
+            protected override IEnumerable<string> CreateCustomCommandLineArguments()
             {
                 yield break;
             }

@@ -6,12 +6,14 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using BauCore;
 
     public class NuGetTask : BauTask
     {
         private readonly List<Command> commands = new List<Command>();
+        private readonly NuGetFileFinder finder = new NuGetFileFinder();
 
         public IEnumerable<Command> Commands
         {
@@ -87,7 +89,14 @@ namespace BauNuGet
 
         protected override void OnActionsExecuted()
         {
-            foreach (var processStartInfo in this.commands.Select(command => command.CreateProcessStartInfo()))
+            string fileName = null;
+            foreach (var processStartInfo in this.commands.Select(command => new ProcessStartInfo
+            {
+                FileName = command.NuGetExePathOverride ?? fileName ?? (fileName = this.finder.FindFile().FullName),
+                Arguments = string.Join(" ", command.CreateCommandLineArguments()),
+                WorkingDirectory = command.WorkingDirectory,
+                UseShellExecute = false
+            }))
             {
                 processStartInfo.Run();
             }
