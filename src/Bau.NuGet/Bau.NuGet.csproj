@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Main.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\Main.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bau">
@@ -48,12 +50,13 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Verbosity.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Pack.cs" />
     <Compile Include="Push.cs" />
     <Compile Include="Restore.cs" />
-    <Compile Include="CliLocator.cs" />
+    <Compile Include="NuGetFileFinder.cs" />
     <Compile Include="CommandExtensions.cs" />
     <Compile Include="NuGetTask.cs" />
     <Compile Include="Plugin.cs" />

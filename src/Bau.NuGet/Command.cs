@@ -4,9 +4,8 @@
 
 namespace BauNuGet
 {
+    using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
     using System.Text.RegularExpressions;
 
     public abstract class Command
@@ -15,37 +14,44 @@ namespace BauNuGet
 
         protected Command()
         {
-            this.WorkingDirectory = null;
-            this.NuGetExePathOverride = null;
-            this.Verbosity = null;
             this.NonInteractive = true;
-            this.ConfigFile = null;
         }
 
         public string WorkingDirectory { get; set; }
 
         public string NuGetExePathOverride { get; set; }
 
-        public string Verbosity { get; set; }
+        public Verbosity? Verbosity { get; set; }
 
         public bool NonInteractive { get; set; }
 
         public string ConfigFile { get; set; }
 
-        public ProcessStartInfo CreateProcessStartInfo()
+        public IEnumerable<string> CreateCommandLineArguments()
         {
-            return new ProcessStartInfo
+            foreach (var argument in this.CreateCustomCommandLineArguments())
             {
-                FileName = this.NuGetExePathOverride ?? CliLocator.Default.GetNugetCommandLineAssemblyPath(),
-                Arguments = string.Join(" ", this.CreateAllCommandLineArguments()),
-                WorkingDirectory = this.WorkingDirectory,
-                UseShellExecute = false
-            };
+                yield return argument;
+            }
+
+            if (this.Verbosity.HasValue)
+            {
+                // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
+                yield return "-Verbosity " + this.Verbosity.ToString().ToLowerInvariant();
+            }
+
+            if (this.NonInteractive)
+            {
+                yield return "-NonInteractive";
+            }
+
+            if (this.ConfigFile != null)
+            {
+                yield return "-ConfigFile " + EncodeArgumentValue(this.ConfigFile);
+            }
         }
 
-        protected abstract IEnumerable<string> CreateCommandLineArguments();
-
-        protected string QuoteWrapCliValue(string value)
+        protected static string EncodeArgumentValue(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -59,10 +65,10 @@ namespace BauNuGet
 
                 // NOTE: there are better ways to fix this:
                 // http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
-                if (quotedResult.EndsWith("\\\""))
+                if (quotedResult.EndsWith("\\\"", StringComparison.Ordinal))
                 {
                     // HACK: just flip the slash and hope for the best
-                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
+                    return quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
                 }
 
                 return quotedResult;
@@ -71,28 +77,6 @@ namespace BauNuGet
             return value;
         }
 
-        private IEnumerable<string> CreateAllCommandLineArguments()
-        {
-            foreach (var argument in this.CreateCommandLineArguments())
-            {
-                yield return argument;
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.Verbosity))
-            {
-                // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
-                yield return "-Verbosity " + this.Verbosity;
-            }
-
-            if (this.NonInteractive)
-            {
-                yield return "-NonInteractive";
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.ConfigFile))
-            {
-                yield return "-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile);
-            }
-        }
+        protected abstract IEnumerable<string> CreateCustomCommandLineArguments();
     }
 }

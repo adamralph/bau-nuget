@@ -10,12 +10,13 @@ namespace BauNuGet
     {
         private readonly HashSet<string> sources = new HashSet<string>();
 
-        public Restore()
-        {
-            this.RequireConsent = false;
-            this.NoCache = false;
-            this.DisableParallelProcessing = false;
-        }
+        public string SolutionOrPackagesConfig { get; set; }
+
+        public bool RequireConsent { get; set; }
+
+        public string PackagesDirectory { get; set; }
+
+        public string SolutionDirectory { get; set; }
 
         public ICollection<string> Sources
         {
@@ -26,35 +27,11 @@ namespace BauNuGet
 
         public bool DisableParallelProcessing { get; set; }
 
-        public string TargetSolutionOrPackagesConfig { get; set; }
+        public string PackageSaveMode { get; set; }
 
-        public bool RequireConsent { get; set; }
-
-        public string PackagesDirectory { get; set; }
-
-        public string SolutionDirectory { get; set; }
-
-        public virtual Restore For(string targetSolutionOrPackagesConfig)
+        public virtual Restore For(string solutionOrPackagesConfig)
         {
-            this.TargetSolutionOrPackagesConfig = targetSolutionOrPackagesConfig;
-            return this;
-        }
-
-        public virtual Restore WithSource(string source)
-        {
-            this.Sources.Add(source);
-            return this;
-        }
-
-        public virtual Restore WithNoCache(bool enabled = true)
-        {
-            this.NoCache = enabled;
-            return this;
-        }
-
-        public virtual Restore WithDisableParallelProcessing(bool enabled = true)
-        {
-            this.DisableParallelProcessing = enabled;
+            this.SolutionOrPackagesConfig = solutionOrPackagesConfig;
             return this;
         }
 
@@ -76,13 +53,37 @@ namespace BauNuGet
             return this;
         }
 
-        protected override IEnumerable<string> CreateCommandLineArguments()
+        public virtual Restore WithSource(string source)
+        {
+            this.Sources.Add(source);
+            return this;
+        }
+
+        public virtual Restore WithNoCache(bool enabled = true)
+        {
+            this.NoCache = enabled;
+            return this;
+        }
+
+        public virtual Restore WithDisableParallelProcessing(bool enabled = true)
+        {
+            this.DisableParallelProcessing = enabled;
+            return this;
+        }
+
+        public virtual Restore WithPackageSaveMode(string packageSaveMode)
+        {
+            this.PackageSaveMode = packageSaveMode;
+            return this;
+        }
+
+        protected override IEnumerable<string> CreateCustomCommandLineArguments()
         {
             yield return "restore";
 
-            if (!string.IsNullOrWhiteSpace(this.TargetSolutionOrPackagesConfig))
+            if (this.SolutionOrPackagesConfig != null)
             {
-                yield return this.QuoteWrapCliValue(this.TargetSolutionOrPackagesConfig);
+                yield return Command.EncodeArgumentValue(this.SolutionOrPackagesConfig);
             }
 
             if (this.RequireConsent)
@@ -90,14 +91,19 @@ namespace BauNuGet
                 yield return "-RequireConsent";
             }
 
-            if (!string.IsNullOrWhiteSpace(this.PackagesDirectory))
+            if (this.PackagesDirectory != null)
             {
-                yield return "-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory);
+                yield return "-PackagesDirectory " + Command.EncodeArgumentValue(this.PackagesDirectory);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.SolutionDirectory))
+            if (this.SolutionDirectory != null)
             {
-                yield return "-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory);
+                yield return "-SolutionDirectory " + Command.EncodeArgumentValue(this.SolutionDirectory);
+            }
+
+            foreach (var source in this.Sources)
+            {
+                yield return "-Source " + Command.EncodeArgumentValue(source);
             }
 
             if (this.NoCache)
@@ -110,9 +116,9 @@ namespace BauNuGet
                 yield return "-DisableParallelProcessing";
             }
 
-            foreach (var source in this.Sources)
+            if (this.PackageSaveMode != null)
             {
-                yield return "-Source " + this.QuoteWrapCliValue(source);
+                yield return "-PackageSaveMode" + Command.EncodeArgumentValue(this.PackageSaveMode);
             }
         }
     }

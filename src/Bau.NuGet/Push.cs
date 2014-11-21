@@ -5,10 +5,11 @@
 namespace BauNuGet
 {
     using System.Collections.Generic;
+    using System.Globalization;
 
     public class Push : Command
     {
-        public string TargetPackage { get; set; }
+        public string Package { get; set; }
 
         public string Source { get; set; }
 
@@ -18,9 +19,9 @@ namespace BauNuGet
 
         public bool DisableBuffering { get; set; }
 
-        public Push For(string targetPackage)
+        public Push For(string package)
         {
-            this.TargetPackage = targetPackage;
+            this.Package = package;
             return this;
         }
 
@@ -48,33 +49,33 @@ namespace BauNuGet
             return this;
         }
 
-        protected override IEnumerable<string> CreateCommandLineArguments()
+        protected override IEnumerable<string> CreateCustomCommandLineArguments()
         {
             yield return "push";
 
-            if (!string.IsNullOrWhiteSpace(this.TargetPackage))
+            if (this.Package != null)
             {
-                yield return this.QuoteWrapCliValue(this.TargetPackage);
+                yield return Command.EncodeArgumentValue(this.Package);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.ApiKey))
+            if (this.Source != null)
+            {
+                yield return "-Source " + Command.EncodeArgumentValue(this.Source);
+            }
+
+            if (this.ApiKey != null)
             {
                 yield return this.ApiKey;
             }
 
             if (this.Timeout.HasValue)
             {
-                yield return "-Timeout " + this.Timeout.Value;
+                yield return "-Timeout " + this.Timeout.Value.ToString(CultureInfo.InvariantCulture);
             }
 
             if (this.DisableBuffering)
             {
                 yield return "-DisableBuffering";
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.Source))
-            {
-                yield return "-Source " + this.QuoteWrapCliValue(this.Source);
             }
         }
     }

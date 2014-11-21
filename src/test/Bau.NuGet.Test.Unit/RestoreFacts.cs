@@ -13,7 +13,7 @@ namespace BauNuGet.Test.Unit
     public static class RestoreFacts
     {
         [Fact]
-        public static void CanRestorePackagesUsingCli()
+        public static void Restores()
         {
             // arrange
             var task = new NuGetTask();
@@ -36,7 +36,7 @@ namespace BauNuGet.Test.Unit
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(restore.TargetSolutionOrPackagesConfig))
+            using (var packagesFileStream = File.CreateText(restore.SolutionOrPackagesConfig))
             {
                 packagesFileStream.Write(
                     "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
@@ -56,7 +56,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanCreateMultipleRestoreCommands()
+        public static void CreatesMultipleRestoreCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -73,12 +73,12 @@ namespace BauNuGet.Test.Unit
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
             task.Commands.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
-            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
+            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
+            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
         }
 
         [Fact]
-        public static void PropertySourceCli()
+        public static void PropertySource()
         {
             // arrange
             var normal = new Restore();
@@ -87,13 +87,13 @@ namespace BauNuGet.Test.Unit
             multiple.Sources.Add(@"C:\some folder\");
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var multipleInfo = multiple.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var multipleArguments = multiple.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-Source");
-            multipleInfo.Arguments.Should().Contain(@" -Source http://source1/api");
-            multipleInfo.Arguments.Should().Contain(@" -Source ""C:\some folder/""");
+            normalArguments.Should().NotContain("-Source");
+            multipleArguments.Should().Contain(@"-Source http://source1/api");
+            multipleArguments.Should().Contain(@"-Source ""C:\some folder/""");
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyNoCacheCli()
+        public static void PropertyNoCache()
         {
             // arrange
             var normal = new Restore();
@@ -122,14 +122,14 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore { NoCache = false };
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var enabledInfo = enabled.CreateProcessStartInfo();
-            var disabledInfo = disabled.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var enabledArguments = enabled.CreateCommandLineArguments();
+            var disabledArguments = disabled.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-NoCache");
-            enabledInfo.Arguments.Should().Contain("-NoCache");
-            disabledInfo.Arguments.Should().NotContain("-NoCache");
+            normalArguments.Should().NotContain("-NoCache");
+            enabledArguments.Should().Contain("-NoCache");
+            disabledArguments.Should().NotContain("-NoCache");
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyDisableParallelProcessingCli()
+        public static void PropertyDisableParallelProcessing()
         {
             // arrange
             var normal = new Restore();
@@ -160,14 +160,14 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore { DisableParallelProcessing = false };
 
             // act
-            var normalInfo = normal.CreateProcessStartInfo();
-            var enabledInfo = enabled.CreateProcessStartInfo();
-            var disabledInfo = disabled.CreateProcessStartInfo();
+            var normalArguments = normal.CreateCommandLineArguments();
+            var enabledArguments = enabled.CreateCommandLineArguments();
+            var disabledArguments = disabled.CreateCommandLineArguments();
 
             // assert
-            normalInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
-            enabledInfo.Arguments.Should().Contain("-DisableParallelProcessing");
-            disabledInfo.Arguments.Should().NotContain("-DisableParallelProcessing");
+            normalArguments.Should().NotContain("-DisableParallelProcessing");
+            enabledArguments.Should().Contain("-DisableParallelProcessing");
+            disabledArguments.Should().NotContain("-DisableParallelProcessing");
         }
 
         [Fact]
