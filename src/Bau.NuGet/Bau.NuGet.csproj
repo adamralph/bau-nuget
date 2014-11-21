@@ -48,6 +48,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Verbosity.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Pack.cs" />

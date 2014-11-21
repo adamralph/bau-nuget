@@ -27,10 +27,10 @@ namespace BauNuGet.Test.Unit
         }
 
         [Theory]
-        [InlineData("normal")]
-        [InlineData("quiet")]
-        [InlineData("detailed")]
-        public static void CreatesVerbosityArgumentWhenSpecified(string verbosity)
+        [InlineData(Verbosity.Normal)]
+        [InlineData(Verbosity.Quiet)]
+        [InlineData(Verbosity.Detailed)]
+        public static void CreatesVerbosityArgumentWhenSpecified(Verbosity verbosity)
         {
             // arrange
             var command = new DummyCommand { Verbosity = verbosity };
@@ -39,29 +39,26 @@ namespace BauNuGet.Test.Unit
             var arguments = command.CreateCommandLineArguments().ToArray();
 
             // assert
-            arguments.Should().Contain("-Verbosity " + verbosity);
+            arguments.Should().Contain("-Verbosity " + verbosity.ToString().ToLowerInvariant());
         }
 
         [Fact]
         public static void PropertyVerbosityFluent()
         {
             // arrange
-            var command = new DummyCommand();
             var normal = new DummyCommand();
             var quiet = new DummyCommand();
             var detailed = new DummyCommand();
 
             // act
-            command.WithVerbosity("Grumbling");
             normal.WithVerbosityNormal();
             quiet.WithVerbosityQuiet();
             detailed.WithVerbosityDetailed();
 
             // assert
-            command.Verbosity.Should().Be("Grumbling");
-            Assert.Equal("Normal", normal.Verbosity, StringComparer.OrdinalIgnoreCase);
-            Assert.Equal("Quiet", quiet.Verbosity, StringComparer.OrdinalIgnoreCase);
-            Assert.Equal("Detailed", detailed.Verbosity, StringComparer.OrdinalIgnoreCase);
+            normal.Verbosity.Should().Be(Verbosity.Normal);
+            quiet.Verbosity.Should().Be(Verbosity.Quiet);
+            detailed.Verbosity.Should().Be(Verbosity.Detailed);
         }
 
         [Fact]

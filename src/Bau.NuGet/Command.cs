@@ -20,7 +20,7 @@ namespace BauNuGet
 
         public string NuGetExePathOverride { get; set; }
 
-        public string Verbosity { get; set; }
+        public Verbosity? Verbosity { get; set; }
 
         public bool NonInteractive { get; set; }
 
@@ -33,10 +33,10 @@ namespace BauNuGet
                 yield return argument;
             }
 
-            if (!string.IsNullOrWhiteSpace(this.Verbosity))
+            if (this.Verbosity.HasValue)
             {
                 // NOTE: Verbose is a valid flag but it is deprecated in favor of Verbosity and should not be used
-                yield return "-Verbosity " + this.Verbosity;
+                yield return "-Verbosity " + this.Verbosity.ToString().ToLowerInvariant();
             }
 
             if (this.NonInteractive)
@@ -44,7 +44,7 @@ namespace BauNuGet
                 yield return "-NonInteractive";
             }
 
-            if (!string.IsNullOrWhiteSpace(this.ConfigFile))
+            if (this.ConfigFile != null)
             {
                 yield return "-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile);
             }

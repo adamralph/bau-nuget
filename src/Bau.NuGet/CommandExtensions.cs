@@ -18,7 +18,7 @@ namespace BauNuGet
             return command;
         }
 
-        public static T WithVerbosity<T>(this T command, string verbosity) where T : Command
+        public static T WithVerbosity<T>(this T command, Verbosity? verbosity) where T : Command
         {
             command.Verbosity = verbosity;
             return command;
@@ -26,17 +26,17 @@ namespace BauNuGet
 
         public static T WithVerbosityDetailed<T>(this T command) where T : Command
         {
-            return command.WithVerbosity("detailed");
+            return command.WithVerbosity(Verbosity.Detailed);
         }
 
         public static T WithVerbosityQuiet<T>(this T command) where T : Command
         {
-            return command.WithVerbosity("quiet");
+            return command.WithVerbosity(Verbosity.Quiet);
         }
 
         public static T WithVerbosityNormal<T>(this T command) where T : Command
         {
-            return command.WithVerbosity("normal");
+            return command.WithVerbosity(Verbosity.Normal);
         }
 
         public static T WithInteraction<T>(this T command) where T : Command
