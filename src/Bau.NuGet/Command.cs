@@ -4,6 +4,7 @@
 
 namespace BauNuGet
 {
+    using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
 
@@ -46,13 +47,11 @@ namespace BauNuGet
 
             if (this.ConfigFile != null)
             {
-                yield return "-ConfigFile " + this.QuoteWrapCliValue(this.ConfigFile);
+                yield return "-ConfigFile " + EncodeArgumentValue(this.ConfigFile);
             }
         }
 
-        protected abstract IEnumerable<string> CreateCustomCommandLineArguments();
-
-        protected string QuoteWrapCliValue(string value)
+        protected static string EncodeArgumentValue(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -66,7 +65,7 @@ namespace BauNuGet
 
                 // NOTE: there are better ways to fix this:
                 // http://stackoverflow.com/questions/5510343/escape-command-line-arguments-in-c-sharp/12364234
-                if (quotedResult.EndsWith("\\\""))
+                if (quotedResult.EndsWith("\\\"", StringComparison.Ordinal))
                 {
                     // HACK: just flip the slash and hope for the best
                     return quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
@@ -77,5 +76,7 @@ namespace BauNuGet
 
             return value;
         }
+
+        protected abstract IEnumerable<string> CreateCustomCommandLineArguments();
     }
 }

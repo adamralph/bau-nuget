@@ -7,13 +7,13 @@ namespace BauNuGet.Test.Unit
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Xml;
     using FluentAssertions;
     using Xunit;
 
     public static class PackFacts
     {
-        [Fact]
-        public static void CanPackPackageUsingCli()
+        public static void Packs()
         {
             // arrange
             var task = new NuGetTask();
@@ -39,7 +39,7 @@ namespace BauNuGet.Test.Unit
             }
 
             using (var nuspecStream = File.CreateText(pack.NuSpecOrProject))
-            using (var xmlWriter = System.Xml.XmlWriter.Create(nuspecStream))
+            using (var xmlWriter = XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
@@ -91,7 +91,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanCreateMultiplePackCommands()
+        public static void CreatesMultiplePackCommands()
         {
             // arrange
             var task = new NuGetTask();

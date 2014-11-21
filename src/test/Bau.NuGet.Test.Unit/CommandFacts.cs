@@ -62,7 +62,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyNonInteractiveCli()
+        public static void PropertyNonInteractive()
         {
             // arrange
             var normal = new DummyCommand();
@@ -75,7 +75,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyConfigFileCli()
+        public static void PropertyNonConfigFile()
         {
             // arrange
             var normal = new DummyCommand();

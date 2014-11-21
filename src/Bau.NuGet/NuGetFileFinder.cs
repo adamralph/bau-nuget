@@ -9,9 +9,9 @@ namespace BauNuGet
     using System.IO;
     using System.Linq;
 
-    public class NuGetFileFinder
+    public static class NuGetFileFinder
     {
-        public FileInfo FindFile()
+        public static FileInfo FindFile()
         {
             var file = FindFiles(new DirectoryInfo(Directory.GetCurrentDirectory())).FirstOrDefault();
             if (file != null)

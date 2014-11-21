@@ -12,11 +12,8 @@ namespace BauNuGet.Test.Unit
         [Fact]
         public static void FindsFile()
         {
-            // arrange
-            var finder = new NuGetFileFinder();
-
             // act
-            var file = finder.FindFile();
+            var file = NuGetFileFinder.FindFile();
 
             // assert
             file.Name.Should().Be("NuGet.exe");

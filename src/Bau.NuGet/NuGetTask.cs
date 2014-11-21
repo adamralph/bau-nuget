@@ -13,7 +13,6 @@ namespace BauNuGet
     public class NuGetTask : BauTask
     {
         private readonly List<Command> commands = new List<Command>();
-        private readonly NuGetFileFinder finder = new NuGetFileFinder();
 
         public IEnumerable<Command> Commands
         {
@@ -51,9 +50,9 @@ namespace BauNuGet
                 .ToArray();
         }
 
-        public Pack Pack(string projectOrNuSpec, Action<Pack> configure = null)
+        public Pack Pack(string nuspecOrProject, Action<Pack> configure = null)
         {
-            var pack = new Pack().For(projectOrNuSpec);
+            var pack = new Pack().For(nuspecOrProject);
             if (configure != null)
             {
                 configure(pack);
@@ -62,11 +61,11 @@ namespace BauNuGet
             return this.Add(pack);
         }
 
-        public IEnumerable<Pack> Pack(IEnumerable<string> projectsOrNuSpecs, Action<Pack> configure = null)
+        public IEnumerable<Pack> Pack(IEnumerable<string> nuspecsOrProjects, Action<Pack> configure = null)
         {
-            Guard.AgainstNullArgument("projectsOrNuSpecs", projectsOrNuSpecs);
+            Guard.AgainstNullArgument("nuspecsOrProjects", nuspecsOrProjects);
 
-            return projectsOrNuSpecs.Select(projectOrNuSpec => this.Pack(projectOrNuSpec, configure)).ToArray();
+            return nuspecsOrProjects.Select(projectOrNuSpec => this.Pack(projectOrNuSpec, configure)).ToArray();
         }
 
         public Push Push(string package, Action<Push> configure = null)
@@ -92,7 +91,7 @@ namespace BauNuGet
             string fileName = null;
             foreach (var processStartInfo in this.commands.Select(command => new ProcessStartInfo
             {
-                FileName = command.NuGetExePathOverride ?? fileName ?? (fileName = this.finder.FindFile().FullName),
+                FileName = command.NuGetExePathOverride ?? fileName ?? (fileName = NuGetFileFinder.FindFile().FullName),
                 Arguments = string.Join(" ", command.CreateCommandLineArguments()),
                 WorkingDirectory = command.WorkingDirectory,
                 UseShellExecute = false

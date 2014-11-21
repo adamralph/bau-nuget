@@ -13,10 +13,10 @@ namespace BauNuGet.Test.Unit
     public static class PushFacts
     {
         [Fact]
-        public static void CanPushUsingCli()
+        public static void Pushes()
         {
             // arrange
-            var nugetDirectory = new NuGetFileFinder().FindFile().Directory;
+            var nugetDirectory = NuGetFileFinder.FindFile().Directory;
             nugetDirectory.Should().NotBeNull();
             nugetDirectory.Parent.Should().NotBeNull();
             var nugetPackageFile = nugetDirectory.Parent.EnumerateFiles("*.nupkg").Single();
@@ -47,7 +47,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanCreateMultiplePushCommands()
+        public static void CreateMultiplePushCommands()
         {
             // arrange
             var task = new NuGetTask();

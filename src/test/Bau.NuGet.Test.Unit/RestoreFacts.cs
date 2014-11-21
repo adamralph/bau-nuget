@@ -13,7 +13,7 @@ namespace BauNuGet.Test.Unit
     public static class RestoreFacts
     {
         [Fact]
-        public static void CanRestorePackagesUsingCli()
+        public static void Restores()
         {
             // arrange
             var task = new NuGetTask();
@@ -56,7 +56,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanCreateMultipleRestoreCommands()
+        public static void CreatesMultipleRestoreCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -78,7 +78,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertySourceCli()
+        public static void PropertySource()
         {
             // arrange
             var normal = new Restore();
@@ -114,7 +114,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyNoCacheCli()
+        public static void PropertyNoCache()
         {
             // arrange
             var normal = new Restore();
@@ -152,7 +152,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void PropertyDisableParallelProcessingCli()
+        public static void PropertyDisableParallelProcessing()
         {
             // arrange
             var normal = new Restore();

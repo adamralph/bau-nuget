@@ -148,27 +148,27 @@ namespace BauNuGet
 
             if (this.NuSpecOrProject != null)
             {
-                yield return this.QuoteWrapCliValue(this.NuSpecOrProject);
+                yield return Command.EncodeArgumentValue(this.NuSpecOrProject);
             }
 
             if (this.OutputDirectory != null)
             {
-                yield return "-OutputDirectory " + this.QuoteWrapCliValue(this.OutputDirectory);
+                yield return "-OutputDirectory " + Command.EncodeArgumentValue(this.OutputDirectory);
             }
 
             if (this.BasePath != null)
             {
-                yield return "-BasePath " + this.QuoteWrapCliValue(this.BasePath);
+                yield return "-BasePath " + Command.EncodeArgumentValue(this.BasePath);
             }
 
             if (this.Version != null)
             {
-                yield return "-Version " + this.QuoteWrapCliValue(this.Version);
+                yield return "-Version " + Command.EncodeArgumentValue(this.Version);
             }
 
             foreach (var exclusion in this.Exclusions)
             {
-                yield return "-Exclude " + this.QuoteWrapCliValue(exclusion);
+                yield return "-Exclude " + Command.EncodeArgumentValue(exclusion);
             }
 
             if (this.Symbols)
@@ -211,12 +211,12 @@ namespace BauNuGet
                 var value = string.Join(
                     ";", this.Properties.Select(property => string.Concat(property.Key, "=", property.Value)));
 
-                yield return "-Properties " + this.QuoteWrapCliValue(value);
+                yield return "-Properties " + Command.EncodeArgumentValue(value);
             }
 
             if (this.MiniClientVersion != null)
             {
-                yield return "-MinClientVersion " + this.QuoteWrapCliValue(this.MiniClientVersion);
+                yield return "-MinClientVersion " + Command.EncodeArgumentValue(this.MiniClientVersion);
             }
         }
     }

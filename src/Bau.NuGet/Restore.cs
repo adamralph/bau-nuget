@@ -83,7 +83,7 @@ namespace BauNuGet
 
             if (this.SolutionOrPackagesConfig != null)
             {
-                yield return this.QuoteWrapCliValue(this.SolutionOrPackagesConfig);
+                yield return Command.EncodeArgumentValue(this.SolutionOrPackagesConfig);
             }
 
             if (this.RequireConsent)
@@ -93,17 +93,17 @@ namespace BauNuGet
 
             if (this.PackagesDirectory != null)
             {
-                yield return "-PackagesDirectory " + this.QuoteWrapCliValue(this.PackagesDirectory);
+                yield return "-PackagesDirectory " + Command.EncodeArgumentValue(this.PackagesDirectory);
             }
 
             if (this.SolutionDirectory != null)
             {
-                yield return "-SolutionDirectory " + this.QuoteWrapCliValue(this.SolutionDirectory);
+                yield return "-SolutionDirectory " + Command.EncodeArgumentValue(this.SolutionDirectory);
             }
 
             foreach (var source in this.Sources)
             {
-                yield return "-Source " + this.QuoteWrapCliValue(source);
+                yield return "-Source " + Command.EncodeArgumentValue(source);
             }
 
             if (this.NoCache)
@@ -118,7 +118,7 @@ namespace BauNuGet
 
             if (this.PackageSaveMode != null)
             {
-                yield return "-PackageSaveMode" + this.QuoteWrapCliValue(this.PackageSaveMode);
+                yield return "-PackageSaveMode" + Command.EncodeArgumentValue(this.PackageSaveMode);
             }
         }
     }

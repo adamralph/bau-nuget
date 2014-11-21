@@ -55,12 +55,12 @@ namespace BauNuGet
 
             if (this.Package != null)
             {
-                yield return this.QuoteWrapCliValue(this.Package);
+                yield return Command.EncodeArgumentValue(this.Package);
             }
 
             if (this.Source != null)
             {
-                yield return "-Source " + this.QuoteWrapCliValue(this.Source);
+                yield return "-Source " + Command.EncodeArgumentValue(this.Source);
             }
 
             if (this.ApiKey != null)

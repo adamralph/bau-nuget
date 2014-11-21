@@ -1,13 +1,16 @@
 <Dictionary>
   <Words>
     <Unrecognized>
-      <Word/>
+      <Word />
     </Unrecognized>
     <Recognized>
+      <Word>Api</Word>
       <Word>Bau</Word>
-      <Word>Cpu</Word>
-      <Word>MSBuild</Word>
+      <Word>Nu</Word>
       <Word>NuGet</Word>
+      <Word>NuSpec</Word>
+      <Word>NuSpecs</Word>
+      <Word>Configs</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""/>
@@ -16,7 +19,8 @@
       <Term CompoundAlternate=""/>
     </Compound>
     <DiscreteExceptions>
-      <Term/>
+      <Term>NuGet</Term>
+      <Term>NuSpec</Term>
     </DiscreteExceptions>
   </Words>
   <Acronyms>

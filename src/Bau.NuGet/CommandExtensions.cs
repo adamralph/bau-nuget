@@ -12,9 +12,9 @@ namespace BauNuGet
             return command;
         }
 
-        public static T WithNuGetExePathOverride<T>(this T command, string nugetExePath) where T : Command
+        public static T WithNuGetExePathOverride<T>(this T command, string path) where T : Command
         {
-            command.NuGetExePathOverride = nugetExePath;
+            command.NuGetExePathOverride = path;
             return command;
         }
 
