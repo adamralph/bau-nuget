@@ -36,7 +36,7 @@ namespace BauNuGet.Test.Unit
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(restore.TargetSolutionOrPackagesConfig))
+            using (var packagesFileStream = File.CreateText(restore.SolutionOrPackagesConfig))
             {
                 packagesFileStream.Write(
                     "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
@@ -73,8 +73,8 @@ namespace BauNuGet.Test.Unit
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
             task.Commands.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file1");
-            task.Commands.OfType<Restore>().Select(x => x.TargetSolutionOrPackagesConfig).Should().Contain("file2");
+            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
+            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
         }
 
         [Fact]
