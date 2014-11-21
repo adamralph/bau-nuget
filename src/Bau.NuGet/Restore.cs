@@ -10,13 +10,6 @@ namespace BauNuGet
     {
         private readonly HashSet<string> sources = new HashSet<string>();
 
-        public Restore()
-        {
-            this.RequireConsent = false;
-            this.NoCache = false;
-            this.DisableParallelProcessing = false;
-        }
-
         public ICollection<string> Sources
         {
             get { return this.sources; }

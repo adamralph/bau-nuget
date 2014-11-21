@@ -15,11 +15,7 @@ namespace BauNuGet
 
         protected Command()
         {
-            this.WorkingDirectory = null;
-            this.NuGetExePathOverride = null;
-            this.Verbosity = null;
             this.NonInteractive = true;
-            this.ConfigFile = null;
         }
 
         public string WorkingDirectory { get; set; }
