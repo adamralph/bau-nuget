@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandExtensionsFacts.cs" />
     <Compile Include="CommandFacts.cs" />
     <Compile Include="NuGetFileFinderFacts.cs" />
     <Compile Include="PackFacts.cs" />

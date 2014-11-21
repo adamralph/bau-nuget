@@ -4,7 +4,6 @@
 
 namespace BauNuGet.Test.Unit
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using FluentAssertions;
@@ -13,96 +12,93 @@ namespace BauNuGet.Test.Unit
 
     public static class CommandFacts
     {
-        [Fact]
-        public static void DoesNotCreateVerbosityArgumentWhenNotSpecified()
+        public static class TheCreateCommandLineArgumentsMethod
         {
-            // arrange
-            var command = new DummyCommand();
+            [Fact]
+            public static void DoesNotCreatesAVerbosityArgumentWhenTheVerbosityIsNotSpecified()
+            {
+                // arrange
+                var command = new DummyCommand();
 
-            // act
-            var arguments = command.CreateCommandLineArguments().ToArray();
+                // act
+                var arguments = command.CreateCommandLineArguments().ToArray();
 
-            // assert
-            arguments.Should().NotContain("-Verbosity");
-        }
+                // assert
+                arguments.Should().NotContain("-Verbosity");
+            }
 
-        [Theory]
-        [InlineData(Verbosity.Normal)]
-        [InlineData(Verbosity.Quiet)]
-        [InlineData(Verbosity.Detailed)]
-        public static void CreatesVerbosityArgumentWhenSpecified(Verbosity verbosity)
-        {
-            // arrange
-            var command = new DummyCommand { Verbosity = verbosity };
+            [Theory]
+            [InlineData(Verbosity.Normal)]
+            [InlineData(Verbosity.Quiet)]
+            [InlineData(Verbosity.Detailed)]
+            public static void CreatesAVerbosityArgumentWhenTheVerbosityIsSpecified(Verbosity verbosity)
+            {
+                // arrange
+                var command = new DummyCommand { Verbosity = verbosity };
 
-            // act
-            var arguments = command.CreateCommandLineArguments().ToArray();
+                // act
+                var arguments = command.CreateCommandLineArguments().ToArray();
 
-            // assert
-            arguments.Should().Contain("-Verbosity " + verbosity.ToString().ToLowerInvariant());
-        }
+                // assert
+                arguments.Should().Contain("-Verbosity " + verbosity.ToString().ToLowerInvariant());
+            }
 
-        [Fact]
-        public static void PropertyVerbosityFluent()
-        {
-            // arrange
-            var normal = new DummyCommand();
-            var quiet = new DummyCommand();
-            var detailed = new DummyCommand();
+            [Fact]
+            public static void CreatesANonInteractiveArgumentByDefault()
+            {
+                // arrange
+                var normal = new DummyCommand();
 
-            // act
-            normal.WithVerbosityNormal();
-            quiet.WithVerbosityQuiet();
-            detailed.WithVerbosityDetailed();
+                // act
+                var arguments = normal.CreateCommandLineArguments();
 
-            // assert
-            normal.Verbosity.Should().Be(Verbosity.Normal);
-            quiet.Verbosity.Should().Be(Verbosity.Quiet);
-            detailed.Verbosity.Should().Be(Verbosity.Detailed);
-        }
+                // assert
+                arguments.Should().Contain("-NonInteractive");
+            }
 
-        [Fact]
-        public static void PropertyNonInteractive()
-        {
-            // arrange
-            var normal = new DummyCommand();
+            [Fact]
+            public static void DoesNotCreateANonInteractiveArgumentWhenNonInteractiveIsFalse()
+            {
+                // arrange
+                var normal = new DummyCommand { NonInteractive = false };
 
-            // act
-            var arguments = normal.CreateCommandLineArguments();
+                // act
+                var arguments = normal.CreateCommandLineArguments();
 
-            // assert
-            arguments.Should().Contain("-NonInteractive");
-        }
+                // assert
+                arguments.Should().NotContain("-NonInteractive");
+            }
 
-        [Fact]
-        public static void PropertyNonConfigFile()
-        {
-            // arrange
-            var normal = new DummyCommand();
-            var modified = new DummyCommand { ConfigFile = "poo.p" };
+            [Fact]
+            public static void DoesNotCreateAConfigFilePropertyWhenTheConfigFileIsNotSpecified()
+            {
+                // arrange
+                var command = new DummyCommand();
 
-            // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var modifiedArguments = modified.CreateCommandLineArguments();
+                // act
+                var arguments = command.CreateCommandLineArguments();
 
-            // assert
-            normalArguments.Should().NotContain("-ConfigFile");
-            modifiedArguments.Should().Contain("-ConfigFile poo.p");
-        }
+                // assert
+                arguments.Should().NotContain("-ConfigFile");
+            }
 
-        [Fact]
-        public static void PropertyConfigFileFluent()
-        {
-            // arrange
-            var normal = new DummyCommand();
-            var modified = new DummyCommand();
+            [Theory]
+            [InlineData(@"", @"-ConfigFile """"")]
+            [InlineData(@"poo.p", @"-ConfigFile poo.p")]
+            [InlineData(@"poo .p", @"-ConfigFile ""poo .p""")]
+            [InlineData(@"poo .p\", @"-ConfigFile ""poo .p/""")]
+            public static void CreatesAConfigFilePropertyWhenAConfigFileIsSpecified(
+                string configFile, string expectedArgument)
+            {
+                // arrange
+                var command = new DummyCommand { ConfigFile = configFile };
 
-            // act
-            modified.WithConfigFile("poo.p");
+                // act
+                var arguments = command.CreateCommandLineArguments();
 
-            // assert
-            normal.ConfigFile.Should().BeNull();
-            modified.ConfigFile.Should().Be("poo.p");
+                // assert
+                arguments.Should().Contain(expectedArgument);
+            }
         }
 
         private class DummyCommand : Command
