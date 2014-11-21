@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetCliLocator.cs" company="Bau contributors">
+﻿// <copyright file="CliLocator.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,42 +8,43 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    public class NuGetCliLocator
+    public class CliLocator
     {
-        static NuGetCliLocator()
+        private static readonly CliLocator @default = new CliLocator();
+
+        public static CliLocator Default
         {
-            Default = new NuGetCliLocator();
+            get { return @default; }
         }
 
-        public NuGetCliLocator()
-        {
-            this.LasyNugetCliFileInfo = new Lazy<FileInfo>(this.GetNugetCommandLineAssemblyPath, true);
-        }
-
-        public static NuGetCliLocator Default { get; private set; }
-
-        private Lazy<FileInfo> LasyNugetCliFileInfo { get; set; }
-
-        public FileInfo GetNugetCommandLineAssemblyPath()
+        public string GetNugetCommandLineAssemblyPath()
         {
             var searchStartDirectories = new List<DirectoryInfo>();
-            
+
             var assemblyLocation = new FileInfo(this.GetBauNuGetPluginAssemblyPath());
-            searchStartDirectories.Add(assemblyLocation.Directory);
+            if (assemblyLocation.Directory != null)
+            {
+                searchStartDirectories.Add(assemblyLocation.Directory);
+            }
 
             var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-            if (currentWorkingDirectory.FullName != assemblyLocation.Directory.FullName)
+            if (assemblyLocation.Directory == null ||
+                currentWorkingDirectory.FullName != assemblyLocation.Directory.FullName)
             {
                 searchStartDirectories.Add(currentWorkingDirectory);
             }
 
-            return searchStartDirectories
+            var fileInfo = searchStartDirectories
                 .Select(this.GetNugetCommandLineAssemblyPath)
                 .FirstOrDefault(f => f != null);
+
+            if (fileInfo != null)
+            {
+                return fileInfo.FullName;
+            }
+
+            throw new InvalidOperationException("Failed to located NuGet.exe.");
         }
 
         public FileInfo GetNugetCommandLineAssemblyPath(DirectoryInfo startSearchFromDirectory)
@@ -69,7 +70,7 @@ namespace BauNuGet
 
         public string GetBauNuGetPluginAssemblyPath()
         {
-            var assembly = typeof(NuGetCliLocator).Assembly;
+            var assembly = typeof(CliLocator).Assembly;
             Uri codeBaseUri;
             if (Uri.TryCreate(assembly.CodeBase, UriKind.Absolute, out codeBaseUri))
             {
@@ -87,7 +88,8 @@ namespace BauNuGet
         {
             const string NugetCliFolderNameSearch = "NuGet.CommandLine.*";
             const string LocalNuGetPath = "tools/NuGet.exe";
-            foreach (var result in packageDirectory.EnumerateDirectories(NugetCliFolderNameSearch, SearchOption.TopDirectoryOnly))
+            foreach (var result in packageDirectory
+                .EnumerateDirectories(NugetCliFolderNameSearch, SearchOption.TopDirectoryOnly))
             {
                 var expectedPath = Path.Combine(result.FullName, LocalNuGetPath);
                 var fileInfo = new FileInfo(expectedPath);

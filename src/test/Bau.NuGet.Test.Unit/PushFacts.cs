@@ -1,33 +1,29 @@
-﻿// <copyright file="NuGetPushFacts.cs" company="Bau contributors">
+﻿// <copyright file="PushFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
 namespace BauNuGet.Test.Unit
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using FluentAssertions;
     using Xunit;
-    using Xunit.Extensions;
 
-    public static class NuGetPushFacts
+    public static class PushFacts
     {
         [Fact]
         public static void CanPushUsingCli()
         {
             // arrange
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
-            var nugetExePath = NuGetCliLocator.Default.GetNugetCommandLineAssemblyPath();
-            var nugetExePackagePath = nugetExePath.Directory.Parent.EnumerateFiles("*.nupkg").Single();
+            var directoryPath = Path.GetDirectoryName(CliLocator.Default.GetNugetCommandLineAssemblyPath());
+            directoryPath.Should().NotBeNull();
+            var directory = new DirectoryInfo(directoryPath);
+            directory.Parent.Should().NotBeNull();
+            var nugetExePackagePath = directory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
             var task = new NuGetTask();
-            var request = task
+            task
                 .Push(nugetExePackagePath.FullName)
                 .WithWorkingDirectory("./")
                 .WithSource(nugetFakeFolder.FullName)
@@ -52,7 +48,7 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanCreateMultiplePushRequests()
+        public static void CanCreateMultiplePushCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -67,11 +63,11 @@ namespace BauNuGet.Test.Unit
                     .WithApiKey(apiKey));
 
             // assert
-            task.Requests.Should().HaveCount(2);
-            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetPushRequest>().All(r => r.ApiKey == apiKey).Should().BeTrue();
-            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file1");
-            task.Requests.OfType<NuGetPushRequest>().Select(x => x.TargetPackage).Should().Contain("file2");
+            task.Commands.Should().HaveCount(2);
+            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<Push>().All(r => r.ApiKey == apiKey).Should().BeTrue();
+            task.Commands.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file1");
+            task.Commands.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file2");
         }
     }
 }

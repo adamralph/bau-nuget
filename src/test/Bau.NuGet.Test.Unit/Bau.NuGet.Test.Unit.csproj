@@ -56,11 +56,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NuGetRequestBaseFacts.cs" />
-    <Compile Include="NuGetCliLocatorFacts.cs" />
-    <Compile Include="NuGetPackFacts.cs" />
-    <Compile Include="NuGetPushFacts.cs" />
-    <Compile Include="NuGetRestoreFacts.cs" />
+    <Compile Include="CommandFacts.cs" />
+    <Compile Include="CliLocatorFacts.cs" />
+    <Compile Include="PackFacts.cs" />
+    <Compile Include="PushFacts.cs" />
+    <Compile Include="RestoreFacts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

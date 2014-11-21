@@ -1,28 +1,23 @@
-﻿// <copyright file="NuGetPackFacts.cs" company="Bau contributors">
+﻿// <copyright file="PackFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
 namespace BauNuGet.Test.Unit
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using FluentAssertions;
     using Xunit;
-    using Xunit.Extensions;
 
-    public static class NuGetPackFacts
+    public static class PackFacts
     {
         [Fact]
         public static void CanPackPackageUsingCli()
         {
             // arrange
             var task = new NuGetTask();
-            var request = task
+            var pack = task
                 .Pack("./pickles.nuspec")
                 .WithWorkingDirectory("./")
                 .WithVersion("0.1.2-alpha99999")
@@ -31,26 +26,25 @@ namespace BauNuGet.Test.Unit
                 .WithProperty("Authors", "Peter Piper")
                 .WithExclude("poo.p");
 
-            NuGetCliLocatorFacts.InstallNuGetCli();
-
-            if (Directory.Exists(request.OutputDirectory))
+            if (Directory.Exists(pack.OutputDirectory))
             {
                 Thread.Sleep(500);
-                Directory.Delete(request.OutputDirectory, true);
+                Directory.Delete(pack.OutputDirectory, true);
             }
 
-            using (var pickes = File.CreateText(Path.Combine(Path.GetDirectoryName(request.TargetProjectOrNuSpec), "pickles.txt")))
+            using (var pickes = File.CreateText(
+                Path.Combine(Path.GetDirectoryName(pack.TargetProjectOrNuSpec), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }
 
-            using (var nuspecStream = File.CreateText(request.TargetProjectOrNuSpec))
+            using (var nuspecStream = File.CreateText(pack.TargetProjectOrNuSpec))
             using (var xmlWriter = System.Xml.XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
                 xmlWriter.WriteStartElement("metadata");
-                
+
                 xmlWriter.WriteStartElement("id");
                 xmlWriter.WriteString("pickles");
                 xmlWriter.WriteEndElement();
@@ -86,18 +80,18 @@ namespace BauNuGet.Test.Unit
                 xmlWriter.WriteEndElement();
             }
 
-            Directory.CreateDirectory(request.OutputDirectory);
+            Directory.CreateDirectory(pack.OutputDirectory);
             Thread.Sleep(100);
 
             // act
             task.Execute();
 
             // assert
-            File.Exists(Path.Combine(request.OutputDirectory, "pickles." + request.Version + ".nupkg")).Should().BeTrue();
+            File.Exists(Path.Combine(pack.OutputDirectory, "pickles." + pack.Version + ".nupkg")).Should().BeTrue();
         }
 
         [Fact]
-        public static void CanCreateMultiplePackRequests()
+        public static void CanCreateMultiplePackCommands()
         {
             // arrange
             var task = new NuGetTask();
@@ -111,11 +105,11 @@ namespace BauNuGet.Test.Unit
                     .WithTool());
 
             // assert
-            task.Requests.Should().HaveCount(2);
-            task.Requests.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Requests.OfType<NuGetPackRequest>().All(r => r.Tool).Should().BeTrue();
-            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
-            task.Requests.OfType<NuGetPackRequest>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
+            task.Commands.Should().HaveCount(2);
+            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
+            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
+            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
         }
     }
 }
