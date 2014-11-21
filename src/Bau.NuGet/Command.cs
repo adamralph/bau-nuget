@@ -6,7 +6,6 @@ namespace BauNuGet
 {
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Text.RegularExpressions;
 
     public abstract class Command
@@ -58,7 +57,7 @@ namespace BauNuGet
                 if (quotedResult.EndsWith("\\\""))
                 {
                     // HACK: just flip the slash and hope for the best
-                    quotedResult = quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
+                    return quotedResult.Substring(0, quotedResult.Length - 2) + "/\"";
                 }
 
                 return quotedResult;

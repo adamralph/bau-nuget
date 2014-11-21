@@ -39,12 +39,6 @@ namespace BauNuGet
             return command.WithVerbosity("normal");
         }
 
-        public static T WithConfigFile<T>(this T command, string configFilePath) where T : Command
-        {
-            command.ConfigFile = configFilePath;
-            return command;
-        }
-
         public static T WithInteraction<T>(this T command) where T : Command
         {
             command.NonInteractive = false;
@@ -54,6 +48,12 @@ namespace BauNuGet
         public static T WithoutInteraction<T>(this T command) where T : Command
         {
             command.NonInteractive = true;
+            return command;
+        }
+
+        public static T WithConfigFile<T>(this T command, string configFilePath) where T : Command
+        {
+            command.ConfigFile = configFilePath;
             return command;
         }
     }
