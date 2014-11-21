@@ -66,8 +66,8 @@ namespace BauNuGet.Test.Unit
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
             task.Commands.OfType<Push>().All(r => r.ApiKey == apiKey).Should().BeTrue();
-            task.Commands.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file1");
-            task.Commands.OfType<Push>().Select(x => x.TargetPackage).Should().Contain("file2");
+            task.Commands.OfType<Push>().Select(x => x.Package).Should().Contain("file1");
+            task.Commands.OfType<Push>().Select(x => x.Package).Should().Contain("file2");
         }
     }
 }
