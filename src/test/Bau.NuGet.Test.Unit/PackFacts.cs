@@ -33,12 +33,12 @@ namespace BauNuGet.Test.Unit
             }
 
             using (var pickes = File.CreateText(
-                Path.Combine(Path.GetDirectoryName(pack.TargetProjectOrNuSpec), "pickles.txt")))
+                Path.Combine(Path.GetDirectoryName(pack.NuSpecOrProject), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }
 
-            using (var nuspecStream = File.CreateText(pack.TargetProjectOrNuSpec))
+            using (var nuspecStream = File.CreateText(pack.NuSpecOrProject))
             using (var xmlWriter = System.Xml.XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
@@ -108,8 +108,8 @@ namespace BauNuGet.Test.Unit
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
             task.Commands.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
-            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file1");
-            task.Commands.OfType<Pack>().Select(x => x.TargetProjectOrNuSpec).Should().Contain("file2");
+            task.Commands.OfType<Pack>().Select(x => x.NuSpecOrProject).Should().Contain("file1");
+            task.Commands.OfType<Pack>().Select(x => x.NuSpecOrProject).Should().Contain("file2");
         }
     }
 }

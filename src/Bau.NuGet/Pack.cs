@@ -10,13 +10,11 @@ namespace BauNuGet
 
     public class Pack : Command
     {
-        public Pack()
-        {
-            this.Exclude = new List<string>();
-            this.Properties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        }
+        private readonly HashSet<string> exclusions = new HashSet<string>();
+        private readonly Dictionary<string, string> properties =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public string TargetProjectOrNuSpec { get; set; }
+        public string NuSpecOrProject { get; set; }
 
         public string OutputDirectory { get; set; }
 
@@ -24,7 +22,10 @@ namespace BauNuGet
 
         public string Version { get; set; }
 
-        public List<string> Exclude { get; private set; }
+        public ICollection<string> Exclusions
+        {
+            get { return this.exclusions; }
+        }
 
         public bool Symbols { get; set; }
 
@@ -40,33 +41,26 @@ namespace BauNuGet
 
         public bool IncludeReferencedProjects { get; set; }
 
-        public Dictionary<string, string> Properties { get; private set; }
+        public IDictionary<string, string> Properties
+        {
+            get { return this.properties; }
+        }
 
         public string MiniClientVersion { get; set; }
 
         public void AddExcludes(params string[] excludes)
         {
-            if (this.Exclude == null)
-            {
-                this.Exclude = new List<string>();
-            }
-
-            this.Exclude.AddRange(excludes);
+            this.exclusions.UnionWith(excludes);
         }
 
         public void SetProperty(string key, string value)
         {
-            if (this.Properties == null)
-            {
-                this.Properties = new Dictionary<string, string>();
-            }
-
-            this.Properties[key] = value;
+            this.properties[key] = value;
         }
 
-        public Pack For(string targetProjectOrNuSpec)
+        public Pack For(string nuspecOrProject)
         {
-            this.TargetProjectOrNuSpec = targetProjectOrNuSpec;
+            this.NuSpecOrProject = nuspecOrProject;
             return this;
         }
 
@@ -91,18 +85,6 @@ namespace BauNuGet
         public Pack WithExclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
-            return this;
-        }
-
-        public Pack WithProperty(string key, string value)
-        {
-            this.SetProperty(key, value);
-            return this;
-        }
-
-        public Pack WithMiniClientVersion(string version)
-        {
-            this.MiniClientVersion = version;
             return this;
         }
 
@@ -148,44 +130,45 @@ namespace BauNuGet
             return this;
         }
 
-        public string ExtractVersionString()
+        public Pack WithProperty(string key, string value)
         {
-            if (!string.IsNullOrWhiteSpace(this.Version))
-            {
-                return this.Version;
-            }
+            this.SetProperty(key, value);
+            return this;
+        }
 
-            string result = null;
-            if (this.Properties != null)
-            {
-                this.Properties.TryGetValue("VERSION", out result);
-            }
-
-            return result;
+        public Pack WithMiniClientVersion(string version)
+        {
+            this.MiniClientVersion = version;
+            return this;
         }
 
         protected override IEnumerable<string> CreateCommandLineArguments()
         {
             yield return "pack";
 
-            if (!string.IsNullOrWhiteSpace(this.TargetProjectOrNuSpec))
+            if (this.NuSpecOrProject != null)
             {
-                yield return this.QuoteWrapCliValue(this.TargetProjectOrNuSpec);
+                yield return this.QuoteWrapCliValue(this.NuSpecOrProject);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.OutputDirectory))
+            if (this.OutputDirectory != null)
             {
                 yield return "-OutputDirectory " + this.QuoteWrapCliValue(this.OutputDirectory);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.BasePath))
+            if (this.BasePath != null)
             {
                 yield return "-BasePath " + this.QuoteWrapCliValue(this.BasePath);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.Version))
+            if (this.Version != null)
             {
                 yield return "-Version " + this.QuoteWrapCliValue(this.Version);
+            }
+
+            foreach (var exclusion in this.Exclusions)
+            {
+                yield return "-Exclude " + this.QuoteWrapCliValue(exclusion);
             }
 
             if (this.Symbols)
@@ -223,31 +206,17 @@ namespace BauNuGet
                 yield return "-IncludeReferencedProjects";
             }
 
-            if (!string.IsNullOrWhiteSpace(this.MiniClientVersion))
+            if (this.properties.Any())
+            {
+                var value = string.Join(
+                    ";", this.Properties.Select(property => string.Concat(property.Key, "=", property.Value)));
+
+                yield return "-Properties " + this.QuoteWrapCliValue(value);
+            }
+
+            if (this.MiniClientVersion != null)
             {
                 yield return "-MinClientVersion " + this.QuoteWrapCliValue(this.MiniClientVersion);
-            }
-
-            if (this.Exclude != null)
-            {
-                foreach (var exclude in this.Exclude.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
-                {
-                    yield return "-Exclude " + this.QuoteWrapCliValue(exclude);
-                }
-            }
-
-            // properties should be added last to prevent issues with spaces and other characters
-            if (this.Properties != null)
-            {
-                var propertyParts = this.Properties
-                    .Where(set => !string.IsNullOrWhiteSpace(set.Key))
-                    .Select(set => string.Concat(set.Key, "=", set.Value))
-                    .ToList();
-                var propertyPartsJoined = string.Join(";", propertyParts);
-                if (propertyParts.Count > 0)
-                {
-                    yield return "-Properties " + this.QuoteWrapCliValue(propertyPartsJoined);
-                }
             }
         }
     }
