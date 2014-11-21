@@ -16,15 +16,14 @@ namespace BauNuGet.Test.Unit
         public static void CanPushUsingCli()
         {
             // arrange
-            var directoryPath = Path.GetDirectoryName(CliLocator.Default.GetNugetCommandLineAssemblyPath());
-            directoryPath.Should().NotBeNull();
-            var directory = new DirectoryInfo(directoryPath);
-            directory.Parent.Should().NotBeNull();
-            var nugetExePackagePath = directory.Parent.EnumerateFiles("*.nupkg").Single();
+            var nugetDirectory = new NuGetFileFinder().FindFile().Directory;
+            nugetDirectory.Should().NotBeNull();
+            nugetDirectory.Parent.Should().NotBeNull();
+            var nugetPackageFile = nugetDirectory.Parent.EnumerateFiles("*.nupkg").Single();
             var nugetFakeFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
             var task = new NuGetTask();
             task
-                .Push(nugetExePackagePath.FullName)
+                .Push(nugetPackageFile.FullName)
                 .WithWorkingDirectory("./")
                 .WithSource(nugetFakeFolder.FullName)
                 .WithApiKey("poop")

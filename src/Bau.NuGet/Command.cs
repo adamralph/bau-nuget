@@ -11,6 +11,7 @@ namespace BauNuGet
     public abstract class Command
     {
         private static readonly Regex whiteSpaceRegex = new Regex(@"\s");
+        private readonly NuGetFileFinder finder = new NuGetFileFinder();
 
         protected Command()
         {
@@ -31,7 +32,7 @@ namespace BauNuGet
         {
             return new ProcessStartInfo
             {
-                FileName = this.NuGetExePathOverride ?? CliLocator.Default.GetNugetCommandLineAssemblyPath(),
+                FileName = this.NuGetExePathOverride ?? this.finder.FindFile().FullName,
                 Arguments = string.Join(" ", this.CreateAllCommandLineArguments()),
                 WorkingDirectory = this.WorkingDirectory,
                 UseShellExecute = false

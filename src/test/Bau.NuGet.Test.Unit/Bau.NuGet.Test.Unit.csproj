@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandFacts.cs" />
-    <Compile Include="CliLocatorFacts.cs" />
+    <Compile Include="NuGetFileFinderFacts.cs" />
     <Compile Include="PackFacts.cs" />
     <Compile Include="PushFacts.cs" />
     <Compile Include="RestoreFacts.cs" />
