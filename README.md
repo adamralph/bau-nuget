@@ -9,3 +9,13 @@
 ```batch
 > scriptcs -install Bau.NuGet -pre
 ```
+
+(Optional) Install NuGet.CommandLine:
+```batch
+> scriptcs -install NuGet.CommandLine
+```
+With NuGet.CommandLine installed, Bau.NuGet will automatically locate NuGet.exe in the packages folder. You can optionally specify your own path to NuGet.exe (see below).
+
+## Usage
+
+(Under construction.)
