@@ -1,7 +1,7 @@
 // parameters
 var versionSuffix = Environment.GetEnvironmentVariable("VERSION_SUFFIX") ?? "-adhoc";
-var msBuildFileVerbosity = (Verbosity)Enum.Parse(typeof(Verbosity), Environment.GetEnvironmentVariable("MSBUILD_FILE_VERBOSITY") ?? "minimal", true);
-var nugetVerbosity = Environment.GetEnvironmentVariable("NUGET_VERBOSITY") ?? "quiet";
+var msBuildFileVerbosity = (BauMSBuild.Verbosity)Enum.Parse(typeof(BauMSBuild.Verbosity), Environment.GetEnvironmentVariable("MSBUILD_FILE_VERBOSITY") ?? "minimal", true);
+var nugetVerbosity = (BauNuGet.Verbosity)Enum.Parse(typeof(BauNuGet.Verbosity), Environment.GetEnvironmentVariable("NUGET_VERBOSITY") ?? "quiet", true);
 
 // solution specific variables
 var version = File.ReadAllText("src/CommonAssemblyInfo.cs").Split(new[] { "AssemblyInformationalVersion(\"" }, 2, StringSplitOptions.None).ElementAt(1).Split(new[] { '"' }).First();
@@ -12,8 +12,7 @@ var output = "artifacts/output";
 var tests = "artifacts/tests";
 var logs = "artifacts/logs";
 var unit = "src/test/Bau.NuGet.Test.Unit/bin/Release/Bau.NuGet.Test.Unit.dll";
-var packFolder = "src/Bau.NuGet/";
-var pack = "src/Bau.NuGet/Bau.Nuget";
+var pack = "src/Bau.NuGet/Bau.NuGet";
 
 // solution agnostic tasks
 var bau = Require<Bau>();
@@ -31,7 +30,7 @@ bau
     msb.Properties = new { Configuration = "Release" };
     msb.MaxCpuCount = -1;
     msb.NodeReuse = false;
-    msb.Verbosity = Verbosity.Minimal;
+    msb.Verbosity = BauMSBuild.Verbosity.Minimal;
     msb.NoLogo = true;
     msb.FileLoggers.Add(new FileLogger
     {
@@ -47,7 +46,7 @@ bau
 
 .Task("clobber").DependsOn("clean").Do(() => DeleteDirectory(output))
 
-.NuGet("restore").Do(nuget => nuget.Restore(Directory.EnumerateFiles("./","*.sln")))
+.NuGet("restore").Do(nuget => nuget.Restore(solution))
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {
@@ -57,7 +56,7 @@ bau
     msb.Properties = new { Configuration = "Release" };
     msb.MaxCpuCount = -1;
     msb.NodeReuse = false;
-    msb.Verbosity = Verbosity.Minimal;
+    msb.Verbosity = BauMSBuild.Verbosity.Minimal;
     msb.NoLogo = true;
     msb.FileLoggers.Add(new FileLogger
     {
@@ -79,14 +78,14 @@ bau
 .Task("output").Do(() => CreateDirectory(output))
 
 .NuGet("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
-	.Pack(
-		Directory.EnumerateFiles(packFolder, "*.csproj"),
-		r => r
-			.WithOutputDirectory(output)
-			.WithProperty("Configuration","Release")
-			.WithIncludeReferencedProjects()
-			.WithVerbosity(nugetVerbosity)
-			.WithVersion(version + versionSuffix)))
+    .Pack(
+        pack + ".csproj",
+        r => r
+            .WithOutputDirectory(output)
+            .WithProperty("Configuration","Release")
+            .WithIncludeReferencedProjects()
+            .WithVerbosity(nugetVerbosity)
+            .WithVersion(version + versionSuffix)))
 
 .Run();
 
