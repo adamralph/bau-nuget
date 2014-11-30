@@ -10,7 +10,7 @@ namespace BauNuGet
 
     public abstract class Command
     {
-        private static readonly Regex whiteSpaceRegex = new Regex(@"\s");
+        private static readonly Regex containsWhitespaceRegex = new Regex(@"\s");
 
         protected Command()
         {
@@ -58,7 +58,7 @@ namespace BauNuGet
                 return "\"\""; // supply something
             }
 
-            if (whiteSpaceRegex.IsMatch(value))
+            if (containsWhitespaceRegex.IsMatch(value))
             {
                 // NOTE: single-quotes does not seem to work even though that is a suggested method over double-quotes
                 var quotedResult = "\"" + value + "\"";
