@@ -21,7 +21,7 @@ namespace BauNuGet
 
         public string NuGetExePathOverride { get; set; }
 
-        public Verbosity? Verbosity { get; set; }
+        public NuGetVerbosity? Verbosity { get; set; }
 
         public bool NonInteractive { get; set; }
 

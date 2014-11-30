@@ -28,10 +28,10 @@ namespace BauNuGet.Test.Unit
             }
 
             [Theory]
-            [InlineData(Verbosity.Normal)]
-            [InlineData(Verbosity.Quiet)]
-            [InlineData(Verbosity.Detailed)]
-            public static void CreatesAVerbosityArgumentWhenTheVerbosityIsSpecified(Verbosity verbosity)
+            [InlineData(NuGetVerbosity.Normal)]
+            [InlineData(NuGetVerbosity.Quiet)]
+            [InlineData(NuGetVerbosity.Detailed)]
+            public static void CreatesAVerbosityArgumentWhenTheVerbosityIsSpecified(NuGetVerbosity verbosity)
             {
                 // arrange
                 var command = new DummyCommand { Verbosity = verbosity };

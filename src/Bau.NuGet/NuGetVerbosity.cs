@@ -4,7 +4,7 @@
 
 namespace BauNuGet
 {
-    public enum Verbosity
+    public enum NuGetVerbosity
     {
         Normal,
         Quiet,

@@ -22,16 +22,16 @@ namespace BauNuGet.Test.Unit
                 var detailed = new DummyCommand();
 
                 // act
-                @explicit.WithVerbosity(Verbosity.Detailed);
+                @explicit.WithVerbosity(NuGetVerbosity.Detailed);
                 normal.WithVerbosityNormal();
                 quiet.WithVerbosityQuiet();
                 detailed.WithVerbosityDetailed();
 
                 // assert
-                @explicit.Verbosity.Should().Be(Verbosity.Detailed);
-                normal.Verbosity.Should().Be(Verbosity.Normal);
-                quiet.Verbosity.Should().Be(Verbosity.Quiet);
-                detailed.Verbosity.Should().Be(Verbosity.Detailed);
+                @explicit.Verbosity.Should().Be(NuGetVerbosity.Detailed);
+                normal.Verbosity.Should().Be(NuGetVerbosity.Normal);
+                quiet.Verbosity.Should().Be(NuGetVerbosity.Quiet);
+                detailed.Verbosity.Should().Be(NuGetVerbosity.Detailed);
             }
         }
 
