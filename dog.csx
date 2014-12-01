@@ -46,7 +46,7 @@ bau
 
 .Task("clobber").DependsOn("clean").Do(() => DeleteDirectory(output))
 
-.NuGet("restore").Do(nuget => nuget.Restore(solution))
+.NuGetRestore("restore").Do(nuget => nuget.Files(solution))
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {
@@ -77,15 +77,13 @@ bau
 
 .Task("output").Do(() => CreateDirectory(output))
 
-.NuGet("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
-    .Pack(
-        pack + ".csproj",
-        r => r
-            .WithOutputDirectory(output)
-            .WithProperty("Configuration","Release")
-            .WithIncludeReferencedProjects()
-            .WithVerbosity(nugetVerbosity)
-            .WithVersion(version + versionSuffix)))
+.NuGetPack("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
+    .Files(pack + ".csproj")
+    .Output(output)
+    .Property("Configuration","Release")
+    .IncludeReferencedProjects()
+    .Verbosity(nugetVerbosity)
+    .Version(version + versionSuffix))
 
 .Run();
 
