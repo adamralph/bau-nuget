@@ -11,41 +11,41 @@ namespace BauNuGet
     {
         public string Package { get; set; }
 
-        public string Source { get; set; }
+        public string PackageSource { get; set; }
 
         public string ApiKey { get; set; }
 
-        public int? Timeout { get; set; }
+        public int? TimeoutValue { get; set; }
 
-        public bool DisableBuffering { get; set; }
+        public bool BufferingDisabled { get; set; }
 
-        public Push For(string package)
+        public Push File(string package)
         {
             this.Package = package;
             return this;
         }
 
-        public Push WithSource(string source)
+        public Push Source(string source)
         {
-            this.Source = source;
+            this.PackageSource = source;
             return this;
         }
 
-        public Push WithApiKey(string apiKey)
+        public Push Key(string apiKey)
         {
             this.ApiKey = apiKey;
             return this;
         }
 
-        public Push WithTimeout(int? timeout)
+        public Push Timeout(int? timeout)
         {
-            this.Timeout = timeout;
+            this.TimeoutValue = timeout;
             return this;
         }
 
-        public Push WithDisableBuffering(bool enabled = true)
+        public Push DisableBuffering(bool enabled = true)
         {
-            this.DisableBuffering = enabled;
+            this.BufferingDisabled = enabled;
             return this;
         }
 
@@ -58,9 +58,9 @@ namespace BauNuGet
                 yield return Command.EncodeArgumentValue(this.Package);
             }
 
-            if (this.Source != null)
+            if (this.PackageSource != null)
             {
-                yield return "-Source " + Command.EncodeArgumentValue(this.Source);
+                yield return "-Source " + Command.EncodeArgumentValue(this.PackageSource);
             }
 
             if (this.ApiKey != null)
@@ -68,12 +68,12 @@ namespace BauNuGet
                 yield return this.ApiKey;
             }
 
-            if (this.Timeout.HasValue)
+            if (this.TimeoutValue.HasValue)
             {
-                yield return "-Timeout " + this.Timeout.Value.ToString(CultureInfo.InvariantCulture);
+                yield return "-Timeout " + this.TimeoutValue.Value.ToString(CultureInfo.InvariantCulture);
             }
 
-            if (this.DisableBuffering)
+            if (this.BufferingDisabled)
             {
                 yield return "-DisableBuffering";
             }

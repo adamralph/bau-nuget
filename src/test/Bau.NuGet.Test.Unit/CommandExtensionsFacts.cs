@@ -22,10 +22,10 @@ namespace BauNuGet.Test.Unit
                 var detailed = new DummyCommand();
 
                 // act
-                @explicit.WithVerbosity(NuGetVerbosity.Detailed);
-                normal.WithVerbosityNormal();
-                quiet.WithVerbosityQuiet();
-                detailed.WithVerbosityDetailed();
+                @explicit.Verbosity(NuGetVerbosity.Detailed);
+                normal.VerbosityNormal();
+                quiet.VerbosityQuiet();
+                detailed.VerbosityDetailed();
 
                 // assert
                 @explicit.Verbosity.Should().Be(NuGetVerbosity.Detailed);
@@ -44,7 +44,7 @@ namespace BauNuGet.Test.Unit
                 var command = new DummyCommand();
 
                 // act
-                command.WithConfigFile("poo.p");
+                command.ConfigFile("poo.p");
 
                 // assert
                 command.ConfigFile.Should().Be("poo.p");

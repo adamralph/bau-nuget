@@ -12,7 +12,7 @@ namespace BauNuGet
 
         public string SolutionOrPackagesConfig { get; set; }
 
-        public bool RequireConsent { get; set; }
+        public bool ConsentRequired { get; set; }
 
         public string PackagesDirectory { get; set; }
 
@@ -25,53 +25,58 @@ namespace BauNuGet
 
         public bool NoCache { get; set; }
 
-        public bool DisableParallelProcessing { get; set; }
+        public bool ParallelProcessingDisabled { get; set; }
 
         public string PackageSaveMode { get; set; }
 
-        public virtual Restore For(string solutionOrPackagesConfig)
+        public virtual Restore File(string solutionOrPackagesConfig)
         {
             this.SolutionOrPackagesConfig = solutionOrPackagesConfig;
             return this;
         }
 
-        public virtual Restore WithRequiresConsent(bool enabled = true)
+        public virtual Restore RequiresConsent(bool enabled = true)
         {
-            this.RequireConsent = enabled;
+            this.ConsentRequired = enabled;
             return this;
         }
 
-        public virtual Restore WithPackagesDirectory(string packagesDirectory)
+        public virtual Restore PackagesIn(string packagesDirectory)
         {
             this.PackagesDirectory = packagesDirectory;
             return this;
         }
 
-        public virtual Restore WithSolutionDirectory(string solutionDirectory)
+        public virtual Restore SolutionIn(string solutionDirectory)
         {
             this.SolutionDirectory = solutionDirectory;
             return this;
         }
 
-        public virtual Restore WithSource(string source)
-        {
-            this.Sources.Add(source);
+        public virtual Restore UseSource(string source) {
+            this.sources.Add(source);
             return this;
         }
 
-        public virtual Restore WithNoCache(bool enabled = true)
+        public virtual Restore UseSource(params string[] sources)
+        {
+            this.sources.UnionWith(sources);
+            return this;
+        }
+
+        public virtual Restore DisableCache(bool enabled = true)
         {
             this.NoCache = enabled;
             return this;
         }
 
-        public virtual Restore WithDisableParallelProcessing(bool enabled = true)
+        public virtual Restore DisableParallelProcessing(bool enabled = true)
         {
-            this.DisableParallelProcessing = enabled;
+            this.ParallelProcessingDisabled = enabled;
             return this;
         }
 
-        public virtual Restore WithPackageSaveMode(string packageSaveMode)
+        public virtual Restore SaveMode(string packageSaveMode)
         {
             this.PackageSaveMode = packageSaveMode;
             return this;
@@ -86,7 +91,7 @@ namespace BauNuGet
                 yield return Command.EncodeArgumentValue(this.SolutionOrPackagesConfig);
             }
 
-            if (this.RequireConsent)
+            if (this.ConsentRequired)
             {
                 yield return "-RequireConsent";
             }
@@ -111,7 +116,7 @@ namespace BauNuGet
                 yield return "-NoCache";
             }
 
-            if (this.DisableParallelProcessing)
+            if (this.ParallelProcessingDisabled)
             {
                 yield return "-DisableParallelProcessing";
             }

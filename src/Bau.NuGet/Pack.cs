@@ -18,9 +18,9 @@ namespace BauNuGet
 
         public string OutputDirectory { get; set; }
 
-        public string BasePath { get; set; }
+        public string NuSpecBasePath { get; set; }
 
-        public string Version { get; set; }
+        public string VersionValue { get; set; }
 
         public ICollection<string> Exclusions
         {
@@ -37,108 +37,112 @@ namespace BauNuGet
 
         public bool NoPackageAnalysis { get; set; }
 
-        public bool ExcludeEmptyDirectories { get; set; }
+        public bool EmptyDirectoriesExcluded { get; set; }
 
-        public bool IncludeReferencedProjects { get; set; }
+        public bool ReferencedProjectsIncluded { get; set; }
 
-        public IDictionary<string, string> Properties
+        public IDictionary<string, string> PropertiesCollection
         {
             get { return this.properties; }
         }
 
-        public string MiniClientVersion { get; set; }
+        public string MiniClientVersionValue { get; set; }
 
         public void AddExcludes(params string[] excludes)
         {
             this.exclusions.UnionWith(excludes);
         }
 
-        public void SetProperty(string key, string value)
-        {
-            this.properties[key] = value;
-        }
-
-        public Pack For(string nuspecOrProject)
+        public Pack File(string nuspecOrProject)
         {
             this.NuSpecOrProject = nuspecOrProject;
             return this;
         }
 
-        public Pack WithOutputDirectory(string outputDirectory)
+        public Pack Output(string outputDirectory)
         {
             this.OutputDirectory = outputDirectory;
             return this;
         }
 
-        public Pack WithBasePath(string basePath)
+        public Pack NuSpecBase(string basePath)
         {
-            this.BasePath = basePath;
+            this.NuSpecBasePath = basePath;
             return this;
         }
 
-        public Pack WithVersion(string version)
+        public Pack Version(string version)
         {
-            this.Version = version;
+            this.VersionValue = version;
             return this;
         }
 
-        public Pack WithExclude(params string[] excludes)
+        public Pack Exclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public Pack WithSymbols(bool enabled = true)
+        public Pack MakeSymbols(bool enabled = true)
         {
             this.Symbols = enabled;
             return this;
         }
 
-        public Pack WithTool(bool enabled = true)
+        public Pack AsTool(bool enabled = true)
         {
             this.Tool = enabled;
             return this;
         }
 
-        public Pack WithBuild(bool enabled = true)
+        public Pack PerformBuild(bool enabled = true)
         {
             this.Build = enabled;
             return this;
         }
 
-        public Pack WithNoDefaultExcludes(bool enabled = true)
+        public Pack DisableDefaultExcludes(bool enabled = true)
         {
             this.NoDefaultExcludes = enabled;
             return this;
         }
 
-        public Pack WithNoPackageAnalysis(bool enabled = true)
+        public Pack DisablePackageAnalysis(bool enabled = true)
         {
             this.NoPackageAnalysis = enabled;
             return this;
         }
 
-        public Pack WithExcludeEmptyDirectories(bool enabled = true)
+        public Pack ExcludeEmptyDirectories(bool enabled = true)
         {
-            this.ExcludeEmptyDirectories = enabled;
+            this.EmptyDirectoriesExcluded = enabled;
             return this;
         }
 
-        public Pack WithIncludeReferencedProjects(bool enabled = true)
+        public Pack IncludeReferencedProjects(bool enabled = true)
         {
-            this.IncludeReferencedProjects = enabled;
+            this.ReferencedProjectsIncluded = enabled;
             return this;
         }
 
-        public Pack WithProperty(string key, string value)
+        public Pack Property(string key, string value)
         {
-            this.SetProperty(key, value);
+            this.properties[key] = value;
             return this;
         }
 
-        public Pack WithMiniClientVersion(string version)
+        public Pack Properties(IDictionary<string, string> pairs)
         {
-            this.MiniClientVersion = version;
+            foreach (var pair in pairs)
+            {
+                this.properties[pair.Key] = pair.Value;
+            }
+            return this;
+        }
+
+        public Pack MiniClientVersion(string version)
+        {
+            this.MiniClientVersionValue = version;
             return this;
         }
 
@@ -156,14 +160,14 @@ namespace BauNuGet
                 yield return "-OutputDirectory " + Command.EncodeArgumentValue(this.OutputDirectory);
             }
 
-            if (this.BasePath != null)
+            if (this.NuSpecBasePath != null)
             {
-                yield return "-BasePath " + Command.EncodeArgumentValue(this.BasePath);
+                yield return "-BasePath " + Command.EncodeArgumentValue(this.NuSpecBasePath);
             }
 
-            if (this.Version != null)
+            if (this.VersionValue != null)
             {
-                yield return "-Version " + Command.EncodeArgumentValue(this.Version);
+                yield return "-Version " + Command.EncodeArgumentValue(this.VersionValue);
             }
 
             foreach (var exclusion in this.Exclusions)
@@ -196,12 +200,12 @@ namespace BauNuGet
                 yield return "-NoPackageAnalysis";
             }
 
-            if (this.ExcludeEmptyDirectories)
+            if (this.EmptyDirectoriesExcluded)
             {
                 yield return "-ExcludeEmptyDirectories";
             }
 
-            if (this.IncludeReferencedProjects)
+            if (this.ReferencedProjectsIncluded)
             {
                 yield return "-IncludeReferencedProjects";
             }
@@ -209,14 +213,14 @@ namespace BauNuGet
             if (this.properties.Any())
             {
                 var value = string.Join(
-                    ";", this.Properties.Select(property => string.Concat(property.Key, "=", property.Value)));
+                    ";", this.PropertiesCollection.Select(property => string.Concat(property.Key, "=", property.Value)));
 
                 yield return "-Properties " + Command.EncodeArgumentValue(value);
             }
 
-            if (this.MiniClientVersion != null)
+            if (this.MiniClientVersionValue != null)
             {
-                yield return "-MinClientVersion " + Command.EncodeArgumentValue(this.MiniClientVersion);
+                yield return "-MinClientVersion " + Command.EncodeArgumentValue(this.MiniClientVersionValue);
             }
         }
     }

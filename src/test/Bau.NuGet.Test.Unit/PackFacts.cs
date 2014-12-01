@@ -19,12 +19,12 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetTask();
             var pack = task
                 .Pack("./pickles.nuspec")
-                .WithWorkingDirectory("./")
-                .WithVersion("0.1.2-alpha99999")
-                .WithOutputDirectory("./packed")
-                .WithProperty("Unused", "Don't Care")
-                .WithProperty("Authors", "Peter Piper")
-                .WithExclude("poo.p");
+                .In("./")
+                .Version("0.1.2-alpha99999")
+                .Output("./packed")
+                .Property("Unused", "Don't Care")
+                .Property("Authors", "Peter Piper")
+                .Exclude("poo.p");
 
             if (Directory.Exists(pack.OutputDirectory))
             {
@@ -87,7 +87,7 @@ namespace BauNuGet.Test.Unit
             task.Execute();
 
             // assert
-            File.Exists(Path.Combine(pack.OutputDirectory, "pickles." + pack.Version + ".nupkg")).Should().BeTrue();
+            File.Exists(Path.Combine(pack.OutputDirectory, "pickles." + pack.VersionValue + ".nupkg")).Should().BeTrue();
         }
 
         [Fact]
@@ -101,8 +101,8 @@ namespace BauNuGet.Test.Unit
             task.Pack(
                 new[] { "file1", "file2" },
                 r => r
-                    .WithWorkingDirectory(fakeDirName)
-                    .WithTool());
+                    .In(fakeDirName)
+                    .AsTool());
 
             // assert
             task.Commands.Should().HaveCount(2);

@@ -27,11 +27,11 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetTask();
             task
                 .Push(nugetPackageFile.FullName)
-                .WithWorkingDirectory("./")
-                .WithSource(pushFolder.FullName)
-                .WithApiKey("poop")
-                .WithTimeout(123)
-                .WithDisableBuffering(false);
+                .In("./")
+                .Source(pushFolder.FullName)
+                .Key("poop")
+                .Timeout(123)
+                .DisableBuffering(false);
 
             if (pushFolder.Exists)
             {
@@ -63,8 +63,8 @@ namespace BauNuGet.Test.Unit
             task.Push(
                 packages,
                 push => push
-                    .WithApiKey(apiKey)
-                    .WithWorkingDirectory(workingDirectory));
+                    .Key(apiKey)
+                    .In(workingDirectory));
 
             // assert
             task.Commands.Should().HaveCount(packages.Length);

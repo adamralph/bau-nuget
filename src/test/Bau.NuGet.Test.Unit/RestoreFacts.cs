@@ -19,10 +19,10 @@ namespace BauNuGet.Test.Unit
             var task = new NuGetTask();
             var restore = task
                 .Restore("./restore-test/packages.config")
-                .WithWorkingDirectory("./")
-                .WithSolutionDirectory("./restore-test")
-                .WithPackagesDirectory("./restore-test/packages")
-                .WithRequiresConsent(false);
+                .In("./")
+                .SolutionIn("./restore-test")
+                .PackagesIn("./restore-test/packages")
+                .RequiresConsent(false);
 
             if (!Directory.Exists(restore.SolutionDirectory))
             {
@@ -66,8 +66,8 @@ namespace BauNuGet.Test.Unit
             task.Restore(
                 new[] { "file1", "file2" },
                 r => r
-                    .WithWorkingDirectory(fakeDirName)
-                    .WithPackagesDirectory(fakeDirName));
+                    .In(fakeDirName)
+                    .PackagesIn(fakeDirName));
 
             // assert
             task.Commands.Should().HaveCount(2);
@@ -105,8 +105,8 @@ namespace BauNuGet.Test.Unit
 
             // act
             multiple
-                .WithSource(@"http://source1/api")
-                .WithSource(@"C:\some folder\");
+                .UseSource(@"http://source1/api")
+                .UseSource(@"C:\some folder\");
 
             // assert
             normal.Sources.Should().BeEmpty();
@@ -141,9 +141,9 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore();
 
             // act
-            normal.WithNoCache();
-            enabled.WithNoCache(true);
-            disabled.WithNoCache(false);
+            normal.DisableCache();
+            enabled.DisableCache(true);
+            disabled.DisableCache(false);
 
             // assert
             normal.NoCache.Should().BeTrue();
@@ -156,8 +156,8 @@ namespace BauNuGet.Test.Unit
         {
             // arrange
             var normal = new Restore();
-            var enabled = new Restore { DisableParallelProcessing = true };
-            var disabled = new Restore { DisableParallelProcessing = false };
+            var enabled = new Restore { ParallelProcessingDisabled = true };
+            var disabled = new Restore { ParallelProcessingDisabled = false };
 
             // act
             var normalArguments = normal.CreateCommandLineArguments();
@@ -179,14 +179,14 @@ namespace BauNuGet.Test.Unit
             var disabled = new Restore();
 
             // act
-            normal.WithDisableParallelProcessing();
-            enabled.WithDisableParallelProcessing(true);
-            disabled.WithDisableParallelProcessing(false);
+            normal.DisableParallelProcessing();
+            enabled.DisableParallelProcessing(true);
+            disabled.DisableParallelProcessing(false);
 
             // assert
-            normal.DisableParallelProcessing.Should().BeTrue();
-            enabled.DisableParallelProcessing.Should().BeTrue();
-            disabled.DisableParallelProcessing.Should().BeFalse();
+            normal.ParallelProcessingDisabled.Should().BeTrue();
+            enabled.ParallelProcessingDisabled.Should().BeTrue();
+            disabled.ParallelProcessingDisabled.Should().BeFalse();
         }
     }
 }

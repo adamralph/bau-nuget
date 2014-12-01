@@ -31,7 +31,7 @@ namespace BauNuGet
 
         public Restore Restore(string solutionOrPackagesConfig, Action<Restore> configure = null)
         {
-            var restore = new Restore().For(solutionOrPackagesConfig);
+            var restore = new Restore().File(solutionOrPackagesConfig);
             if (configure != null)
             {
                 configure(restore);
@@ -52,7 +52,7 @@ namespace BauNuGet
 
         public Pack Pack(string nuspecOrProject, Action<Pack> configure = null)
         {
-            var pack = new Pack().For(nuspecOrProject);
+            var pack = new Pack().File(nuspecOrProject);
             if (configure != null)
             {
                 configure(pack);
@@ -70,7 +70,7 @@ namespace BauNuGet
 
         public Push Push(string package, Action<Push> configure = null)
         {
-            var push = new Push().For(package);
+            var push = new Push().File(package);
             if (configure != null)
             {
                 configure(push);
