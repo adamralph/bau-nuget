@@ -61,8 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandExtensionsFacts.cs" />
-    <Compile Include="CommandFacts.cs" />
+    <Compile Include="NuGetTaskExtensionsFacts.cs" />
+    <Compile Include="NuGetTaskFacts.cs" />
     <Compile Include="NuGetFileFinderFacts.cs" />
     <Compile Include="PackFacts.cs" />
     <Compile Include="PushFacts.cs" />

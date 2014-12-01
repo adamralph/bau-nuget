@@ -16,7 +16,7 @@ namespace BauNuGet.Test.Unit
         public static void Packs()
         {
             // arrange
-            var pack = new PackTask()
+            var pack = new Pack()
                 .Files("./pickles.nuspec")
                 .In("./")
                 .Version("0.1.2-alpha99999")
@@ -90,10 +90,10 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CreatesMultiplePackCommands()
+        public static void HasAFluentApi()
         {
             // arrange
-            var pack = new PackTask();
+            var pack = new Pack();
             var fakeDirName = "./fake-dir/";
 
             // act

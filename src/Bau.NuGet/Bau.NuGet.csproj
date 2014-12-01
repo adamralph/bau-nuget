@@ -55,12 +55,12 @@
     </Compile>
     <Compile Include="NuGetVerbosity.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="CommandTask.cs" />
-    <Compile Include="PackTask.cs" />
-    <Compile Include="PushTask.cs" />
-    <Compile Include="RestoreTask.cs" />
+    <Compile Include="NuGetTask.cs" />
+    <Compile Include="Pack.cs" />
+    <Compile Include="Push.cs" />
+    <Compile Include="Restore.cs" />
     <Compile Include="NuGetFileFinder.cs" />
-    <Compile Include="CommandExtensions.cs" />
+    <Compile Include="NuGetTaskExtensions.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandTask.cs" company="Bau contributors">
+﻿// <copyright file="NuGetTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -12,11 +12,11 @@ namespace BauNuGet
     using System.Text.RegularExpressions;
     using BauCore;
 
-    public abstract class CommandTask : BauTask
+    public abstract class NuGetTask : BauTask
     {
         private static readonly Regex containsWhitespaceRegex = new Regex(@"\s");
 
-        protected CommandTask()
+        protected NuGetTask()
         {
             this.NonInteractive = true;
         }
@@ -106,7 +106,7 @@ namespace BauNuGet
             var commandOptions = this.CreateCommandLineOptions();
             var operationName = this.OperationName;
             var psis = this.GetTargetFiles()
-                .Select(CommandTask.EncodeArgumentValue)
+                .Select(NuGetTask.EncodeArgumentValue)
                 .Select(f => new[] { operationName, f }.Concat(commandOptions))
                 .Select(a => string.Join(" ", a))
                 .Select(a => new ProcessStartInfo

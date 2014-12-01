@@ -1,4 +1,4 @@
-﻿// <copyright file="PackTask.cs" company="Bau contributors">
+﻿// <copyright file="Pack.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,7 +8,7 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class PackTask : CommandTask
+    public class Pack : NuGetTask
     {
         private readonly List<string> nuspecsOrProjects = new List<string>();
         private readonly HashSet<string> exclusions = new HashSet<string>();
@@ -67,97 +67,97 @@ namespace BauNuGet
             this.exclusions.UnionWith(excludes);
         }
 
-        public PackTask Files(params string[] nuspecsOrProjects)
+        public Pack Files(params string[] nuspecsOrProjects)
         {
             this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
             return this;
         }
 
-        public PackTask Files(IEnumerable<string> nuspecsOrProjects)
+        public Pack Files(IEnumerable<string> nuspecsOrProjects)
         {
             this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
             return this;
         }
 
-        public PackTask Output(string outputDirectory)
+        public Pack Output(string outputDirectory)
         {
             this.OutputDirectory = outputDirectory;
             return this;
         }
 
-        public PackTask NuSpecBase(string basePath)
+        public Pack NuSpecBase(string basePath)
         {
             this.NuSpecBasePath = basePath;
             return this;
         }
 
-        public PackTask Version(string version)
+        public Pack Version(string version)
         {
             this.VersionValue = version;
             return this;
         }
 
-        public PackTask Exclude(params string[] excludes)
+        public Pack Exclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public PackTask Exclude(IEnumerable<string> excludes)
+        public Pack Exclude(IEnumerable<string> excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public PackTask MakeSymbols(bool enabled = true)
+        public Pack MakeSymbols(bool enabled = true)
         {
             this.Symbols = enabled;
             return this;
         }
 
-        public PackTask AsTool(bool enabled = true)
+        public Pack AsTool(bool enabled = true)
         {
             this.Tool = enabled;
             return this;
         }
 
-        public PackTask PerformBuild(bool enabled = true)
+        public Pack PerformBuild(bool enabled = true)
         {
             this.Build = enabled;
             return this;
         }
 
-        public PackTask DisableDefaultExcludes(bool enabled = true)
+        public Pack DisableDefaultExcludes(bool enabled = true)
         {
             this.NoDefaultExcludes = enabled;
             return this;
         }
 
-        public PackTask DisablePackageAnalysis(bool enabled = true)
+        public Pack DisablePackageAnalysis(bool enabled = true)
         {
             this.NoPackageAnalysis = enabled;
             return this;
         }
 
-        public PackTask ExcludeEmptyDirectories(bool enabled = true)
+        public Pack ExcludeEmptyDirectories(bool enabled = true)
         {
             this.EmptyDirectoriesExcluded = enabled;
             return this;
         }
 
-        public PackTask IncludeReferencedProjects(bool enabled = true)
+        public Pack IncludeReferencedProjects(bool enabled = true)
         {
             this.ReferencedProjectsIncluded = enabled;
             return this;
         }
 
-        public PackTask Property(string key, string value)
+        public Pack Property(string key, string value)
         {
             this.properties[key] = value;
             return this;
         }
 
-        public PackTask Properties(IDictionary<string, string> pairs)
+        public Pack Properties(IDictionary<string, string> pairs)
         {
             foreach (var pair in pairs)
             {
@@ -167,7 +167,7 @@ namespace BauNuGet
             return this;
         }
 
-        public PackTask MiniClientVersion(string version)
+        public Pack MiniClientVersion(string version)
         {
             this.MiniClientVersionValue = version;
             return this;
@@ -177,22 +177,22 @@ namespace BauNuGet
         {
             if (this.OutputDirectory != null)
             {
-                yield return "-OutputDirectory " + CommandTask.EncodeArgumentValue(this.OutputDirectory);
+                yield return "-OutputDirectory " + NuGetTask.EncodeArgumentValue(this.OutputDirectory);
             }
 
             if (this.NuSpecBasePath != null)
             {
-                yield return "-BasePath " + CommandTask.EncodeArgumentValue(this.NuSpecBasePath);
+                yield return "-BasePath " + NuGetTask.EncodeArgumentValue(this.NuSpecBasePath);
             }
 
             if (this.VersionValue != null)
             {
-                yield return "-Version " + CommandTask.EncodeArgumentValue(this.VersionValue);
+                yield return "-Version " + NuGetTask.EncodeArgumentValue(this.VersionValue);
             }
 
             foreach (var exclusion in this.Exclusions)
             {
-                yield return "-Exclude " + CommandTask.EncodeArgumentValue(exclusion);
+                yield return "-Exclude " + NuGetTask.EncodeArgumentValue(exclusion);
             }
 
             if (this.Symbols)
@@ -235,12 +235,12 @@ namespace BauNuGet
                 var value = string.Join(
                     ";", this.PropertiesCollection.Select(property => string.Concat(property.Key, "=", property.Value)));
 
-                yield return "-Properties " + CommandTask.EncodeArgumentValue(value);
+                yield return "-Properties " + NuGetTask.EncodeArgumentValue(value);
             }
 
             if (this.MiniClientVersionValue != null)
             {
-                yield return "-MinClientVersion " + CommandTask.EncodeArgumentValue(this.MiniClientVersionValue);
+                yield return "-MinClientVersion " + NuGetTask.EncodeArgumentValue(this.MiniClientVersionValue);
             }
         }
 

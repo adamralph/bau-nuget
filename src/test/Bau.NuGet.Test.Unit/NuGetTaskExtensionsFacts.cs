@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandExtensionsFacts.cs" company="Bau contributors">
+﻿// <copyright file="NuGetTaskExtensionsFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,7 +8,7 @@ namespace BauNuGet.Test.Unit
     using FluentAssertions;
     using Xunit;
 
-    public static class CommandExtensionsFacts
+    public static class NuGetTaskExtensionsFacts
     {
         public static class TheVerbosityMethods
         {
@@ -16,10 +16,10 @@ namespace BauNuGet.Test.Unit
             public static void SetTheVerbosity()
             {
                 // arrange
-                var @explicit = new DummyCommand();
-                var normal = new DummyCommand();
-                var quiet = new DummyCommand();
-                var detailed = new DummyCommand();
+                var @explicit = new DummyTask();
+                var normal = new DummyTask();
+                var quiet = new DummyTask();
+                var detailed = new DummyTask();
 
                 // act
                 @explicit.Verbosity(NuGetVerbosity.Detailed);
@@ -41,17 +41,17 @@ namespace BauNuGet.Test.Unit
             public static void SetsTheConfigFile()
             {
                 // arrange
-                var command = new DummyCommand();
+                var task = new DummyTask();
 
                 // act
-                command.ConfigFile("poo.p");
+                task.ConfigFile("poo.p");
 
                 // assert
-                command.ConfigFile.Should().Be("poo.p");
+                task.ConfigFile.Should().Be("poo.p");
             }
         }
 
-        private class DummyCommand : CommandTask
+        private class DummyTask : NuGetTask
         {
             protected override string OperationName
             {

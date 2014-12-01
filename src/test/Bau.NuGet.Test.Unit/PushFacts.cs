@@ -24,7 +24,7 @@ namespace BauNuGet.Test.Unit
             nugetPackageFile.Should().NotBeNull("a .nupkg file should be in the folder above NuGet.exe");
 
             var pushFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
-            var task = new PushTask();
+            var task = new Push();
             task
                 .Files(nugetPackageFile.FullName)
                 .In("./")
@@ -49,15 +49,14 @@ namespace BauNuGet.Test.Unit
             pushFolder.EnumerateFiles(nugetPackageFile.Name).Should().HaveCount(1);
         }
 
-        // TODO (adamralph): move to a NuGetTask component test
         [Fact]
-        public static void CreateMultiplePushCommands()
+        public static void HasAFluentApi()
         {
             // arrange
             var packages = new[] { "package1", "package2" };
             var workingDirectory = "workingDirectory";
             var apiKey = "poo";
-            var task = new PushTask();
+            var task = new Push();
 
             // act
             task
