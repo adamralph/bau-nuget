@@ -4,7 +4,6 @@
 
 namespace BauNuGet
 {
-    using System;
     using BauCore;
 
     public static class Plugin
