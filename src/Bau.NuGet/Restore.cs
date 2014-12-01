@@ -34,7 +34,7 @@ namespace BauNuGet
 
         public string PackageSaveMode { get; set; }
 
-        protected override string OperationName
+        protected override string Command
         {
             get { return "restore"; }
         }

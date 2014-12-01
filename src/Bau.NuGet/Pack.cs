@@ -52,7 +52,7 @@ namespace BauNuGet
 
         public string MiniClientVersionValue { get; set; }
 
-        protected override string OperationName
+        protected override string Command
         {
             get { return "pack"; }
         }

@@ -103,7 +103,7 @@ namespace BauNuGet.Test.Unit
 
         private class DummyTask : NuGetTask
         {
-            protected override string OperationName
+            protected override string Command
             {
                 get { return "help"; }
             }

@@ -7,7 +7,6 @@ namespace BauNuGet
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
     using BauCore;
@@ -23,7 +22,7 @@ namespace BauNuGet
 
         public string WorkingDirectory { get; set; }
 
-        public string NuGetExePathOverride { get; set; }
+        public string Exe { get; set; }
 
         public NuGetVerbosity? Verbosity { get; set; }
 
@@ -31,13 +30,13 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        protected abstract string OperationName { get; }
+        protected abstract string Command { get; }
 
         public IEnumerable<string> CreateCommandLineOptions()
         {
-            foreach (var argument in this.CreateCustomCommandLineOptions())
+            foreach (var option in this.CreateCustomCommandLineOptions())
             {
-                yield return argument;
+                yield return option;
             }
 
             if (this.Verbosity.HasValue)
@@ -83,43 +82,25 @@ namespace BauNuGet
             return value;
         }
 
-        protected virtual string GetNuGetExecutablePath()
-        {
-            if (this.NuGetExePathOverride != null)
-            {
-                return this.NuGetExePathOverride;
-            }
-
-            var detectedLocation = NuGetFileFinder.FindFile();
-
-            if (detectedLocation != null)
-            {
-                return detectedLocation.FullName;
-            }
-
-            return NuGetFileFinder.DefaultNuGetExeName;
-        }
-
         protected override void OnActionsExecuted()
         {
-            var fileName = this.GetNuGetExecutablePath();
-            var commandOptions = this.CreateCommandLineOptions();
-            var operationName = this.OperationName;
-            var psis = this.GetTargetFiles()
-                .Select(NuGetTask.EncodeArgumentValue)
-                .Select(f => new[] { operationName, f }.Concat(commandOptions))
-                .Select(a => string.Join(" ", a))
-                .Select(a => new ProcessStartInfo
+            var fileName = this.Exe ?? NuGetFileFinder.FindFile();
+            var options = this.CreateCommandLineOptions();
+            var processStartInfos = this.GetTargetFiles()
+                .Select(EncodeArgumentValue)
+                .Select(file => new[] { this.Command, file }.Concat(options))
+                .Select(argument => string.Join(" ", argument))
+                .Select(arguments => new ProcessStartInfo
                 {
                     FileName = fileName,
-                    Arguments = a,
+                    Arguments = arguments,
                     WorkingDirectory = this.WorkingDirectory,
                     UseShellExecute = false
                 });
 
-            foreach (var psi in psis)
+            foreach (var processStartInfo in processStartInfos)
             {
-                psi.Run();
+                processStartInfo.Run();
             }
         }
 

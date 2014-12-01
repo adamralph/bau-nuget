@@ -4,6 +4,7 @@
 
 namespace BauNuGet.Test.Unit
 {
+    using System.IO;
     using FluentAssertions;
     using Xunit;
 
@@ -13,7 +14,7 @@ namespace BauNuGet.Test.Unit
         public static void FindsFile()
         {
             // act
-            var file = NuGetFileFinder.FindFile();
+            var file = new FileInfo(NuGetFileFinder.FindFile());
 
             // assert
             file.Name.Should().Be("NuGet.exe");

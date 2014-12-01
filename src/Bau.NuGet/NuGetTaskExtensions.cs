@@ -12,9 +12,9 @@ namespace BauNuGet
             return task;
         }
 
-        public static T Use<T>(this T task, string path) where T : NuGetTask
+        public static T Use<T>(this T task, string exe) where T : NuGetTask
         {
-            task.NuGetExePathOverride = path;
+            task.Exe = exe;
             return task;
         }
 
@@ -39,9 +39,9 @@ namespace BauNuGet
             return task.Verbosity(NuGetVerbosity.Normal);
         }
 
-        public static T ConfigFile<T>(this T task, string configFilePath) where T : NuGetTask
+        public static T ConfigFile<T>(this T task, string path) where T : NuGetTask
         {
-            task.ConfigFile = configFilePath;
+            task.ConfigFile = path;
             return task;
         }
     }

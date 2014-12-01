@@ -17,7 +17,7 @@ namespace BauNuGet.Test.Unit
         public static void Pushes()
         {
             // arrange
-            var nugetDirectory = NuGetFileFinder.FindFile().Directory;
+            var nugetDirectory = new FileInfo(NuGetFileFinder.FindFile()).Directory;
             nugetDirectory.Should().NotBeNull("NuGet.exe should be in a folder");
             nugetDirectory.Parent.Should().NotBeNull("NuGet.exe should be in a folder with a parent folder");
             var nugetPackageFile = nugetDirectory.Parent.EnumerateFiles("*.nupkg").FirstOrDefault();
