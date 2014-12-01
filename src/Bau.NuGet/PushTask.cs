@@ -7,9 +7,14 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Globalization;
 
-    public class Push : Command
+    public class PushTask : CommandTask
     {
-        public string Package { get; set; }
+        private readonly List<string> packages = new List<string>();
+
+        public ICollection<string> Packages
+        {
+            get { return this.packages; }
+        }
 
         public string PackageSource { get; set; }
 
@@ -19,48 +24,47 @@ namespace BauNuGet
 
         public bool BufferingDisabled { get; set; }
 
-        public Push File(string package)
+        public PushTask Files(params string[] packages)
         {
-            this.Package = package;
+            this.packages.AddRange(packages);
             return this;
         }
 
-        public Push Source(string source)
+        public PushTask Files(IEnumerable<string> packages)
+        {
+            this.packages.AddRange(packages);
+            return this;
+        }
+
+        public PushTask Source(string source)
         {
             this.PackageSource = source;
             return this;
         }
 
-        public Push Key(string apiKey)
+        public PushTask Key(string apiKey)
         {
             this.ApiKey = apiKey;
             return this;
         }
 
-        public Push Timeout(int? timeout)
+        public PushTask Timeout(int? timeout)
         {
             this.TimeoutValue = timeout;
             return this;
         }
 
-        public Push DisableBuffering(bool enabled = true)
+        public PushTask DisableBuffering(bool enabled = true)
         {
             this.BufferingDisabled = enabled;
             return this;
         }
 
-        protected override IEnumerable<string> CreateCustomCommandLineArguments()
+        protected override IEnumerable<string> CreateCustomCommandLineOptions()
         {
-            yield return "push";
-
-            if (this.Package != null)
-            {
-                yield return Command.EncodeArgumentValue(this.Package);
-            }
-
             if (this.PackageSource != null)
             {
-                yield return "-Source " + Command.EncodeArgumentValue(this.PackageSource);
+                yield return "-Source " + CommandTask.EncodeArgumentValue(this.PackageSource);
             }
 
             if (this.ApiKey != null)

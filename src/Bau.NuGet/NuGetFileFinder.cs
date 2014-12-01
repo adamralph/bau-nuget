@@ -11,6 +11,8 @@ namespace BauNuGet
 
     public static class NuGetFileFinder
     {
+        internal static readonly string defaultNuGetExeName = "NuGet.exe";
+
         public static FileInfo FindFile()
         {
             var file = FindFiles(new DirectoryInfo(Directory.GetCurrentDirectory())).FirstOrDefault();
@@ -28,7 +30,7 @@ namespace BauNuGet
                 ? Enumerable.Empty<FileInfo>()
                 : directory.EnumerateDirectories("*packages")
                     .SelectMany(packageDirectory => packageDirectory
-                        .EnumerateFiles("NuGet.exe", SearchOption.AllDirectories))
+                        .EnumerateFiles(defaultNuGetExeName, SearchOption.AllDirectories))
                     .Concat(FindFiles(directory.Parent));
         }
     }

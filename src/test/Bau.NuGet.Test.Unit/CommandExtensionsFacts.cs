@@ -51,9 +51,9 @@ namespace BauNuGet.Test.Unit
             }
         }
 
-        private class DummyCommand : Command
+        private class DummyCommand : CommandTask
         {
-            protected override IEnumerable<string> CreateCustomCommandLineArguments()
+            protected override IEnumerable<string> CreateCustomCommandLineOptions()
             {
                 yield break;
             }

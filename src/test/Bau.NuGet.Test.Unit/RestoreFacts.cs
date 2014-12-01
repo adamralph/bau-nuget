@@ -72,23 +72,23 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
-            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
+            task.Commands.OfType<RestoreTask>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
+            task.Commands.OfType<RestoreTask>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
+            task.Commands.OfType<RestoreTask>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
         }
 
         [Fact]
         public static void PropertySource()
         {
             // arrange
-            var normal = new Restore();
-            var multiple = new Restore();
+            var normal = new RestoreTask();
+            var multiple = new RestoreTask();
             multiple.Sources.Add(@"http://source1/api");
             multiple.Sources.Add(@"C:\some folder\");
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var multipleArguments = multiple.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var multipleArguments = multiple.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-Source");
@@ -100,8 +100,8 @@ namespace BauNuGet.Test.Unit
         public static void PropertySourceFluent()
         {
             // arrange
-            var normal = new Restore();
-            var multiple = new Restore();
+            var normal = new RestoreTask();
+            var multiple = new RestoreTask();
 
             // act
             multiple
@@ -117,14 +117,14 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCache()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore { NoCache = true };
-            var disabled = new Restore { NoCache = false };
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask { NoCache = true };
+            var disabled = new RestoreTask { NoCache = false };
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var enabledArguments = enabled.CreateCommandLineArguments();
-            var disabledArguments = disabled.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var enabledArguments = enabled.CreateCommandLineOptions();
+            var disabledArguments = disabled.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-NoCache");
@@ -136,9 +136,9 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCacheFluent()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore();
-            var disabled = new Restore();
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask();
+            var disabled = new RestoreTask();
 
             // act
             normal.DisableCache();
@@ -155,14 +155,14 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessing()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore { ParallelProcessingDisabled = true };
-            var disabled = new Restore { ParallelProcessingDisabled = false };
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask { ParallelProcessingDisabled = true };
+            var disabled = new RestoreTask { ParallelProcessingDisabled = false };
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var enabledArguments = enabled.CreateCommandLineArguments();
-            var disabledArguments = disabled.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var enabledArguments = enabled.CreateCommandLineOptions();
+            var disabledArguments = disabled.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-DisableParallelProcessing");
@@ -174,9 +174,9 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessingFluent()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore();
-            var disabled = new Restore();
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask();
+            var disabled = new RestoreTask();
 
             // act
             normal.DisableParallelProcessing();

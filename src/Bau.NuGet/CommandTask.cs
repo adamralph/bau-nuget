@@ -6,13 +6,15 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text.RegularExpressions;
+    using BauCore;
 
-    public abstract class Command
+    public abstract class CommandTask : BauTask
     {
         private static readonly Regex containsWhitespaceRegex = new Regex(@"\s");
 
-        protected Command()
+        protected CommandTask()
         {
             this.NonInteractive = true;
         }
@@ -27,9 +29,9 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        public IEnumerable<string> CreateCommandLineArguments()
+        public IEnumerable<string> CreateCommandLineOptions()
         {
-            foreach (var argument in this.CreateCustomCommandLineArguments())
+            foreach (var argument in this.CreateCustomCommandLineOptions())
             {
                 yield return argument;
             }
@@ -77,6 +79,24 @@ namespace BauNuGet
             return value;
         }
 
-        protected abstract IEnumerable<string> CreateCustomCommandLineArguments();
+        protected virtual string GetNuGetExecutableFileInfo()
+        {
+            if (this.NuGetExePathOverride != null)
+            {
+                return this.NuGetExePathOverride;
+            }
+
+            var detectedLocation = NuGetFileFinder.FindFile();
+            if(detectedLocation != null)
+            {
+                return detectedLocation.FullName;
+            }
+
+            return NuGetFileFinder.defaultNuGetExeName;
+        }
+
+        protected abstract IEnumerable<string> CreateCustomCommandLineOptions();
+
+        protected abstract override void OnActionsExecuted();
     }
 }

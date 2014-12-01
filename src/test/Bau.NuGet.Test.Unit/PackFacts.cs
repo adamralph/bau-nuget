@@ -107,9 +107,9 @@ namespace BauNuGet.Test.Unit
             // assert
             task.Commands.Should().HaveCount(2);
             task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Pack>().All(r => r.Tool).Should().BeTrue();
-            task.Commands.OfType<Pack>().Select(x => x.NuSpecOrProject).Should().Contain("file1");
-            task.Commands.OfType<Pack>().Select(x => x.NuSpecOrProject).Should().Contain("file2");
+            task.Commands.OfType<PackTask>().All(r => r.Tool).Should().BeTrue();
+            task.Commands.OfType<PackTask>().Select(x => x.NuSpecOrProject).Should().Contain("file1");
+            task.Commands.OfType<PackTask>().Select(x => x.NuSpecOrProject).Should().Contain("file2");
         }
     }
 }

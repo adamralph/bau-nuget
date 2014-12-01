@@ -8,13 +8,17 @@ namespace BauNuGet
     using System.Collections.Generic;
     using System.Linq;
 
-    public class Pack : Command
+    public class PackTask : CommandTask
     {
+        private readonly List<string> nuSpecsOrProjects = new List<string>();
         private readonly HashSet<string> exclusions = new HashSet<string>();
         private readonly Dictionary<string, string> properties =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public string NuSpecOrProject { get; set; }
+        public ICollection<string> NuSpecsOrProjects
+        {
+            get { return this.nuSpecsOrProjects; }
+        }
 
         public string OutputDirectory { get; set; }
 
@@ -53,85 +57,97 @@ namespace BauNuGet
             this.exclusions.UnionWith(excludes);
         }
 
-        public Pack File(string nuspecOrProject)
+        public PackTask Files(params string[] nuspecsOrProjects)
         {
-            this.NuSpecOrProject = nuspecOrProject;
+            this.nuSpecsOrProjects.AddRange(nuspecsOrProjects);
             return this;
         }
 
-        public Pack Output(string outputDirectory)
+        public PackTask Files(IEnumerable<string> nuspecsOrProjects)
+        {
+            this.nuSpecsOrProjects.AddRange(nuspecsOrProjects);
+            return this;
+        }
+
+        public PackTask Output(string outputDirectory)
         {
             this.OutputDirectory = outputDirectory;
             return this;
         }
 
-        public Pack NuSpecBase(string basePath)
+        public PackTask NuSpecBase(string basePath)
         {
             this.NuSpecBasePath = basePath;
             return this;
         }
 
-        public Pack Version(string version)
+        public PackTask Version(string version)
         {
             this.VersionValue = version;
             return this;
         }
 
-        public Pack Exclude(params string[] excludes)
+        public PackTask Exclude(params string[] excludes)
         {
             this.AddExcludes(excludes);
             return this;
         }
 
-        public Pack MakeSymbols(bool enabled = true)
+        public PackTask Exclude(IEnumerable<string> excludes)
+        {
+            this.AddExcludes(excludes);
+            return this;
+        }
+
+        public PackTask MakeSymbols(bool enabled = true)
         {
             this.Symbols = enabled;
             return this;
         }
 
-        public Pack AsTool(bool enabled = true)
+        public PackTask AsTool(bool enabled = true)
         {
             this.Tool = enabled;
             return this;
         }
 
-        public Pack PerformBuild(bool enabled = true)
+        public PackTask PerformBuild(bool enabled = true)
         {
             this.Build = enabled;
             return this;
         }
 
-        public Pack DisableDefaultExcludes(bool enabled = true)
+        public PackTask DisableDefaultExcludes(bool enabled = true)
         {
             this.NoDefaultExcludes = enabled;
             return this;
         }
 
-        public Pack DisablePackageAnalysis(bool enabled = true)
+        public PackTask DisablePackageAnalysis(bool enabled = true)
         {
             this.NoPackageAnalysis = enabled;
             return this;
         }
 
-        public Pack ExcludeEmptyDirectories(bool enabled = true)
+        public PackTask ExcludeEmptyDirectories(bool enabled = true)
         {
             this.EmptyDirectoriesExcluded = enabled;
             return this;
         }
 
-        public Pack IncludeReferencedProjects(bool enabled = true)
+        public PackTask IncludeReferencedProjects(bool enabled = true)
         {
             this.ReferencedProjectsIncluded = enabled;
             return this;
         }
 
-        public Pack Property(string key, string value)
+        public PackTask Property(string key, string value)
         {
             this.properties[key] = value;
             return this;
         }
 
-        public Pack Properties(IDictionary<string, string> pairs)
+        public PackTask Properties(IDictionary<string, string> pairs)
         {
             foreach (var pair in pairs)
             {
@@ -140,39 +156,32 @@ namespace BauNuGet
             return this;
         }
 
-        public Pack MiniClientVersion(string version)
+        public PackTask MiniClientVersion(string version)
         {
             this.MiniClientVersionValue = version;
             return this;
         }
 
-        protected override IEnumerable<string> CreateCustomCommandLineArguments()
+        protected override IEnumerable<string> CreateCustomCommandLineOptions()
         {
-            yield return "pack";
-
-            if (this.NuSpecOrProject != null)
-            {
-                yield return Command.EncodeArgumentValue(this.NuSpecOrProject);
-            }
-
             if (this.OutputDirectory != null)
             {
-                yield return "-OutputDirectory " + Command.EncodeArgumentValue(this.OutputDirectory);
+                yield return "-OutputDirectory " + CommandTask.EncodeArgumentValue(this.OutputDirectory);
             }
 
             if (this.NuSpecBasePath != null)
             {
-                yield return "-BasePath " + Command.EncodeArgumentValue(this.NuSpecBasePath);
+                yield return "-BasePath " + CommandTask.EncodeArgumentValue(this.NuSpecBasePath);
             }
 
             if (this.VersionValue != null)
             {
-                yield return "-Version " + Command.EncodeArgumentValue(this.VersionValue);
+                yield return "-Version " + CommandTask.EncodeArgumentValue(this.VersionValue);
             }
 
             foreach (var exclusion in this.Exclusions)
             {
-                yield return "-Exclude " + Command.EncodeArgumentValue(exclusion);
+                yield return "-Exclude " + CommandTask.EncodeArgumentValue(exclusion);
             }
 
             if (this.Symbols)
@@ -215,12 +224,12 @@ namespace BauNuGet
                 var value = string.Join(
                     ";", this.PropertiesCollection.Select(property => string.Concat(property.Key, "=", property.Value)));
 
-                yield return "-Properties " + Command.EncodeArgumentValue(value);
+                yield return "-Properties " + CommandTask.EncodeArgumentValue(value);
             }
 
             if (this.MiniClientVersionValue != null)
             {
-                yield return "-MinClientVersion " + Command.EncodeArgumentValue(this.MiniClientVersionValue);
+                yield return "-MinClientVersion " + CommandTask.EncodeArgumentValue(this.MiniClientVersionValue);
             }
         }
     }

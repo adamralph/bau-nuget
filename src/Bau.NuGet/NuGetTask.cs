@@ -10,16 +10,17 @@ namespace BauNuGet
     using System.Linq;
     using BauCore;
 
+    [Obsolete]
     public class NuGetTask : BauTask
     {
-        private readonly List<Command> commands = new List<Command>();
+        private readonly List<CommandTask> commands = new List<CommandTask>();
 
-        public IEnumerable<Command> Commands
+        public IEnumerable<CommandTask> Commands
         {
             get { return this.commands.ToArray(); }
         }
 
-        public TCommand Add<TCommand>(TCommand command) where TCommand : Command
+        public TCommand Add<TCommand>(TCommand command) where TCommand : CommandTask
         {
             if (command != null)
             {
@@ -29,9 +30,9 @@ namespace BauNuGet
             return command;
         }
 
-        public Restore Restore(string solutionOrPackagesConfig, Action<Restore> configure = null)
+        public RestoreTask Restore(string solutionOrPackagesConfig, Action<RestoreTask> configure = null)
         {
-            var restore = new Restore().File(solutionOrPackagesConfig);
+            var restore = new RestoreTask().File(solutionOrPackagesConfig);
             if (configure != null)
             {
                 configure(restore);
@@ -40,8 +41,8 @@ namespace BauNuGet
             return this.Add(restore);
         }
 
-        public IEnumerable<Restore> Restore(
-            IEnumerable<string> solutionsOrPackagesConfigs, Action<Restore> configure = null)
+        public IEnumerable<RestoreTask> Restore(
+            IEnumerable<string> solutionsOrPackagesConfigs, Action<RestoreTask> configure = null)
         {
             Guard.AgainstNullArgument("solutionsOrPackagesConfigs", solutionsOrPackagesConfigs);
 
@@ -50,9 +51,9 @@ namespace BauNuGet
                 .ToArray();
         }
 
-        public Pack Pack(string nuspecOrProject, Action<Pack> configure = null)
+        public PackTask Pack(string nuspecOrProject, Action<PackTask> configure = null)
         {
-            var pack = new Pack().File(nuspecOrProject);
+            var pack = new PackTask().File(nuspecOrProject);
             if (configure != null)
             {
                 configure(pack);
@@ -61,16 +62,16 @@ namespace BauNuGet
             return this.Add(pack);
         }
 
-        public IEnumerable<Pack> Pack(IEnumerable<string> nuspecsOrProjects, Action<Pack> configure = null)
+        public IEnumerable<PackTask> Pack(IEnumerable<string> nuspecsOrProjects, Action<PackTask> configure = null)
         {
             Guard.AgainstNullArgument("nuspecsOrProjects", nuspecsOrProjects);
 
             return nuspecsOrProjects.Select(projectOrNuSpec => this.Pack(projectOrNuSpec, configure)).ToArray();
         }
 
-        public Push Push(string package, Action<Push> configure = null)
+        public PushTask Push(string package, Action<PushTask> configure = null)
         {
-            var push = new Push().File(package);
+            var push = new PushTask().File(package);
             if (configure != null)
             {
                 configure(push);
@@ -79,7 +80,7 @@ namespace BauNuGet
             return this.Add(push);
         }
 
-        public IEnumerable<Push> Push(IEnumerable<string> packages, Action<Push> configure = null)
+        public IEnumerable<PushTask> Push(IEnumerable<string> packages, Action<PushTask> configure = null)
         {
             Guard.AgainstNullArgument("packages", packages);
 
@@ -92,7 +93,7 @@ namespace BauNuGet
             foreach (var processStartInfo in this.commands.Select(command => new ProcessStartInfo
             {
                 FileName = command.NuGetExePathOverride ?? fileName ?? (fileName = NuGetFileFinder.FindFile().FullName),
-                Arguments = string.Join(" ", command.CreateCommandLineArguments()),
+                Arguments = string.Join(" ", command.CreateCommandLineOptions()),
                 WorkingDirectory = command.WorkingDirectory,
                 UseShellExecute = false
             }))

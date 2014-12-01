@@ -68,9 +68,9 @@ namespace BauNuGet.Test.Unit
 
             // assert
             task.Commands.Should().HaveCount(packages.Length);
-            task.Commands.OfType<Push>().Should().HaveCount(packages.Length);
-            task.Commands.OfType<Push>().Select(push => push.Package).Should().BeEquivalentTo(packages);
-            task.Commands.OfType<Push>().Should().OnlyContain(push => push.ApiKey == apiKey);
+            task.Commands.OfType<PushTask>().Should().HaveCount(packages.Length);
+            task.Commands.OfType<PushTask>().Select(push => push.Package).Should().BeEquivalentTo(packages);
+            task.Commands.OfType<PushTask>().Should().OnlyContain(push => push.ApiKey == apiKey);
             task.Commands.Should().OnlyContain(command => command.WorkingDirectory == workingDirectory);
         }
     }
