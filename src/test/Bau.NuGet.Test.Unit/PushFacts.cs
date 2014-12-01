@@ -65,8 +65,8 @@ namespace BauNuGet.Test.Unit
                 .In(workingDirectory);
 
             // assert
-            task.Packages.Should().HaveCount(packages.Length);
-            task.Packages.Should().BeEquivalentTo(packages);
+            task.Files.Should().HaveCount(packages.Length);
+            task.Files.Should().BeEquivalentTo(packages);
             task.ApiKey.Should().Be(apiKey);
             task.WorkingDirectory.Should().Be(workingDirectory);
         }

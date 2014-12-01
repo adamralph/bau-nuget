@@ -112,11 +112,6 @@ namespace BauNuGet.Test.Unit
             {
                 yield break;
             }
-
-            protected override IEnumerable<string> GetTargetFiles()
-            {
-                yield break;
-            }
         }
     }
 }

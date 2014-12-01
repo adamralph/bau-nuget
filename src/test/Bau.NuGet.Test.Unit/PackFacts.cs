@@ -32,12 +32,12 @@ namespace BauNuGet.Test.Unit
             }
 
             using (var pickes = File.CreateText(
-                Path.Combine(Path.GetDirectoryName(pack.NuSpecsOrProjects.Single()), "pickles.txt")))
+                Path.Combine(Path.GetDirectoryName(pack.Files.Single()), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }
 
-            using (var nuspecStream = File.CreateText(pack.NuSpecsOrProjects.Single()))
+            using (var nuspecStream = File.CreateText(pack.Files.Single()))
             using (var xmlWriter = XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
@@ -103,9 +103,9 @@ namespace BauNuGet.Test.Unit
                 .AsTool();
 
             // assert
-            pack.NuSpecsOrProjects.Should().HaveCount(2);
-            pack.NuSpecsOrProjects.Should().Contain("file1");
-            pack.NuSpecsOrProjects.Should().Contain("file2");
+            pack.Files.Should().HaveCount(2);
+            pack.Files.Should().Contain("file1");
+            pack.Files.Should().Contain("file2");
             pack.WorkingDirectory.Should().Be(fakeDirName);
             pack.Tool.Should().BeTrue();
         }

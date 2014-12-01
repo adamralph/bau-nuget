@@ -4,8 +4,22 @@
 
 namespace BauNuGet
 {
+    using System.Collections.Generic;
+
     public static class NuGetTaskExtensions
     {
+        public static T Files<T>(this T task, params string[] files) where T : NuGetTask
+        {
+            task.Files = files;
+            return task;
+        }
+
+        public static T Files<T>(this T task, IEnumerable<string> files) where T : NuGetTask
+        {
+            task.Files = files;
+            return task;
+        }
+
         public static T In<T>(this T task, string workingDirectory) where T : NuGetTask
         {
             task.WorkingDirectory = workingDirectory;

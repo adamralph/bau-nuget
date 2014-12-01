@@ -8,14 +8,7 @@ namespace BauNuGet
 
     public class Restore : NuGetTask
     {
-        private readonly List<string> solutionsOrPackagesConfigs = new List<string>();
-
         private readonly HashSet<string> sources = new HashSet<string>();
-
-        public ICollection<string> SolutionsOrPackagesConfigs
-        {
-            get { return this.solutionsOrPackagesConfigs; }
-        }
 
         public bool ConsentRequired { get; set; }
 
@@ -37,18 +30,6 @@ namespace BauNuGet
         protected override string Command
         {
             get { return "restore"; }
-        }
-
-        public virtual Restore Files(params string[] solutionsOrPackagesConfigs)
-        {
-            this.solutionsOrPackagesConfigs.AddRange(solutionsOrPackagesConfigs);
-            return this;
-        }
-
-        public virtual Restore Files(IEnumerable<string> solutionsOrPackagesConfigs)
-        {
-            this.solutionsOrPackagesConfigs.AddRange(solutionsOrPackagesConfigs);
-            return this;
         }
 
         public virtual Restore RequiresConsent(bool enabled = true)
@@ -135,11 +116,6 @@ namespace BauNuGet
             {
                 yield return "-PackageSaveMode" + NuGetTask.EncodeArgumentValue(this.PackageSaveMode);
             }
-        }
-
-        protected override IEnumerable<string> GetTargetFiles()
-        {
-            return this.SolutionsOrPackagesConfigs;
         }
     }
 }

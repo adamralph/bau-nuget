@@ -9,13 +9,6 @@ namespace BauNuGet
 
     public class Push : NuGetTask
     {
-        private readonly List<string> packages = new List<string>();
-
-        public ICollection<string> Packages
-        {
-            get { return this.packages; }
-        }
-
         public string PackageSource { get; set; }
 
         public string ApiKey { get; set; }
@@ -27,18 +20,6 @@ namespace BauNuGet
         protected override string Command
         {
             get { return "push"; }
-        }
-
-        public Push Files(params string[] packages)
-        {
-            this.packages.AddRange(packages);
-            return this;
-        }
-
-        public Push Files(IEnumerable<string> packages)
-        {
-            this.packages.AddRange(packages);
-            return this;
         }
 
         public Push Source(string source)
@@ -86,11 +67,6 @@ namespace BauNuGet
             {
                 yield return "-DisableBuffering";
             }
-        }
-
-        protected override IEnumerable<string> GetTargetFiles()
-        {
-            return this.Packages;
         }
     }
 }

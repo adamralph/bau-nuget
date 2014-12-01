@@ -20,6 +20,8 @@ namespace BauNuGet
             this.NonInteractive = true;
         }
 
+        public IEnumerable<string> Files { get; set; }
+
         public string WorkingDirectory { get; set; }
 
         public string Exe { get; set; }
@@ -85,8 +87,16 @@ namespace BauNuGet
         protected override void OnActionsExecuted()
         {
             var fileName = this.Exe ?? NuGetFileFinder.FindFile();
+            
+            string[] fileArray;
+            if (this.Files  == null || (fileArray = this.Files.ToArray()).Length == 0)
+            {
+                this.LogInfo("No files specified.");
+                return;
+            }
+
             var options = this.CreateCommandLineOptions();
-            var processStartInfos = this.GetTargetFiles()
+            var processStartInfos = fileArray
                 .Select(EncodeArgumentValue)
                 .Select(file => new[] { this.Command, file }.Concat(options))
                 .Select(argument => string.Join(" ", argument))
@@ -103,8 +113,6 @@ namespace BauNuGet
                 processStartInfo.Run();
             }
         }
-
-        protected abstract IEnumerable<string> GetTargetFiles();
 
         protected abstract IEnumerable<string> CreateCustomCommandLineOptions();
     }

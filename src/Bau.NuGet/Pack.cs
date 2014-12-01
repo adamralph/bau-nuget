@@ -10,15 +10,9 @@ namespace BauNuGet
 
     public class Pack : NuGetTask
     {
-        private readonly List<string> nuspecsOrProjects = new List<string>();
         private readonly HashSet<string> exclusions = new HashSet<string>();
         private readonly Dictionary<string, string> properties =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        public ICollection<string> NuSpecsOrProjects
-        {
-            get { return this.nuspecsOrProjects; }
-        }
 
         public string OutputDirectory { get; set; }
 
@@ -65,18 +59,6 @@ namespace BauNuGet
         public void AddExcludes(IEnumerable<string> excludes)
         {
             this.exclusions.UnionWith(excludes);
-        }
-
-        public Pack Files(params string[] nuspecsOrProjects)
-        {
-            this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
-            return this;
-        }
-
-        public Pack Files(IEnumerable<string> nuspecsOrProjects)
-        {
-            this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
-            return this;
         }
 
         public Pack Output(string outputDirectory)
@@ -242,11 +224,6 @@ namespace BauNuGet
             {
                 yield return "-MinClientVersion " + NuGetTask.EncodeArgumentValue(this.MiniClientVersionValue);
             }
-        }
-
-        protected override IEnumerable<string> GetTargetFiles()
-        {
-            return this.NuSpecsOrProjects;
         }
     }
 }

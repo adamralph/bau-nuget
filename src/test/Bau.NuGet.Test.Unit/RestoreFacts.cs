@@ -35,7 +35,7 @@ namespace BauNuGet.Test.Unit
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(restore.SolutionsOrPackagesConfigs.Single()))
+            using (var packagesFileStream = File.CreateText(restore.Files.Single()))
             {
                 packagesFileStream.Write(
                     "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
@@ -68,11 +68,11 @@ namespace BauNuGet.Test.Unit
                 .PackagesIn(fakeDirName);
 
             // assert
-            task.SolutionsOrPackagesConfigs.Should().HaveCount(2);
+            task.Files.Should().HaveCount(2);
             task.WorkingDirectory.Should().Be(fakeDirName);
             task.PackagesDirectory.Should().Be(fakeDirName);
-            task.SolutionsOrPackagesConfigs.Should().Contain("file1");
-            task.SolutionsOrPackagesConfigs.Should().Contain("file2");
+            task.Files.Should().Contain("file1");
+            task.Files.Should().Contain("file2");
         }
 
         [Fact]
