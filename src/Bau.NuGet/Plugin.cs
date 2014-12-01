@@ -4,24 +4,23 @@
 
 namespace BauNuGet
 {
-    using System;
     using BauCore;
 
     public static class Plugin
     {
-        public static ITaskBuilder<RestoreTask> NuGetRestore(this ITaskBuilder builder, string name = null)
+        public static ITaskBuilder<Restore> NuGetRestore(this ITaskBuilder builder, string name = null)
         {
-            return new TaskBuilder<RestoreTask>(builder, name);
+            return new TaskBuilder<Restore>(builder, name);
         }
 
-        public static ITaskBuilder<PackTask> NuGetPack(this ITaskBuilder builder, string name = null)
+        public static ITaskBuilder<Pack> NuGetPack(this ITaskBuilder builder, string name = null)
         {
-            return new TaskBuilder<PackTask>(builder, name);
+            return new TaskBuilder<Pack>(builder, name);
         }
 
-        public static ITaskBuilder<PushTask> NuGetPush(this ITaskBuilder builder, string name = null)
+        public static ITaskBuilder<Push> NuGetPush(this ITaskBuilder builder, string name = null)
         {
-            return new TaskBuilder<PushTask>(builder, name);
+            return new TaskBuilder<Push>(builder, name);
         }
     }
 }

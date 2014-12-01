@@ -17,14 +17,14 @@ namespace BauNuGet.Test.Unit
         public static void Pushes()
         {
             // arrange
-            var nugetDirectory = NuGetFileFinder.FindFile().Directory;
+            var nugetDirectory = new FileInfo(NuGetExeFinder.FindExe()).Directory;
             nugetDirectory.Should().NotBeNull("NuGet.exe should be in a folder");
             nugetDirectory.Parent.Should().NotBeNull("NuGet.exe should be in a folder with a parent folder");
             var nugetPackageFile = nugetDirectory.Parent.EnumerateFiles("*.nupkg").FirstOrDefault();
             nugetPackageFile.Should().NotBeNull("a .nupkg file should be in the folder above NuGet.exe");
 
             var pushFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
-            var task = new PushTask();
+            var task = new Push();
             task
                 .Files(nugetPackageFile.FullName)
                 .In("./")
@@ -49,15 +49,14 @@ namespace BauNuGet.Test.Unit
             pushFolder.EnumerateFiles(nugetPackageFile.Name).Should().HaveCount(1);
         }
 
-        // TODO (adamralph): move to a NuGetTask component test
         [Fact]
-        public static void CreateMultiplePushCommands()
+        public static void HasAFluentApi()
         {
             // arrange
             var packages = new[] { "package1", "package2" };
             var workingDirectory = "workingDirectory";
             var apiKey = "poo";
-            var task = new PushTask();
+            var task = new Push();
 
             // act
             task
@@ -66,8 +65,8 @@ namespace BauNuGet.Test.Unit
                 .In(workingDirectory);
 
             // assert
-            task.Packages.Should().HaveCount(packages.Length);
-            task.Packages.Should().BeEquivalentTo(packages);
+            task.Files.Should().HaveCount(packages.Length);
+            task.Files.Should().BeEquivalentTo(packages);
             task.ApiKey.Should().Be(apiKey);
             task.WorkingDirectory.Should().Be(workingDirectory);
         }

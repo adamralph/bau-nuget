@@ -1,4 +1,4 @@
-﻿// <copyright file="RestoreTask.cs" company="Bau contributors">
+﻿// <copyright file="Restore.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -6,16 +6,9 @@ namespace BauNuGet
 {
     using System.Collections.Generic;
 
-    public class RestoreTask : CommandTask
+    public class Restore : NuGetTask
     {
-        private readonly List<string> solutionsOrPackagesConfigs = new List<string>();
-
         private readonly HashSet<string> sources = new HashSet<string>();
-
-        public ICollection<string> SolutionsOrPackagesConfigs
-        {
-            get { return this.solutionsOrPackagesConfigs; }
-        }
 
         public bool ConsentRequired { get; set; }
 
@@ -34,66 +27,54 @@ namespace BauNuGet
 
         public string PackageSaveMode { get; set; }
 
-        protected override string OperationName
+        protected override string Command
         {
             get { return "restore"; }
         }
 
-        public virtual RestoreTask Files(params string[] solutionsOrPackagesConfigs)
-        {
-            this.solutionsOrPackagesConfigs.AddRange(solutionsOrPackagesConfigs);
-            return this;
-        }
-
-        public virtual RestoreTask Files(IEnumerable<string> solutionsOrPackagesConfigs)
-        {
-            this.solutionsOrPackagesConfigs.AddRange(solutionsOrPackagesConfigs);
-            return this;
-        }
-
-        public virtual RestoreTask RequiresConsent(bool enabled = true)
+        public virtual Restore RequiresConsent(bool enabled = true)
         {
             this.ConsentRequired = enabled;
             return this;
         }
 
-        public virtual RestoreTask PackagesIn(string packagesDirectory)
+        public virtual Restore PackagesIn(string packagesDirectory)
         {
             this.PackagesDirectory = packagesDirectory;
             return this;
         }
 
-        public virtual RestoreTask SolutionIn(string solutionDirectory)
+        public virtual Restore SolutionIn(string solutionDirectory)
         {
             this.SolutionDirectory = solutionDirectory;
             return this;
         }
 
-        public virtual RestoreTask UseSource(string source)
+        public virtual Restore UseSource(string source)
         {
             this.sources.Add(source);
             return this;
         }
 
-        public virtual RestoreTask UseSource(params string[] sources)
+        public virtual Restore UseSource(params string[] sources)
         {
             this.sources.UnionWith(sources);
             return this;
         }
 
-        public virtual RestoreTask DisableCache(bool enabled = true)
+        public virtual Restore DisableCache(bool enabled = true)
         {
             this.NoCache = enabled;
             return this;
         }
 
-        public virtual RestoreTask DisableParallelProcessing(bool enabled = true)
+        public virtual Restore DisableParallelProcessing(bool enabled = true)
         {
             this.ParallelProcessingDisabled = enabled;
             return this;
         }
 
-        public virtual RestoreTask SaveMode(string packageSaveMode)
+        public virtual Restore SaveMode(string packageSaveMode)
         {
             this.PackageSaveMode = packageSaveMode;
             return this;
@@ -108,17 +89,17 @@ namespace BauNuGet
 
             if (this.PackagesDirectory != null)
             {
-                yield return "-PackagesDirectory " + CommandTask.EncodeArgumentValue(this.PackagesDirectory);
+                yield return "-PackagesDirectory " + NuGetTask.EncodeArgumentValue(this.PackagesDirectory);
             }
 
             if (this.SolutionDirectory != null)
             {
-                yield return "-SolutionDirectory " + CommandTask.EncodeArgumentValue(this.SolutionDirectory);
+                yield return "-SolutionDirectory " + NuGetTask.EncodeArgumentValue(this.SolutionDirectory);
             }
 
             foreach (var source in this.Sources)
             {
-                yield return "-Source " + CommandTask.EncodeArgumentValue(source);
+                yield return "-Source " + NuGetTask.EncodeArgumentValue(source);
             }
 
             if (this.NoCache)
@@ -133,13 +114,8 @@ namespace BauNuGet
 
             if (this.PackageSaveMode != null)
             {
-                yield return "-PackageSaveMode" + CommandTask.EncodeArgumentValue(this.PackageSaveMode);
+                yield return "-PackageSaveMode" + NuGetTask.EncodeArgumentValue(this.PackageSaveMode);
             }
-        }
-
-        protected override IEnumerable<string> GetTargetFiles()
-        {
-            return this.SolutionsOrPackagesConfigs;
         }
     }
 }

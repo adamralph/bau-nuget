@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetFileFinder.cs" company="Bau contributors">
+﻿// <copyright file="NuGetExeFinder.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -9,16 +9,14 @@ namespace BauNuGet
     using System.IO;
     using System.Linq;
 
-    public static class NuGetFileFinder
+    public static class NuGetExeFinder
     {
-        internal static readonly string DefaultNuGetExeName = "NuGet.exe";
-
-        public static FileInfo FindFile()
+        public static string FindExe()
         {
             var file = FindFiles(new DirectoryInfo(Directory.GetCurrentDirectory())).FirstOrDefault();
             if (file != null)
             {
-                return file;
+                return file.FullName;
             }
 
             throw new InvalidOperationException("Failed to find NuGet.exe.");
@@ -30,7 +28,7 @@ namespace BauNuGet
                 ? Enumerable.Empty<FileInfo>()
                 : directory.EnumerateDirectories("*packages")
                     .SelectMany(packageDirectory => packageDirectory
-                        .EnumerateFiles(DefaultNuGetExeName, SearchOption.AllDirectories))
+                        .EnumerateFiles("NuGet.exe", SearchOption.AllDirectories))
                     .Concat(FindFiles(directory.Parent));
         }
     }

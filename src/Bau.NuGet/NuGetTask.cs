@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandTask.cs" company="Bau contributors">
+﻿// <copyright file="NuGetTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -7,23 +7,24 @@ namespace BauNuGet
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
     using BauCore;
 
-    public abstract class CommandTask : BauTask
+    public abstract class NuGetTask : BauTask
     {
         private static readonly Regex containsWhitespaceRegex = new Regex(@"\s");
 
-        protected CommandTask()
+        protected NuGetTask()
         {
             this.NonInteractive = true;
         }
 
+        public IEnumerable<string> Files { get; set; }
+
         public string WorkingDirectory { get; set; }
 
-        public string NuGetExePathOverride { get; set; }
+        public string Exe { get; set; }
 
         public NuGetVerbosity? Verbosity { get; set; }
 
@@ -31,13 +32,13 @@ namespace BauNuGet
 
         public string ConfigFile { get; set; }
 
-        protected abstract string OperationName { get; }
+        protected abstract string Command { get; }
 
         public IEnumerable<string> CreateCommandLineOptions()
         {
-            foreach (var argument in this.CreateCustomCommandLineOptions())
+            foreach (var option in this.CreateCustomCommandLineOptions())
             {
-                yield return argument;
+                yield return option;
             }
 
             if (this.Verbosity.HasValue)
@@ -83,47 +84,35 @@ namespace BauNuGet
             return value;
         }
 
-        protected virtual string GetNuGetExecutablePath()
-        {
-            if (this.NuGetExePathOverride != null)
-            {
-                return this.NuGetExePathOverride;
-            }
-
-            var detectedLocation = NuGetFileFinder.FindFile();
-
-            if (detectedLocation != null)
-            {
-                return detectedLocation.FullName;
-            }
-
-            return NuGetFileFinder.DefaultNuGetExeName;
-        }
-
         protected override void OnActionsExecuted()
         {
-            var fileName = this.GetNuGetExecutablePath();
-            var commandOptions = this.CreateCommandLineOptions();
-            var operationName = this.OperationName;
-            var psis = this.GetTargetFiles()
-                .Select(CommandTask.EncodeArgumentValue)
-                .Select(f => new[] { operationName, f }.Concat(commandOptions))
-                .Select(a => string.Join(" ", a))
-                .Select(a => new ProcessStartInfo
+            var fileName = this.Exe ?? NuGetExeFinder.FindExe();
+            
+            string[] fileArray;
+            if (this.Files  == null || (fileArray = this.Files.ToArray()).Length == 0)
+            {
+                this.LogInfo("No files specified.");
+                return;
+            }
+
+            var options = this.CreateCommandLineOptions();
+            var processStartInfos = fileArray
+                .Select(EncodeArgumentValue)
+                .Select(file => new[] { this.Command, file }.Concat(options))
+                .Select(argument => string.Join(" ", argument))
+                .Select(arguments => new ProcessStartInfo
                 {
                     FileName = fileName,
-                    Arguments = a,
+                    Arguments = arguments,
                     WorkingDirectory = this.WorkingDirectory,
                     UseShellExecute = false
                 });
 
-            foreach (var psi in psis)
+            foreach (var processStartInfo in processStartInfos)
             {
-                psi.Run();
+                processStartInfo.Run();
             }
         }
-
-        protected abstract IEnumerable<string> GetTargetFiles();
 
         protected abstract IEnumerable<string> CreateCustomCommandLineOptions();
     }
