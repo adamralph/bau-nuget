@@ -86,7 +86,7 @@ namespace BauNuGet
 
         protected override void OnActionsExecuted()
         {
-            var fileName = this.Exe ?? NuGetFileFinder.FindFile();
+            var fileName = this.Exe ?? NuGetExeFinder.FindExe();
             
             string[] fileArray;
             if (this.Files  == null || (fileArray = this.Files.ToArray()).Length == 0)

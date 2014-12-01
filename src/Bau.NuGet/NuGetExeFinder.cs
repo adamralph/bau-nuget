@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetFileFinder.cs" company="Bau contributors">
+﻿// <copyright file="NuGetExeFinder.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -9,9 +9,9 @@ namespace BauNuGet
     using System.IO;
     using System.Linq;
 
-    public static class NuGetFileFinder
+    public static class NuGetExeFinder
     {
-        public static string FindFile()
+        public static string FindExe()
         {
             var file = FindFiles(new DirectoryInfo(Directory.GetCurrentDirectory())).FirstOrDefault();
             if (file != null)

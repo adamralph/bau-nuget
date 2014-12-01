@@ -1,4 +1,4 @@
-﻿// <copyright file="NuGetFileFinderFacts.cs" company="Bau contributors">
+﻿// <copyright file="NuGetExeFinderFacts.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -8,13 +8,13 @@ namespace BauNuGet.Test.Unit
     using FluentAssertions;
     using Xunit;
 
-    public static class NuGetFileFinderFacts
+    public static class NuGetExeFinderFacts
     {
         [Fact]
-        public static void FindsFile()
+        public static void FindsExe()
         {
             // act
-            var file = new FileInfo(NuGetFileFinder.FindFile());
+            var file = new FileInfo(NuGetExeFinder.FindExe());
 
             // assert
             file.Name.Should().Be("NuGet.exe");

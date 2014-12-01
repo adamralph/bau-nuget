@@ -59,7 +59,7 @@
     <Compile Include="Pack.cs" />
     <Compile Include="Push.cs" />
     <Compile Include="Restore.cs" />
-    <Compile Include="NuGetFileFinder.cs" />
+    <Compile Include="NuGetExeFinder.cs" />
     <Compile Include="NuGetTaskExtensions.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
