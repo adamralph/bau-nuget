@@ -1,4 +1,4 @@
-﻿// <copyright file="Restore.cs" company="Bau contributors">
+﻿// <copyright file="RestoreTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -12,7 +12,8 @@ namespace BauNuGet
 
         private readonly HashSet<string> sources = new HashSet<string>();
 
-        public ICollection<string> SolutionOrPackagesConfig {
+        public ICollection<string> SolutionsOrPackagesConfigs
+        {
             get { return this.solutionsOrPackagesConfigs; }
         }
 
@@ -32,6 +33,11 @@ namespace BauNuGet
         public bool ParallelProcessingDisabled { get; set; }
 
         public string PackageSaveMode { get; set; }
+
+        protected override string OperationName
+        {
+            get { return "restore"; }
+        }
 
         public virtual RestoreTask Files(params string[] solutionsOrPackagesConfigs)
         {
@@ -63,7 +69,8 @@ namespace BauNuGet
             return this;
         }
 
-        public virtual RestoreTask UseSource(string source) {
+        public virtual RestoreTask UseSource(string source)
+        {
             this.sources.Add(source);
             return this;
         }
@@ -94,13 +101,6 @@ namespace BauNuGet
 
         protected override IEnumerable<string> CreateCustomCommandLineOptions()
         {
-            yield return "restore";
-
-            if (this.SolutionOrPackagesConfig != null)
-            {
-                yield return CommandTask.EncodeArgumentValue(this.SolutionOrPackagesConfig);
-            }
-
             if (this.ConsentRequired)
             {
                 yield return "-RequireConsent";
@@ -135,6 +135,11 @@ namespace BauNuGet
             {
                 yield return "-PackageSaveMode" + CommandTask.EncodeArgumentValue(this.PackageSaveMode);
             }
+        }
+
+        protected override IEnumerable<string> GetTargetFiles()
+        {
+            return this.SolutionsOrPackagesConfigs;
         }
     }
 }

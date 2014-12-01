@@ -1,4 +1,4 @@
-﻿// <copyright file="Verbosity.cs" company="Bau contributors">
+﻿// <copyright file="NuGetVerbosity.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 

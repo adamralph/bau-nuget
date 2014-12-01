@@ -1,4 +1,4 @@
-﻿// <copyright file="Pack.cs" company="Bau contributors">
+﻿// <copyright file="PackTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -10,14 +10,14 @@ namespace BauNuGet
 
     public class PackTask : CommandTask
     {
-        private readonly List<string> nuSpecsOrProjects = new List<string>();
+        private readonly List<string> nuspecsOrProjects = new List<string>();
         private readonly HashSet<string> exclusions = new HashSet<string>();
         private readonly Dictionary<string, string> properties =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public ICollection<string> NuSpecsOrProjects
         {
-            get { return this.nuSpecsOrProjects; }
+            get { return this.nuspecsOrProjects; }
         }
 
         public string OutputDirectory { get; set; }
@@ -52,20 +52,30 @@ namespace BauNuGet
 
         public string MiniClientVersionValue { get; set; }
 
+        protected override string OperationName
+        {
+            get { return "pack"; }
+        }
+
         public void AddExcludes(params string[] excludes)
+        {
+            this.exclusions.UnionWith(excludes);
+        }
+
+        public void AddExcludes(IEnumerable<string> excludes)
         {
             this.exclusions.UnionWith(excludes);
         }
 
         public PackTask Files(params string[] nuspecsOrProjects)
         {
-            this.nuSpecsOrProjects.AddRange(nuspecsOrProjects);
+            this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
             return this;
         }
 
         public PackTask Files(IEnumerable<string> nuspecsOrProjects)
         {
-            this.nuSpecsOrProjects.AddRange(nuspecsOrProjects);
+            this.nuspecsOrProjects.AddRange(nuspecsOrProjects);
             return this;
         }
 
@@ -153,6 +163,7 @@ namespace BauNuGet
             {
                 this.properties[pair.Key] = pair.Value;
             }
+
             return this;
         }
 
@@ -231,6 +242,11 @@ namespace BauNuGet
             {
                 yield return "-MinClientVersion " + CommandTask.EncodeArgumentValue(this.MiniClientVersionValue);
             }
+        }
+
+        protected override IEnumerable<string> GetTargetFiles()
+        {
+            return this.NuSpecsOrProjects;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="Command.cs" company="Bau contributors">
+﻿// <copyright file="CommandTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -6,7 +6,9 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using BauCore;
 
@@ -28,6 +30,8 @@ namespace BauNuGet
         public bool NonInteractive { get; set; }
 
         public string ConfigFile { get; set; }
+
+        protected abstract string OperationName { get; }
 
         public IEnumerable<string> CreateCommandLineOptions()
         {
@@ -79,7 +83,7 @@ namespace BauNuGet
             return value;
         }
 
-        protected virtual string GetNuGetExecutableFileInfo()
+        protected virtual string GetNuGetExecutablePath()
         {
             if (this.NuGetExePathOverride != null)
             {
@@ -87,16 +91,40 @@ namespace BauNuGet
             }
 
             var detectedLocation = NuGetFileFinder.FindFile();
-            if(detectedLocation != null)
+
+            if (detectedLocation != null)
             {
                 return detectedLocation.FullName;
             }
 
-            return NuGetFileFinder.defaultNuGetExeName;
+            return NuGetFileFinder.DefaultNuGetExeName;
         }
 
-        protected abstract IEnumerable<string> CreateCustomCommandLineOptions();
+        protected override void OnActionsExecuted()
+        {
+            var fileName = this.GetNuGetExecutablePath();
+            var commandOptions = this.CreateCommandLineOptions();
+            var operationName = this.OperationName;
+            var psis = this.GetTargetFiles()
+                .Select(CommandTask.EncodeArgumentValue)
+                .Select(f => new[] { operationName, f }.Concat(commandOptions))
+                .Select(a => string.Join(" ", a))
+                .Select(a => new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    Arguments = a,
+                    WorkingDirectory = this.WorkingDirectory,
+                    UseShellExecute = false
+                });
 
-        protected abstract override void OnActionsExecuted();
+            foreach (var psi in psis)
+            {
+                psi.Run();
+            }
+        }
+
+        protected abstract IEnumerable<string> GetTargetFiles();
+
+        protected abstract IEnumerable<string> CreateCustomCommandLineOptions();
     }
 }

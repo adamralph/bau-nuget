@@ -1,4 +1,4 @@
-﻿// <copyright file="Push.cs" company="Bau contributors">
+﻿// <copyright file="PushTask.cs" company="Bau contributors">
 //  Copyright (c) Bau contributors. (baubuildch@gmail.com)
 // </copyright>
 
@@ -23,6 +23,11 @@ namespace BauNuGet
         public int? TimeoutValue { get; set; }
 
         public bool BufferingDisabled { get; set; }
+
+        protected override string OperationName
+        {
+            get { return "push"; }
+        }
 
         public PushTask Files(params string[] packages)
         {
@@ -81,6 +86,11 @@ namespace BauNuGet
             {
                 yield return "-DisableBuffering";
             }
+        }
+
+        protected override IEnumerable<string> GetTargetFiles()
+        {
+            return this.Packages;
         }
     }
 }

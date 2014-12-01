@@ -53,7 +53,17 @@ namespace BauNuGet.Test.Unit
 
         private class DummyCommand : CommandTask
         {
+            protected override string OperationName
+            {
+                get { return "help"; }
+            }
+
             protected override IEnumerable<string> CreateCustomCommandLineOptions()
+            {
+                yield break;
+            }
+
+            protected override IEnumerable<string> GetTargetFiles()
             {
                 yield break;
             }

@@ -16,9 +16,8 @@ namespace BauNuGet.Test.Unit
         public static void Packs()
         {
             // arrange
-            var task = new NuGetTask();
-            var pack = task
-                .Pack("./pickles.nuspec")
+            var pack = new PackTask()
+                .Files("./pickles.nuspec")
                 .In("./")
                 .Version("0.1.2-alpha99999")
                 .Output("./packed")
@@ -33,12 +32,12 @@ namespace BauNuGet.Test.Unit
             }
 
             using (var pickes = File.CreateText(
-                Path.Combine(Path.GetDirectoryName(pack.NuSpecOrProject), "pickles.txt")))
+                Path.Combine(Path.GetDirectoryName(pack.NuSpecsOrProjects.Single()), "pickles.txt")))
             {
                 pickes.WriteLine("Peter Piper picked a peck of pickled peppers.");
             }
 
-            using (var nuspecStream = File.CreateText(pack.NuSpecOrProject))
+            using (var nuspecStream = File.CreateText(pack.NuSpecsOrProjects.Single()))
             using (var xmlWriter = XmlWriter.Create(nuspecStream))
             {
                 xmlWriter.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
@@ -84,7 +83,7 @@ namespace BauNuGet.Test.Unit
             Thread.Sleep(100);
 
             // act
-            task.Execute();
+            pack.Execute();
 
             // assert
             File.Exists(Path.Combine(pack.OutputDirectory, "pickles." + pack.VersionValue + ".nupkg")).Should().BeTrue();
@@ -94,22 +93,21 @@ namespace BauNuGet.Test.Unit
         public static void CreatesMultiplePackCommands()
         {
             // arrange
-            var task = new NuGetTask();
+            var pack = new PackTask();
             var fakeDirName = "./fake-dir/";
 
             // act
-            task.Pack(
-                new[] { "file1", "file2" },
-                r => r
-                    .In(fakeDirName)
-                    .AsTool());
+            pack
+                .Files("file1", "file2")
+                .In(fakeDirName)
+                .AsTool();
 
             // assert
-            task.Commands.Should().HaveCount(2);
-            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<PackTask>().All(r => r.Tool).Should().BeTrue();
-            task.Commands.OfType<PackTask>().Select(x => x.NuSpecOrProject).Should().Contain("file1");
-            task.Commands.OfType<PackTask>().Select(x => x.NuSpecOrProject).Should().Contain("file2");
+            pack.NuSpecsOrProjects.Should().HaveCount(2);
+            pack.NuSpecsOrProjects.Should().Contain("file1");
+            pack.NuSpecsOrProjects.Should().Contain("file2");
+            pack.WorkingDirectory.Should().Be(fakeDirName);
+            pack.Tool.Should().BeTrue();
         }
     }
 }

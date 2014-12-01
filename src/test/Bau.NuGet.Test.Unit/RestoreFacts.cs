@@ -16,9 +16,8 @@ namespace BauNuGet.Test.Unit
         public static void Restores()
         {
             // arrange
-            var task = new NuGetTask();
-            var restore = task
-                .Restore("./restore-test/packages.config")
+            var restore = new RestoreTask()
+                .Files("./restore-test/packages.config")
                 .In("./")
                 .SolutionIn("./restore-test")
                 .PackagesIn("./restore-test/packages")
@@ -36,7 +35,7 @@ namespace BauNuGet.Test.Unit
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(restore.SolutionOrPackagesConfig))
+            using (var packagesFileStream = File.CreateText(restore.SolutionsOrPackagesConfigs.Single()))
             {
                 packagesFileStream.Write(
                     "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
@@ -47,7 +46,7 @@ namespace BauNuGet.Test.Unit
                 .Should().BeFalse();
 
             // act
-            task.Execute();
+            restore.Execute();
 
             // assert
             Directory.Exists(restore.PackagesDirectory).Should().BeTrue();
@@ -59,22 +58,21 @@ namespace BauNuGet.Test.Unit
         public static void CreatesMultipleRestoreCommands()
         {
             // arrange
-            var task = new NuGetTask();
+            var task = new RestoreTask();
             var fakeDirName = "./fake-dir/";
 
             // act
-            task.Restore(
-                new[] { "file1", "file2" },
-                r => r
-                    .In(fakeDirName)
-                    .PackagesIn(fakeDirName));
+            task
+                .Files("file1", "file2")
+                .In(fakeDirName)
+                .PackagesIn(fakeDirName);
 
             // assert
-            task.Commands.Should().HaveCount(2);
-            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<RestoreTask>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<RestoreTask>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
-            task.Commands.OfType<RestoreTask>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
+            task.SolutionsOrPackagesConfigs.Should().HaveCount(2);
+            task.WorkingDirectory.Should().Be(fakeDirName);
+            task.PackagesDirectory.Should().Be(fakeDirName);
+            task.SolutionsOrPackagesConfigs.Should().Contain("file1");
+            task.SolutionsOrPackagesConfigs.Should().Contain("file2");
         }
 
         [Fact]
