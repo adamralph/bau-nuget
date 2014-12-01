@@ -22,16 +22,16 @@ namespace BauNuGet.Test.Unit
                 var detailed = new DummyCommand();
 
                 // act
-                @explicit.WithVerbosity(Verbosity.Detailed);
-                normal.WithVerbosityNormal();
-                quiet.WithVerbosityQuiet();
-                detailed.WithVerbosityDetailed();
+                @explicit.Verbosity(NuGetVerbosity.Detailed);
+                normal.VerbosityNormal();
+                quiet.VerbosityQuiet();
+                detailed.VerbosityDetailed();
 
                 // assert
-                @explicit.Verbosity.Should().Be(Verbosity.Detailed);
-                normal.Verbosity.Should().Be(Verbosity.Normal);
-                quiet.Verbosity.Should().Be(Verbosity.Quiet);
-                detailed.Verbosity.Should().Be(Verbosity.Detailed);
+                @explicit.Verbosity.Should().Be(NuGetVerbosity.Detailed);
+                normal.Verbosity.Should().Be(NuGetVerbosity.Normal);
+                quiet.Verbosity.Should().Be(NuGetVerbosity.Quiet);
+                detailed.Verbosity.Should().Be(NuGetVerbosity.Detailed);
             }
         }
 
@@ -44,16 +44,26 @@ namespace BauNuGet.Test.Unit
                 var command = new DummyCommand();
 
                 // act
-                command.WithConfigFile("poo.p");
+                command.ConfigFile("poo.p");
 
                 // assert
                 command.ConfigFile.Should().Be("poo.p");
             }
         }
 
-        private class DummyCommand : Command
+        private class DummyCommand : CommandTask
         {
-            protected override IEnumerable<string> CreateCustomCommandLineArguments()
+            protected override string OperationName
+            {
+                get { return "help"; }
+            }
+
+            protected override IEnumerable<string> CreateCustomCommandLineOptions()
+            {
+                yield break;
+            }
+
+            protected override IEnumerable<string> GetTargetFiles()
             {
                 yield break;
             }

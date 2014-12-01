@@ -24,14 +24,14 @@ namespace BauNuGet.Test.Unit
             nugetPackageFile.Should().NotBeNull("a .nupkg file should be in the folder above NuGet.exe");
 
             var pushFolder = new DirectoryInfo("./fake NuGet dot org/"); // keep the slash on, makes a better test
-            var task = new NuGetTask();
+            var task = new PushTask();
             task
-                .Push(nugetPackageFile.FullName)
-                .WithWorkingDirectory("./")
-                .WithSource(pushFolder.FullName)
-                .WithApiKey("poop")
-                .WithTimeout(123)
-                .WithDisableBuffering(false);
+                .Files(nugetPackageFile.FullName)
+                .In("./")
+                .Source(pushFolder.FullName)
+                .Key("poop")
+                .Timeout(123)
+                .DisableBuffering(false);
 
             if (pushFolder.Exists)
             {
@@ -57,21 +57,19 @@ namespace BauNuGet.Test.Unit
             var packages = new[] { "package1", "package2" };
             var workingDirectory = "workingDirectory";
             var apiKey = "poo";
-            var task = new NuGetTask();
+            var task = new PushTask();
 
             // act
-            task.Push(
-                packages,
-                push => push
-                    .WithApiKey(apiKey)
-                    .WithWorkingDirectory(workingDirectory));
+            task
+                .Files(packages)
+                .Key(apiKey)
+                .In(workingDirectory);
 
             // assert
-            task.Commands.Should().HaveCount(packages.Length);
-            task.Commands.OfType<Push>().Should().HaveCount(packages.Length);
-            task.Commands.OfType<Push>().Select(push => push.Package).Should().BeEquivalentTo(packages);
-            task.Commands.OfType<Push>().Should().OnlyContain(push => push.ApiKey == apiKey);
-            task.Commands.Should().OnlyContain(command => command.WorkingDirectory == workingDirectory);
+            task.Packages.Should().HaveCount(packages.Length);
+            task.Packages.Should().BeEquivalentTo(packages);
+            task.ApiKey.Should().Be(apiKey);
+            task.WorkingDirectory.Should().Be(workingDirectory);
         }
     }
 }

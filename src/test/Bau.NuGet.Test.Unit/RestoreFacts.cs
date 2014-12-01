@@ -16,13 +16,12 @@ namespace BauNuGet.Test.Unit
         public static void Restores()
         {
             // arrange
-            var task = new NuGetTask();
-            var restore = task
-                .Restore("./restore-test/packages.config")
-                .WithWorkingDirectory("./")
-                .WithSolutionDirectory("./restore-test")
-                .WithPackagesDirectory("./restore-test/packages")
-                .WithRequiresConsent(false);
+            var restore = new RestoreTask()
+                .Files("./restore-test/packages.config")
+                .In("./")
+                .SolutionIn("./restore-test")
+                .PackagesIn("./restore-test/packages")
+                .RequiresConsent(false);
 
             if (!Directory.Exists(restore.SolutionDirectory))
             {
@@ -36,7 +35,7 @@ namespace BauNuGet.Test.Unit
                 Thread.Sleep(100);
             }
 
-            using (var packagesFileStream = File.CreateText(restore.SolutionOrPackagesConfig))
+            using (var packagesFileStream = File.CreateText(restore.SolutionsOrPackagesConfigs.Single()))
             {
                 packagesFileStream.Write(
                     "<packages><package id=\"Bau\" version=\"0.1.0-beta01\" targetFramework=\"net45\" /></packages>");
@@ -47,7 +46,7 @@ namespace BauNuGet.Test.Unit
                 .Should().BeFalse();
 
             // act
-            task.Execute();
+            restore.Execute();
 
             // assert
             Directory.Exists(restore.PackagesDirectory).Should().BeTrue();
@@ -59,36 +58,35 @@ namespace BauNuGet.Test.Unit
         public static void CreatesMultipleRestoreCommands()
         {
             // arrange
-            var task = new NuGetTask();
+            var task = new RestoreTask();
             var fakeDirName = "./fake-dir/";
 
             // act
-            task.Restore(
-                new[] { "file1", "file2" },
-                r => r
-                    .WithWorkingDirectory(fakeDirName)
-                    .WithPackagesDirectory(fakeDirName));
+            task
+                .Files("file1", "file2")
+                .In(fakeDirName)
+                .PackagesIn(fakeDirName);
 
             // assert
-            task.Commands.Should().HaveCount(2);
-            task.Commands.All(r => r.WorkingDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().All(r => r.PackagesDirectory == fakeDirName).Should().BeTrue();
-            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file1");
-            task.Commands.OfType<Restore>().Select(x => x.SolutionOrPackagesConfig).Should().Contain("file2");
+            task.SolutionsOrPackagesConfigs.Should().HaveCount(2);
+            task.WorkingDirectory.Should().Be(fakeDirName);
+            task.PackagesDirectory.Should().Be(fakeDirName);
+            task.SolutionsOrPackagesConfigs.Should().Contain("file1");
+            task.SolutionsOrPackagesConfigs.Should().Contain("file2");
         }
 
         [Fact]
         public static void PropertySource()
         {
             // arrange
-            var normal = new Restore();
-            var multiple = new Restore();
+            var normal = new RestoreTask();
+            var multiple = new RestoreTask();
             multiple.Sources.Add(@"http://source1/api");
             multiple.Sources.Add(@"C:\some folder\");
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var multipleArguments = multiple.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var multipleArguments = multiple.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-Source");
@@ -100,13 +98,13 @@ namespace BauNuGet.Test.Unit
         public static void PropertySourceFluent()
         {
             // arrange
-            var normal = new Restore();
-            var multiple = new Restore();
+            var normal = new RestoreTask();
+            var multiple = new RestoreTask();
 
             // act
             multiple
-                .WithSource(@"http://source1/api")
-                .WithSource(@"C:\some folder\");
+                .UseSource(@"http://source1/api")
+                .UseSource(@"C:\some folder\");
 
             // assert
             normal.Sources.Should().BeEmpty();
@@ -117,14 +115,14 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCache()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore { NoCache = true };
-            var disabled = new Restore { NoCache = false };
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask { NoCache = true };
+            var disabled = new RestoreTask { NoCache = false };
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var enabledArguments = enabled.CreateCommandLineArguments();
-            var disabledArguments = disabled.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var enabledArguments = enabled.CreateCommandLineOptions();
+            var disabledArguments = disabled.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-NoCache");
@@ -136,14 +134,14 @@ namespace BauNuGet.Test.Unit
         public static void PropertyNoCacheFluent()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore();
-            var disabled = new Restore();
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask();
+            var disabled = new RestoreTask();
 
             // act
-            normal.WithNoCache();
-            enabled.WithNoCache(true);
-            disabled.WithNoCache(false);
+            normal.DisableCache();
+            enabled.DisableCache(true);
+            disabled.DisableCache(false);
 
             // assert
             normal.NoCache.Should().BeTrue();
@@ -155,14 +153,14 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessing()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore { DisableParallelProcessing = true };
-            var disabled = new Restore { DisableParallelProcessing = false };
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask { ParallelProcessingDisabled = true };
+            var disabled = new RestoreTask { ParallelProcessingDisabled = false };
 
             // act
-            var normalArguments = normal.CreateCommandLineArguments();
-            var enabledArguments = enabled.CreateCommandLineArguments();
-            var disabledArguments = disabled.CreateCommandLineArguments();
+            var normalArguments = normal.CreateCommandLineOptions();
+            var enabledArguments = enabled.CreateCommandLineOptions();
+            var disabledArguments = disabled.CreateCommandLineOptions();
 
             // assert
             normalArguments.Should().NotContain("-DisableParallelProcessing");
@@ -174,19 +172,19 @@ namespace BauNuGet.Test.Unit
         public static void PropertyDisableParallelProcessingFluent()
         {
             // arrange
-            var normal = new Restore();
-            var enabled = new Restore();
-            var disabled = new Restore();
+            var normal = new RestoreTask();
+            var enabled = new RestoreTask();
+            var disabled = new RestoreTask();
 
             // act
-            normal.WithDisableParallelProcessing();
-            enabled.WithDisableParallelProcessing(true);
-            disabled.WithDisableParallelProcessing(false);
+            normal.DisableParallelProcessing();
+            enabled.DisableParallelProcessing(true);
+            disabled.DisableParallelProcessing(false);
 
             // assert
-            normal.DisableParallelProcessing.Should().BeTrue();
-            enabled.DisableParallelProcessing.Should().BeTrue();
-            disabled.DisableParallelProcessing.Should().BeFalse();
+            normal.ParallelProcessingDisabled.Should().BeTrue();
+            enabled.ParallelProcessingDisabled.Should().BeTrue();
+            disabled.ParallelProcessingDisabled.Should().BeFalse();
         }
     }
 }

@@ -1,7 +1,7 @@
 // parameters
 var versionSuffix = Environment.GetEnvironmentVariable("VERSION_SUFFIX") ?? "-adhoc";
 var msBuildFileVerbosity = (BauMSBuild.Verbosity)Enum.Parse(typeof(BauMSBuild.Verbosity), Environment.GetEnvironmentVariable("MSBUILD_FILE_VERBOSITY") ?? "minimal", true);
-var nugetVerbosity = (BauNuGet.Verbosity)Enum.Parse(typeof(BauNuGet.Verbosity), Environment.GetEnvironmentVariable("NUGET_VERBOSITY") ?? "quiet", true);
+var nugetVerbosity = (NuGetVerbosity)Enum.Parse(typeof(NuGetVerbosity), Environment.GetEnvironmentVariable("NUGET_VERBOSITY") ?? "quiet", true);
 
 // solution specific variables
 var version = File.ReadAllText("src/CommonAssemblyInfo.cs").Split(new[] { "AssemblyInformationalVersion(\"" }, 2, StringSplitOptions.None).ElementAt(1).Split(new[] { '"' }).First();
@@ -46,7 +46,7 @@ bau
 
 .Task("clobber").DependsOn("clean").Do(() => DeleteDirectory(output))
 
-.NuGet("restore").Do(nuget => nuget.Restore(solution))
+.NuGetRestore("restore").Do(nuget => nuget.Files(solution))
 
 .MSBuild("build").DependsOn("clean", "restore", "logs").Do(msb =>
 {
@@ -77,15 +77,13 @@ bau
 
 .Task("output").Do(() => CreateDirectory(output))
 
-.NuGet("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
-    .Pack(
-        pack + ".csproj",
-        r => r
-            .WithOutputDirectory(output)
-            .WithProperty("Configuration","Release")
-            .WithIncludeReferencedProjects()
-            .WithVerbosity(nugetVerbosity)
-            .WithVersion(version + versionSuffix)))
+.NuGetPack("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
+    .Files(pack + ".csproj")
+    .Output(output)
+    .Property("Configuration","Release")
+    .IncludeReferencedProjects()
+    .Verbosity(nugetVerbosity)
+    .Version(version + versionSuffix))
 
 .Run();
 

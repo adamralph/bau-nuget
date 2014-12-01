@@ -21,23 +21,23 @@ namespace BauNuGet.Test.Unit
                 var command = new DummyCommand();
 
                 // act
-                var arguments = command.CreateCommandLineArguments().ToArray();
+                var arguments = command.CreateCommandLineOptions().ToArray();
 
                 // assert
                 arguments.Should().NotContain("-Verbosity");
             }
 
             [Theory]
-            [InlineData(Verbosity.Normal)]
-            [InlineData(Verbosity.Quiet)]
-            [InlineData(Verbosity.Detailed)]
-            public static void CreatesAVerbosityArgumentWhenTheVerbosityIsSpecified(Verbosity verbosity)
+            [InlineData(NuGetVerbosity.Normal)]
+            [InlineData(NuGetVerbosity.Quiet)]
+            [InlineData(NuGetVerbosity.Detailed)]
+            public static void CreatesAVerbosityArgumentWhenTheVerbosityIsSpecified(NuGetVerbosity verbosity)
             {
                 // arrange
                 var command = new DummyCommand { Verbosity = verbosity };
 
                 // act
-                var arguments = command.CreateCommandLineArguments().ToArray();
+                var arguments = command.CreateCommandLineOptions().ToArray();
 
                 // assert
                 arguments.Should().Contain("-Verbosity " + verbosity.ToString().ToLowerInvariant());
@@ -50,7 +50,7 @@ namespace BauNuGet.Test.Unit
                 var normal = new DummyCommand();
 
                 // act
-                var arguments = normal.CreateCommandLineArguments();
+                var arguments = normal.CreateCommandLineOptions();
 
                 // assert
                 arguments.Should().Contain("-NonInteractive");
@@ -63,7 +63,7 @@ namespace BauNuGet.Test.Unit
                 var normal = new DummyCommand { NonInteractive = false };
 
                 // act
-                var arguments = normal.CreateCommandLineArguments();
+                var arguments = normal.CreateCommandLineOptions();
 
                 // assert
                 arguments.Should().NotContain("-NonInteractive");
@@ -76,7 +76,7 @@ namespace BauNuGet.Test.Unit
                 var command = new DummyCommand();
 
                 // act
-                var arguments = command.CreateCommandLineArguments();
+                var arguments = command.CreateCommandLineOptions();
 
                 // assert
                 arguments.Should().NotContain("-ConfigFile");
@@ -94,16 +94,26 @@ namespace BauNuGet.Test.Unit
                 var command = new DummyCommand { ConfigFile = configFile };
 
                 // act
-                var arguments = command.CreateCommandLineArguments();
+                var arguments = command.CreateCommandLineOptions();
 
                 // assert
                 arguments.Should().Contain(expectedArgument);
             }
         }
 
-        private class DummyCommand : Command
+        private class DummyCommand : CommandTask
         {
-            protected override IEnumerable<string> CreateCustomCommandLineArguments()
+            protected override string OperationName
+            {
+                get { return "help"; }
+            }
+
+            protected override IEnumerable<string> CreateCustomCommandLineOptions()
+            {
+                yield break;
+            }
+
+            protected override IEnumerable<string> GetTargetFiles()
             {
                 yield break;
             }

@@ -6,52 +6,40 @@ namespace BauNuGet
 {
     public static class CommandExtensions
     {
-        public static T WithWorkingDirectory<T>(this T command, string workingDirectory) where T : Command
+        public static T In<T>(this T command, string workingDirectory) where T : CommandTask
         {
             command.WorkingDirectory = workingDirectory;
             return command;
         }
 
-        public static T WithNuGetExePathOverride<T>(this T command, string path) where T : Command
+        public static T Use<T>(this T command, string path) where T : CommandTask
         {
             command.NuGetExePathOverride = path;
             return command;
         }
 
-        public static T WithVerbosity<T>(this T command, Verbosity? verbosity) where T : Command
+        public static T Verbosity<T>(this T command, NuGetVerbosity? verbosity) where T : CommandTask
         {
             command.Verbosity = verbosity;
             return command;
         }
 
-        public static T WithVerbosityDetailed<T>(this T command) where T : Command
+        public static T VerbosityDetailed<T>(this T command) where T : CommandTask
         {
-            return command.WithVerbosity(Verbosity.Detailed);
+            return command.Verbosity(NuGetVerbosity.Detailed);
         }
 
-        public static T WithVerbosityQuiet<T>(this T command) where T : Command
+        public static T VerbosityQuiet<T>(this T command) where T : CommandTask
         {
-            return command.WithVerbosity(Verbosity.Quiet);
+            return command.Verbosity(NuGetVerbosity.Quiet);
         }
 
-        public static T WithVerbosityNormal<T>(this T command) where T : Command
+        public static T VerbosityNormal<T>(this T command) where T : CommandTask
         {
-            return command.WithVerbosity(Verbosity.Normal);
+            return command.Verbosity(NuGetVerbosity.Normal);
         }
 
-        public static T WithInteraction<T>(this T command) where T : Command
-        {
-            command.NonInteractive = false;
-            return command;
-        }
-
-        public static T WithoutInteraction<T>(this T command) where T : Command
-        {
-            command.NonInteractive = true;
-            return command;
-        }
-
-        public static T WithConfigFile<T>(this T command, string configFilePath) where T : Command
+        public static T ConfigFile<T>(this T command, string configFilePath) where T : CommandTask
         {
             command.ConfigFile = configFilePath;
             return command;
