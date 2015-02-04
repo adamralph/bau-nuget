@@ -128,5 +128,20 @@ namespace BauNuGet.Test.Unit
             pack.PropertiesCollection.Should().Contain("C", "3.1");
             pack.PropertiesCollection.Should().Contain("D", "True");
         }
+
+        [Fact]
+        public static void CanHaveExtraArgsAdded()
+        {
+            // arrange
+            var extraArg = "-DoMagicThings";
+            var task = new Pack().With(new[] { extraArg });
+
+            // act
+            var arguments = task.CreateCommandLineOptions();
+
+            // assert
+            arguments.Should().Contain(extraArg);
+            task.ExtraArgs.Should().BeEquivalentTo(extraArg);
+        }
     }
 }

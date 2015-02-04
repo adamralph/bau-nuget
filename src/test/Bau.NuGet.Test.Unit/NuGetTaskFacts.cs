@@ -99,6 +99,23 @@ namespace BauNuGet.Test.Unit
                 // assert
                 arguments.Should().Contain(expectedArgument);
             }
+
+            [Fact]
+            public static void CanHaveExtraArgsAdded()
+            {
+                // arrange
+                var extraArgs = new[] { "-Overactive", "+2", "/three", @"""four""" };
+                var task = new DummyTask()
+                    .With(extraArgs.ToArray());
+                task.NonInteractive = false;
+
+                // act
+                var arguments = task.CreateCommandLineOptions();
+                
+                // assert
+                arguments.Should().BeEquivalentTo(extraArgs);
+                task.ExtraArgs.Should().BeEquivalentTo(extraArgs);
+            }
         }
 
         private class DummyTask : NuGetTask

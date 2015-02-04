@@ -70,5 +70,20 @@ namespace BauNuGet.Test.Unit
             task.ApiKey.Should().Be(apiKey);
             task.WorkingDirectory.Should().Be(workingDirectory);
         }
+
+        [Fact]
+        public static void CanHaveExtraArgsAdded()
+        {
+            // arrange
+            var extraArg = "-DoMagicThings";
+            var task = new Push().With(new[] { extraArg });
+
+            // act
+            var arguments = task.CreateCommandLineOptions();
+
+            // assert
+            arguments.Should().Contain(extraArg);
+            task.ExtraArgs.Should().BeEquivalentTo(extraArg);
+        }
     }
 }

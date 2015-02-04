@@ -15,6 +15,8 @@ namespace BauNuGet
     {
         private static readonly Regex containsWhitespaceRegex = new Regex(@"\s");
 
+        private readonly List<string> extraArgs = new List<string>();
+
         protected NuGetTask()
         {
             this.NonInteractive = true;
@@ -31,6 +33,11 @@ namespace BauNuGet
         public bool NonInteractive { get; set; }
 
         public string ConfigFile { get; set; }
+
+        public ICollection<string> ExtraArgs
+        {
+            get { return this.extraArgs; }
+        }
 
         protected abstract string Command { get; }
 
@@ -55,6 +62,12 @@ namespace BauNuGet
             if (this.ConfigFile != null)
             {
                 yield return "-ConfigFile " + EncodeArgumentValue(this.ConfigFile);
+            }
+
+            foreach (var arg in this.ExtraArgs)
+            {
+                // NOTE: do not encode the extra arguments as they may need to be used as is
+                yield return arg;
             }
         }
 

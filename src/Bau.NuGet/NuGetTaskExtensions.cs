@@ -58,5 +58,15 @@ namespace BauNuGet
             task.ConfigFile = path;
             return task;
         }
+
+        public static T With<T>(this T task, params string[] args) where T : NuGetTask
+        {
+            foreach (var arg in args)
+            {
+                task.ExtraArgs.Add(arg);
+            }
+
+            return task;
+        }
     }
 }
