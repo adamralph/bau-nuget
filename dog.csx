@@ -80,7 +80,7 @@ bau
 .NuGetPack("pack").DependsOn("build", "clobber", "output").Do(nuget => nuget
     .Files(pack + ".csproj")
     .Output(output)
-    .Property("Configuration","Release")
+    .Properties(new { Configuration = "Release" })
     .IncludeReferencedProjects()
     .Verbosity(nugetVerbosity)
     .Version(version + versionSuffix))
