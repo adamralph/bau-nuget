@@ -14,7 +14,7 @@ At the time of writing the build is only confirmed to work on Windows using the 
 
 1. Ensure you have [Chocolatey](http://chocolatey.org/) installed.
 
-1. Ensure you have [scriptcs](http://chocolatey.org/packages/ScriptCs) installed.
+1. Ensure you have [scriptcs 0.13.2 or later](http://chocolatey.org/packages/ScriptCs) installed.
 
 ## Building
 
