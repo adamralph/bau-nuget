@@ -13,19 +13,19 @@ set -x
 # install
 if [ ! -d ./scriptcs ]
   then
-    rm -f ./scriptcs-0.10.0-alpha.140530.nupkg
-    wget "https://github.com/bau-build/bau-blob/raw/master/scriptcs-0.10.0-alpha.140530.nupkg"
-    unzip ./scriptcs-0.10.0-alpha.140530.nupkg -d scriptcs
+    rm -f ./ScriptCs.0.13.2.nupkg
+    wget "http://chocolatey.org/api/v2/package/ScriptCs/0.13.2" -O ScriptCs.0.13.2.nupkg
+    unzip ./ScriptCs.0.13.2.nupkg -d scriptcs
 fi
 
-mono ./scriptcs/tools/scriptcs/scriptcs.exe -install
-if [ -d ./packages/Bau.XUnit.0.1.0-beta06 ]
+mono ./scriptcs/tools/scriptcs.exe -install
+if [ -d ./scriptcs_packages/Bau.XUnit.0.1.0-beta06 ]
   then
-    mv ./packages/Bau.XUnit.0.1.0-beta06/Bau.XUnit.0.1.0-beta06.nupkg ./packages/Bau.XUnit.0.1.0-beta06/Bau.Xunit.0.1.0-beta06.nupkg
-    mv ./packages/Bau.XUnit.0.1.0-beta06 ./packages/Bau.Xunit.0.1.0-beta06
+    mv ./scriptcs_packages/Bau.XUnit.0.1.0-beta06/Bau.XUnit.0.1.0-beta06.nupkg ./scriptcs_packages/Bau.XUnit.0.1.0-beta06/Bau.Xunit.0.1.0-beta06.nupkg
+    mv ./scriptcs_packages/Bau.XUnit.0.1.0-beta06 ./scriptcs_packages/Bau.Xunit.0.1.0-beta06
 fi
 
-mono ./packages/NuGet.CommandLine.2.8.3/tools/NuGet.exe restore src/Bau.NuGet.sln
+mono ./scriptcs_packages/NuGet.CommandLine.2.8.3/tools/NuGet.exe restore src/Bau.NuGet.sln
   
 # script
-mono ./scriptcs/tools/scriptcs/scriptcs.exe ./mono.csx -- $@
+mono ./scriptcs/tools/scriptcs.exe ./mono.csx -- $@
