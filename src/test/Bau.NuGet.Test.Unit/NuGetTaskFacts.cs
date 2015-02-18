@@ -101,20 +101,20 @@ namespace BauNuGet.Test.Unit
             }
 
             [Fact]
-            public static void CanHaveExtraArgsAdded()
+            public static void CanHaveArgsAdded()
             {
                 // arrange
-                var extraArgs = new[] { "-Overactive", "+2", "/three", @"""four""" };
+                var args = new[] { "-Overactive", "+2", "/three", @"""four""" };
                 var task = new DummyTask()
-                    .With(extraArgs.ToArray());
+                    .With(args.ToArray());
                 task.NonInteractive = false;
 
                 // act
                 var arguments = task.CreateCommandLineOptions();
                 
                 // assert
-                arguments.Should().BeEquivalentTo(extraArgs);
-                task.ExtraArgs.Should().BeEquivalentTo(extraArgs);
+                arguments.Should().BeEquivalentTo(args);
+                task.Args.Should().BeEquivalentTo(args);
             }
         }
 

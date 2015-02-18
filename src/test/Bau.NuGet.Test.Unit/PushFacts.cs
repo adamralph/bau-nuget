@@ -72,18 +72,18 @@ namespace BauNuGet.Test.Unit
         }
 
         [Fact]
-        public static void CanHaveExtraArgsAdded()
+        public static void CanHaveArgsAdded()
         {
             // arrange
-            var extraArg = "-DoMagicThings";
-            var task = new Push().With(new[] { extraArg });
+            var arg = "-DoMagicThings";
+            var task = new Push().With(new[] { arg });
 
             // act
             var arguments = task.CreateCommandLineOptions();
 
             // assert
-            arguments.Should().Contain(extraArg);
-            task.ExtraArgs.Should().BeEquivalentTo(extraArg);
+            arguments.Should().Contain(arg);
+            task.Args.Should().BeEquivalentTo(arg);
         }
     }
 }

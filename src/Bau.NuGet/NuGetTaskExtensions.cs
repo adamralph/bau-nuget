@@ -63,7 +63,7 @@ namespace BauNuGet
         {
             foreach (var arg in args)
             {
-                task.ExtraArgs.Add(arg);
+                task.Args.Add(arg);
             }
 
             return task;
