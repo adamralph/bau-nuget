@@ -186,5 +186,20 @@ namespace BauNuGet.Test.Unit
             enabled.ParallelProcessingDisabled.Should().BeTrue();
             disabled.ParallelProcessingDisabled.Should().BeFalse();
         }
+
+        [Fact]
+        public static void CanHaveArgsAdded()
+        {
+            // arrange
+            var arg = "-DoMagicThings";
+            var task = new Restore().With(new[] { arg });
+
+            // act
+            var arguments = task.CreateCommandLineOptions();
+
+            // assert
+            arguments.Should().Contain(arg);
+            task.Args.Should().BeEquivalentTo(arg);
+        }
     }
 }

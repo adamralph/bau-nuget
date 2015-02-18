@@ -109,5 +109,39 @@ namespace BauNuGet.Test.Unit
             pack.WorkingDirectory.Should().Be(fakeDirName);
             pack.Tool.Should().BeTrue();
         }
+
+        [Fact]
+        public static void SetPropertiesFromAnonType()
+        {
+            // arrange
+            var pack = new Pack();
+
+            // act
+            pack
+                .Files("test")
+                .Properties(new { A = 1, B = "two", C = 3.1, D = true });
+
+            // assert
+            pack.PropertiesCollection.Should().HaveCount(4);
+            pack.PropertiesCollection.Should().Contain("A", "1");
+            pack.PropertiesCollection.Should().Contain("B", "two");
+            pack.PropertiesCollection.Should().Contain("C", "3.1");
+            pack.PropertiesCollection.Should().Contain("D", "True");
+        }
+
+        [Fact]
+        public static void CanHaveArgsAdded()
+        {
+            // arrange
+            var arg = "-DoMagicThings";
+            var task = new Pack().With(new[] { arg });
+
+            // act
+            var arguments = task.CreateCommandLineOptions();
+
+            // assert
+            arguments.Should().Contain(arg);
+            task.Args.Should().BeEquivalentTo(arg);
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace BauNuGet
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
 
     public class Pack : NuGetTask
@@ -147,6 +148,14 @@ namespace BauNuGet
             }
 
             return this;
+        }
+
+        public Pack Properties(object properties)
+        {
+            var dictionary = properties.GetType().GetProperties()
+                .ToDictionary(p => p.Name, p => string.Format(CultureInfo.InvariantCulture, "{0}", p.GetValue(properties)));
+
+            return this.Properties(dictionary);
         }
 
         public Pack MiniClientVersion(string version)
